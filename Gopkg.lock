@@ -3,6 +3,12 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/go-gl/gl"
+  packages = ["v3.3-core/gl"]
+  revision = "ac0d3d2af0fe995e2bb09fa6619b716b0c0fc0fa"
+
+[[projects]]
+  branch = "master"
   name = "github.com/go-gl/glfw"
   packages = ["v3.2/glfw"]
   revision = "513e4f2bf85c31fba0fc4907abd7895242ccbe50"
@@ -10,6 +16,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "e636ab734115ccc71aa0a0e401c93bdb6cc96dcc2e3a495c7f803c0b9f05dd26"
+  inputs-digest = "d800ae83e1e0818e8da7462440bb68ddc313f5f5c99ac99430e7ce37191fa21f"
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -2,8 +2,10 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"runtime"
 
+	"github.com/go-gl/gl/v3.3-core/gl"
 	"github.com/go-gl/glfw/v3.2/glfw"
 )
 
@@ -35,6 +37,10 @@ func main() {
 	}
 
 	window.MakeContextCurrent()
+
+	if err := gl.Init(); err != nil {
+		log.Fatalln(err)
+	}
 
 	for !window.ShouldClose() {
 		// Do OpenGL stuff.
