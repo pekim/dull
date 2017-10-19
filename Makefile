@@ -15,9 +15,13 @@ install_packages:
 
 install_tools:
 	@go get -v -u github.com/golang/dep/...
+	@go get -v -u github.com/jteeuwen/go-bindata/...
 
 dep_ensure:
 	@dep ensure
+
+bindata:
+	go generate
 
 run_simple:
 	go run _demo/simple/main.go
