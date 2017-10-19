@@ -19,9 +19,15 @@
   packages = ["v3.2/glfw"]
   revision = "513e4f2bf85c31fba0fc4907abd7895242ccbe50"
 
+[[projects]]
+  name = "github.com/pkg/errors"
+  packages = ["."]
+  revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
+  version = "v0.8.0"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "020d4aaa6fa6cd75d71a9a89ad0f33f8a75192ef34b875efb139b50954a3b882"
+  inputs-digest = "414012f3588f65031b58fc783aac471c2280ced43015f7ec1677a1360994406b"
   solver-name = "gps-cdcl"
   solver-version = 1

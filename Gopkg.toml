@@ -1,8 +1,16 @@
 
 [[constraint]]
   branch = "master"
+  name = "github.com/faiface/mainthread"
+
+[[constraint]]
+  branch = "master"
   name = "github.com/go-gl/glfw"
 
 [[constraint]]
   branch = "master"
   name = "github.com/go-gl/gl"
+
+[[constraint]]
+  name = "github.com/pkg/errors"
+  version = "0.8.0"

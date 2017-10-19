@@ -1,11 +1,10 @@
 package dull
 
 import (
-	"log"
-
 	"github.com/faiface/mainthread"
 	"github.com/go-gl/gl/v3.3-core/gl"
 	"github.com/go-gl/glfw/v3.2/glfw"
+	"github.com/pkg/errors"
 )
 
 // InitialisedFn is a function that will be called
@@ -14,8 +13,11 @@ import (
 // A window (or windows) will normally be created within
 // this function.
 //
-// (See the Init function.)
-type InitialisedFn func(app *Application)
+// If something went wrong during initialisation, perhaps openGl
+// could not be initialised, then err will be an error.
+//
+// See also the Init function.
+type InitialisedFn func(app *Application, err error)
 
 func run(initialised InitialisedFn) {
 	app := &Application{}
@@ -23,15 +25,17 @@ func run(initialised InitialisedFn) {
 	mainthread.Call(func() {
 		err := glfw.Init()
 		if err != nil {
-			log.Fatalf("Failed to initialise GLFW: %s", err)
+			initialised(nil, errors.Wrap(err, "Failed to initialise GLFW"))
+			return
 		}
 
 		err = gl.Init()
 		if err != nil {
-			log.Fatalf("Failed to initialise OpenGL: %s", err)
+			initialised(nil, errors.Wrap(err, "Failed to initialise OpenGL: %s"))
+			return
 		}
 
-		initialised(app)
+		initialised(app, nil)
 	})
 
 	defer func() {

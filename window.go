@@ -3,6 +3,7 @@ package dull
 import (
 	"github.com/go-gl/gl/v3.3-core/gl"
 	"github.com/go-gl/glfw/v3.2/glfw"
+	"github.com/pkg/errors"
 )
 
 type Window struct {
@@ -24,7 +25,7 @@ type WindowOptions struct {
 	Width, Height int
 }
 
-func NewWindow(application *Application, options *WindowOptions) *Window {
+func NewWindow(application *Application, options *WindowOptions) (*Window, error) {
 	glfw.WindowHint(glfw.ContextVersionMajor, 3)
 	glfw.WindowHint(glfw.ContextVersionMinor, 3)
 	glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
@@ -45,7 +46,7 @@ func NewWindow(application *Application, options *WindowOptions) *Window {
 
 	glfwWindow, err := glfw.CreateWindow(options.Width, options.Height, "", nil, nil)
 	if err != nil {
-		panic(err)
+		return nil, errors.Wrap(err, "Failed to create window")
 	}
 	glfwWindow.MakeContextCurrent()
 
@@ -92,7 +93,7 @@ func NewWindow(application *Application, options *WindowOptions) *Window {
 		window.Draw()
 	})
 
-	return window
+	return window, nil
 }
 
 func (w *Window) compileProgram() {

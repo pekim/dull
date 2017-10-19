@@ -13,14 +13,17 @@ type Application struct {
 	windowsMutex sync.Mutex
 }
 
-func (a *Application) NewWindow(options *WindowOptions) *Window {
-	window := NewWindow(a, options)
+func (a *Application) NewWindow(options *WindowOptions) (*Window, error) {
+	window, err := NewWindow(a, options)
+	if err != nil {
+		return nil, err
+	}
 
 	a.windowsMutex.Lock()
 	a.windows = append(a.windows, window)
 	a.windowsMutex.Unlock()
 
-	return window
+	return window, nil
 }
 
 func (a *Application) removeWindow(deadWindow *Window) {
