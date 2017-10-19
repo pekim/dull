@@ -2,11 +2,8 @@ package main
 
 import (
 	"fmt"
-	"log"
-	"runtime"
 
-	"github.com/go-gl/gl/v3.3-core/gl"
-	"github.com/go-gl/glfw/v3.2/glfw"
+	"github.com/pekim/miked/dull"
 )
 
 // Build is populated with a git revision. (see Makefile)
@@ -15,36 +12,17 @@ var Build string
 // Version is populated with a version string. (see Makefile)
 var Version string
 
-func init() {
-	// This is needed to arrange that main() runs on main thread.
-	// See documentation for functions that are only allowed to be called from the main thread.
-	runtime.LockOSThread()
+func initialise(app *dull.Application) {
+	window := app.NewWindow(&dull.WindowOptions{})
+
+	window.SetTitle("text")
+	window.SetPosition(200, 200)
+	window.Show()
 }
 
 func main() {
 	fmt.Println(Version)
 	fmt.Println(Build)
 
-	err := glfw.Init()
-	if err != nil {
-		panic(err)
-	}
-	defer glfw.Terminate()
-
-	window, err := glfw.CreateWindow(640, 480, "Testing", nil, nil)
-	if err != nil {
-		panic(err)
-	}
-
-	window.MakeContextCurrent()
-
-	if err := gl.Init(); err != nil {
-		log.Fatalln(err)
-	}
-
-	for !window.ShouldClose() {
-		// Do OpenGL stuff.
-		window.SwapBuffers()
-		glfw.WaitEvents()
-	}
+	dull.Init(initialise)
 }
