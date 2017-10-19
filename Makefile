@@ -35,3 +35,6 @@ dep_ensure:
 
 #run: build
 #	@$(TARGET)
+
+run_simple:
+	go run _demo/simple/main.go
