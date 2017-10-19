@@ -1,6 +1,6 @@
 package dull
 
-//go:generate go-bindata -pkg dull -o asset.go font/...
+//go:generate go-bindata -pkg dull -o asset.go font/data/...
 
 import (
 	"github.com/faiface/mainthread"
