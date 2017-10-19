@@ -3,6 +3,12 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/faiface/mainthread"
+  packages = ["."]
+  revision = "7127dc8993886d1ce799086ff298ff99bf258fbf"
+
+[[projects]]
+  branch = "master"
   name = "github.com/go-gl/gl"
   packages = ["v3.3-core/gl"]
   revision = "ac0d3d2af0fe995e2bb09fa6619b716b0c0fc0fa"
@@ -16,6 +22,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "d800ae83e1e0818e8da7462440bb68ddc313f5f5c99ac99430e7ce37191fa21f"
+  inputs-digest = "020d4aaa6fa6cd75d71a9a89ad0f33f8a75192ef34b875efb139b50954a3b882"
   solver-name = "gps-cdcl"
   solver-version = 1
