@@ -15,7 +15,7 @@ var Version string
 func initialise(app *dull.Application) {
 	window := app.NewWindow(&dull.WindowOptions{})
 
-	window.SetTitle("text")
+	window.SetTitle("test")
 	window.SetPosition(200, 200)
 	window.Show()
 }

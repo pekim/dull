@@ -8,9 +8,16 @@ import (
 	"github.com/go-gl/glfw/v3.2/glfw"
 )
 
-type initialisedFn func(app *Application)
+// InitialisedFn is a function that will be called
+// once library initialisation is complete.
+//
+// A window (or windows) will normally be created within
+// this function.
+//
+// (See the Init function.)
+type InitialisedFn func(app *Application)
 
-func run(initialised initialisedFn) {
+func run(initialised InitialisedFn) {
 	app := &Application{}
 
 	mainthread.Call(func() {
@@ -36,7 +43,11 @@ func run(initialised initialisedFn) {
 	app.run()
 }
 
-func Init(initialised initialisedFn) {
+// Init must be the first dull function called.
+//
+// The initialised function will be called once the library
+// has been initialised, and windows may be created.
+func Init(initialised InitialisedFn) {
 	mainthread.Run(func() {
 		run(initialised)
 	})
