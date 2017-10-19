@@ -1,29 +1,23 @@
 SHELL := /bin/bash
 
-TARGET := dist/miked
-
-VERSION := 1.0.0
-BUILD := `git rev-parse HEAD`
-
-# Use linker flags to provide version/build settings to the target
-LDFLAGS=-ldflags "-X=main.Version=$(VERSION) -X=main.Build=$(BUILD)"
+#TARGET := dist/miked
 
 TAGS =
 
 SRC = $(shell find . -type f -name '*.go' -not -path "./vendor/*")
-MAIN = cmd/miked/main.go
-MAIN_PKG = github.com/pekim/miked/cmd/miked
+#MAIN = cmd/miked/main.go
+MAIN_PKG = github.com/pekim/dull3
 
-all: build
+#all: build
 
-$(TARGET): $(SRC)
-	@go build $(LDFLAGS) -o $(TARGET) $(MAIN)
+#$(TARGET): $(SRC)
+#	@go build $(LDFLAGS) -o $(TARGET) $(MAIN)
 
-build: $(TARGET)
-	@true
+#build: $(TARGET)
+#	@true
 
-clean:
-	@rm -f $(TARGET)
+#clean:
+#	@rm -f $(TARGET)
 
 fmt:
 	@gofmt -l -w $(SRC)
@@ -39,5 +33,5 @@ install_tools:
 dep_ensure:
 	@dep ensure
 
-run: build
-	@$(TARGET)
+#run: build
+#	@$(TARGET)
