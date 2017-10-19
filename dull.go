@@ -33,7 +33,7 @@ func run(initialised InitialisedFn) {
 
 		err = gl.Init()
 		if err != nil {
-			initialised(nil, errors.Wrap(err, "Failed to initialise OpenGL: %s"))
+			initialised(nil, errors.Wrap(err, "Failed to initialise OpenGL"))
 			return
 		}
 
