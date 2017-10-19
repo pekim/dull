@@ -21,6 +21,24 @@ import (
 // See also the Init function.
 type InitialisedFn func(app *Application, err error)
 
+// Init must be the first dull function called.
+//
+// The initialised function will be called once the library
+// has been initialised, and windows may be created.
+func Init(initialised InitialisedFn) {
+	mainthread.Run(func() {
+		run(initialised)
+	})
+}
+
+// Do will run a function on the main thread.
+//
+// Some API functions need to run on the main thread.
+func Do(do func()) {
+	go glfw.PostEmptyEvent()
+	mainthread.Call(do)
+}
+
 func run(initialised InitialisedFn) {
 	app := &Application{}
 
@@ -47,19 +65,4 @@ func run(initialised InitialisedFn) {
 	}()
 
 	app.run()
-}
-
-// Init must be the first dull function called.
-//
-// The initialised function will be called once the library
-// has been initialised, and windows may be created.
-func Init(initialised InitialisedFn) {
-	mainthread.Run(func() {
-		run(initialised)
-	})
-}
-
-func Do(do func()) {
-	go glfw.PostEmptyEvent()
-	mainthread.Call(do)
 }
