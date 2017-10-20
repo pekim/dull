@@ -6,7 +6,7 @@
 // font/data/DejaVuSansMono.ttf
 // DO NOT EDIT!
 
-package dull
+package internal
 
 import (
 	"bytes"
@@ -86,7 +86,7 @@ func fontDataDejavusansmonoBoldTtf() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "font/data/DejaVuSansMono-Bold.ttf", size: 331992, mode: os.FileMode(420), modTime: time.Unix(1508439417, 0)}
+	info := bindataFileInfo{name: "font/data/DejaVuSansMono-Bold.ttf", size: 331992, mode: os.FileMode(420), modTime: time.Unix(1508442314, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -106,7 +106,7 @@ func fontDataDejavusansmonoBoldobliqueTtf() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "font/data/DejaVuSansMono-BoldOblique.ttf", size: 253580, mode: os.FileMode(420), modTime: time.Unix(1508439417, 0)}
+	info := bindataFileInfo{name: "font/data/DejaVuSansMono-BoldOblique.ttf", size: 253580, mode: os.FileMode(420), modTime: time.Unix(1508442314, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -126,7 +126,7 @@ func fontDataDejavusansmonoObliqueTtf() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "font/data/DejaVuSansMono-Oblique.ttf", size: 251932, mode: os.FileMode(420), modTime: time.Unix(1508439417, 0)}
+	info := bindataFileInfo{name: "font/data/DejaVuSansMono-Oblique.ttf", size: 251932, mode: os.FileMode(420), modTime: time.Unix(1508442314, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -146,7 +146,7 @@ func fontDataDejavusansmonoTtf() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "font/data/DejaVuSansMono.ttf", size: 340712, mode: os.FileMode(420), modTime: time.Unix(1508439417, 0)}
+	info := bindataFileInfo{name: "font/data/DejaVuSansMono.ttf", size: 340712, mode: os.FileMode(420), modTime: time.Unix(1508442314, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
