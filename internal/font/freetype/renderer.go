@@ -12,7 +12,7 @@ import (
 	"runtime"
 	"unsafe"
 
-	"github.com/pekim/dull3/font"
+	"github.com/pekim/dull3/internal/font"
 )
 
 type FreeType struct {

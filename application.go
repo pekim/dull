@@ -7,8 +7,8 @@ import (
 
 	"github.com/faiface/mainthread"
 	"github.com/go-gl/glfw/v3.2/glfw"
-	"github.com/pekim/dull3/font/freetype"
 	"github.com/pekim/dull3/internal"
+	"github.com/pekim/dull3/internal/font/freetype"
 	"github.com/pkg/errors"
 )
 
@@ -46,7 +46,7 @@ func (a *Application) removeWindow(deadWindow *Window) {
 }
 
 func (a *Application) run() {
-	fontData, err := internal.Asset("font/data/DejaVuSansMono.ttf")
+	fontData, err := internal.Asset("internal/font/data/DejaVuSansMono.ttf")
 	if err != nil {
 		panic(errors.Wrap(err, "Failed to load internal font data."))
 	}
