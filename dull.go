@@ -15,7 +15,7 @@ import (
 // A window (or windows) will normally be created within
 // this function.
 //
-// If something went wrong during initialisation, perhaps openGl
+// If something went wrong during initialisation, perhaps openGL
 // could not be initialised, then err will be an error.
 //
 // See also the Init function.
