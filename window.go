@@ -1,7 +1,6 @@
 package dull
 
 import (
-	"fmt"
 	"math"
 
 	"github.com/go-gl/gl/v3.3-core/gl"
@@ -24,11 +23,14 @@ type Window struct {
 	// fontRenderer     font.Renderer
 	// fontTextureAtlas *font.FontTextureAtlas
 
+	backgroundColour Color
+
 	// rootWidget *widget.Base
 }
 
 type WindowOptions struct {
 	Width, Height int
+	Background    *Color
 }
 
 func NewWindow(application *Application, options *WindowOptions) (*Window, error) {
@@ -48,6 +50,10 @@ func NewWindow(application *Application, options *WindowOptions) (*Window, error
 	}
 	if options.Height == 0 {
 		options.Height = 600
+	}
+	if options.Background == nil {
+		color := NewColor(1.0, 1.0, 1.0, 1.0)
+		options.Background = &color
 	}
 
 	glfwWindow, err := glfw.CreateWindow(options.Width, options.Height, "", nil, nil)
@@ -71,15 +77,16 @@ func NewWindow(application *Application, options *WindowOptions) (*Window, error
 
 	family := font.NewFamily(freetype.NewRenderer, int(dpi), scale*16)
 
-	textureItem, glyphItem := family.Regular.GetGlyph('A')
-	fmt.Printf("%#v\n", textureItem)
-	fmt.Printf("%#v\n", glyphItem)
+	// textureItem, glyphItem := family.Regular.GetGlyph('A')
+	// fmt.Printf("%#v\n", textureItem)
+	// fmt.Printf("%#v\n", glyphItem)
 
 	window := &Window{
-		Application: application,
-		fontFamily:  family,
-		glfwWindow:  glfwWindow,
-		dpi:         dpi,
+		Application:      application,
+		fontFamily:       family,
+		glfwWindow:       glfwWindow,
+		dpi:              dpi,
+		backgroundColour: *options.Background,
 	}
 
 	// window.compileProgram()
@@ -141,14 +148,14 @@ func (w *Window) Draw() {
 	w.glfwWindow.MakeContextCurrent()
 	// gl.UseProgram(w.program.program)
 
-	// windowWidth, windowHeight := w.glfwWindow.GetSize()
-	// gl.Viewport(0, 0, int32(windowWidth), int32(windowHeight))
+	windowWidth, windowHeight := w.glfwWindow.GetSize()
+	gl.Viewport(0, 0, int32(windowWidth), int32(windowHeight))
 
-	// gl.Enable(gl.SCISSOR_TEST)
-	// gl.Scissor(0, 0, int32(windowWidth), int32(windowHeight))
+	gl.Enable(gl.SCISSOR_TEST)
+	gl.Scissor(0, 0, int32(windowWidth), int32(windowHeight))
 
-	// gl.ClearColor(1, 1, 1, 0)
-	// gl.Clear(gl.COLOR_BUFFER_BIT)
+	gl.ClearColor(w.backgroundColour.R, w.backgroundColour.G, w.backgroundColour.B, 1.0)
+	gl.Clear(gl.COLOR_BUFFER_BIT)
 
 	// w.context.Reset(windowWidth, windowHeight)
 
