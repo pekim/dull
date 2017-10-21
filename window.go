@@ -72,9 +72,14 @@ func NewWindow(application *Application, options *WindowOptions) (*Window, error
 	// Ensure scaling is never less 1.
 	scale = math.Max(scale, 1.0)
 
+	glfwWindow.MakeContextCurrent()
+	err = gl.Init()
+	if err != nil {
+		return nil, errors.Wrap(err, "Failed to initialise OpenGL")
+	}
+
 	family := font.NewFamily(freetype.NewRenderer, int(dpi), scale*16)
 
-	glfwWindow.MakeContextCurrent()
 	program, err := newProgram()
 	if err != nil {
 		return nil, errors.Wrap(err, "Failed to create gl program")
@@ -205,6 +210,8 @@ func (w *Window) Draw() {
 	// w.context.DrawText(w.fontTextureAtlas, float64(windowWidth-150), lineHeight-6, black, lastRenderText)
 
 	// w.context.Render()
+
+	w.glfwWindow.SwapBuffers()
 
 	w.lastRenderDuration = time.Now().Sub(startTime)
 	fmt.Println(w.lastRenderDuration.Seconds() * 1000)

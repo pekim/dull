@@ -4,7 +4,6 @@ package dull
 
 import (
 	"github.com/faiface/mainthread"
-	"github.com/go-gl/gl/v3.3-core/gl"
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/pkg/errors"
 )
@@ -46,12 +45,6 @@ func run(initialised InitialisedFn) {
 		err := glfw.Init()
 		if err != nil {
 			initialised(nil, errors.Wrap(err, "Failed to initialise GLFW"))
-			return
-		}
-
-		err = gl.Init()
-		if err != nil {
-			initialised(nil, errors.Wrap(err, "Failed to initialise OpenGL"))
 			return
 		}
 
