@@ -1,7 +1,9 @@
 package dull
 
 import (
+	"fmt"
 	"math"
+	"time"
 
 	"github.com/go-gl/gl/v3.3-core/gl"
 	"github.com/go-gl/glfw/v3.2/glfw"
@@ -12,18 +14,17 @@ import (
 
 type Window struct {
 	*Application
-	fontFamily *font.Family
-	glfwWindow *glfw.Window
-	dpi        float32
-	// program            *program
+	fontFamily         *font.Family
+	glfwWindow         *glfw.Window
+	dpi                float32
+	program            *program
+	lastRenderDuration time.Duration
+	backgroundColour   Color
 	// context            *draw.Context
-	// lastRenderDuration time.Duration
 
 	// newFontRenderer  font.NewRenderer
 	// fontRenderer     font.Renderer
 	// fontTextureAtlas *font.FontTextureAtlas
-
-	backgroundColour Color
 
 	// rootWidget *widget.Base
 }
@@ -60,10 +61,6 @@ func NewWindow(application *Application, options *WindowOptions) (*Window, error
 	if err != nil {
 		return nil, errors.Wrap(err, "Failed to create window")
 	}
-	glfwWindow.MakeContextCurrent()
-
-	gl.Enable(gl.BLEND)
-	gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
 
 	monitor := glfw.GetPrimaryMonitor()
 	mode := monitor.GetVideoMode()
@@ -77,6 +74,12 @@ func NewWindow(application *Application, options *WindowOptions) (*Window, error
 
 	family := font.NewFamily(freetype.NewRenderer, int(dpi), scale*16)
 
+	glfwWindow.MakeContextCurrent()
+	program, err := newProgram()
+	if err != nil {
+		return nil, errors.Wrap(err, "Failed to create gl program")
+	}
+
 	// textureItem, glyphItem := family.Regular.GetGlyph('A')
 	// fmt.Printf("%#v\n", textureItem)
 	// fmt.Printf("%#v\n", glyphItem)
@@ -85,11 +88,11 @@ func NewWindow(application *Application, options *WindowOptions) (*Window, error
 		Application:      application,
 		fontFamily:       family,
 		glfwWindow:       glfwWindow,
+		program:          program,
 		dpi:              dpi,
 		backgroundColour: *options.Background,
 	}
 
-	// window.compileProgram()
 	// window.context = draw.NewContext(window.program.program, window.program.defaultAtlas, window.fontTextureAtlas)
 
 	window.glfwWindow.SetSizeCallback(func(_ *glfw.Window, width, height int) {
@@ -103,14 +106,6 @@ func NewWindow(application *Application, options *WindowOptions) (*Window, error
 	})
 
 	return window, nil
-}
-
-func (w *Window) compileProgram() {
-	// program, err := newProgram()
-	// if err != nil {
-	// 	log.Fatalf("Failed to compile GL program, %s", err)
-	// }
-	// w.program = program
 }
 
 func (w *Window) Show() {
@@ -143,10 +138,13 @@ func (w *Window) resized(width, height int) {
 }
 
 func (w *Window) Draw() {
-	// startTime := time.Now()
+	startTime := time.Now()
 
 	w.glfwWindow.MakeContextCurrent()
 	// gl.UseProgram(w.program.program)
+
+	gl.Enable(gl.BLEND)
+	gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
 
 	windowWidth, windowHeight := w.glfwWindow.GetSize()
 	gl.Viewport(0, 0, int32(windowWidth), int32(windowHeight))
@@ -208,5 +206,6 @@ func (w *Window) Draw() {
 
 	// w.context.Render()
 
-	// w.lastRenderDuration = time.Now().Sub(startTime)
+	w.lastRenderDuration = time.Now().Sub(startTime)
+	fmt.Println(w.lastRenderDuration.Seconds() * 1000)
 }
