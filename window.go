@@ -1,13 +1,18 @@
 package dull
 
 import (
+	"math"
+
 	"github.com/go-gl/gl/v3.3-core/gl"
 	"github.com/go-gl/glfw/v3.2/glfw"
+	"github.com/pekim/dull3/internal/font"
+	"github.com/pekim/dull3/internal/font/freetype"
 	"github.com/pkg/errors"
 )
 
 type Window struct {
 	*Application
+	fontFamily *font.Family
 	glfwWindow *glfw.Window
 	dpi        float32
 	// program            *program
@@ -59,25 +64,17 @@ func NewWindow(application *Application, options *WindowOptions) (*Window, error
 	dpi := float32(mode.Width) / float32(widthMm) * 25.4
 
 	// Round down, to limit excesive scaling on high dpi screens.
-	// scale := math.Floor(float64(dpi / 96))
-	// // Ensure scaling is never less 1.
-	// scale = math.Max(scale, 1.0)
+	scale := math.Floor(float64(dpi / 96))
+	// Ensure scaling is never less 1.
+	scale = math.Max(scale, 1.0)
 
-	// fontData := font.Data("DejaVuSans")
-	// newFontRenderer := build.GetNewRenderer(dpi)
-	// fontRenderer, err := newFontRenderer(fontData, scale*16)
-
-	// if err != nil {
-	// 	panic(err)
-	// }
+	family := font.NewFamily(freetype.NewRenderer, int(dpi), scale*16)
 
 	window := &Window{
 		Application: application,
+		fontFamily:  family,
 		glfwWindow:  glfwWindow,
 		dpi:         dpi,
-		// newFontRenderer:  newFontRenderer,
-		// fontRenderer:     fontRenderer,
-		// fontTextureAtlas: font.NewFontTextureAtlas(fontRenderer),
 	}
 
 	// window.compileProgram()

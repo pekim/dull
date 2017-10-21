@@ -26,7 +26,12 @@ type RendererFreeType struct {
 	face     C.FT_Face
 }
 
-func NewFreeType(dpi float32) *FreeType {
+func NewRenderer(fontData []byte, dpi int, height float64) (font.Renderer, error) {
+	ft := NewFreeType(dpi)
+	return ft.NewRenderer(fontData, height)
+}
+
+func NewFreeType(dpi int) *FreeType {
 	ft := &FreeType{dpi: C.FT_UInt(dpi)}
 
 	error := C.FT_Init_FreeType(&ft.library)

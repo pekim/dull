@@ -1,15 +1,11 @@
 package dull
 
 import (
-	"fmt"
 	"log"
 	"sync"
 
 	"github.com/faiface/mainthread"
 	"github.com/go-gl/glfw/v3.2/glfw"
-	"github.com/pekim/dull3/internal"
-	"github.com/pekim/dull3/internal/font/freetype"
-	"github.com/pkg/errors"
 )
 
 type Application struct {
@@ -46,15 +42,6 @@ func (a *Application) removeWindow(deadWindow *Window) {
 }
 
 func (a *Application) run() {
-	fontData, err := internal.Asset("internal/font/data/DejaVuSansMono.ttf")
-	if err != nil {
-		panic(errors.Wrap(err, "Failed to load internal font data."))
-	}
-
-	ft := freetype.NewFreeType(96)
-	font, err := ft.NewRenderer(fontData, 16)
-	fmt.Println(font, err)
-
 	if len(a.windows) == 0 {
 		log.Fatal("No windows have been created.")
 	}

@@ -25,4 +25,4 @@ type Renderer interface {
 }
 
 // NewRenderer creates a Renderer.
-type NewRenderer func(fontData []byte, pixelHeight float64) (Renderer, error)
+type NewRenderer func(fontData []byte, dpi int, pixelHeight float64) (Renderer, error)
