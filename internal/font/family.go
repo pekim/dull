@@ -7,14 +7,14 @@ import (
 )
 
 type Family struct {
-	name        string
-	glyphWidth  int
-	glyphHeight int
+	Name       string
+	CellWidth  int
+	CellHeight int
 
-	regular    *FontTextureAtlas
-	bold       *FontTextureAtlas
-	boldItalic *FontTextureAtlas
-	italic     *FontTextureAtlas
+	Regular    *FontTextureAtlas
+	Bold       *FontTextureAtlas
+	BoldItalic *FontTextureAtlas
+	Italic     *FontTextureAtlas
 }
 
 func NewFamily(newRenderer NewRenderer, dpi int, height float64) *Family {
@@ -29,11 +29,17 @@ func NewFamily(newRenderer NewRenderer, dpi int, height float64) *Family {
 		return NewFontTextureAtlas(renderer)
 	}
 
-	return &Family{
-		name:       "DejaVuSansMono",
-		regular:    new(""),
-		bold:       new("-Bold"),
-		boldItalic: new("-BoldOblique"),
-		italic:     new("-Oblique"),
+	family := &Family{
+		Name:       "DejaVuSansMono",
+		Regular:    new(""),
+		Bold:       new("-Bold"),
+		BoldItalic: new("-BoldOblique"),
+		Italic:     new("-Oblique"),
 	}
+
+	fontMetrics := family.Regular.fontRenderer.GetMetrics()
+	family.CellWidth = fontMetrics.Advance
+	family.CellHeight = fontMetrics.Ascent + -fontMetrics.Descent
+
+	return family
 }

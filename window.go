@@ -1,6 +1,7 @@
 package dull
 
 import (
+	"fmt"
 	"math"
 
 	"github.com/go-gl/gl/v3.3-core/gl"
@@ -69,6 +70,10 @@ func NewWindow(application *Application, options *WindowOptions) (*Window, error
 	scale = math.Max(scale, 1.0)
 
 	family := font.NewFamily(freetype.NewRenderer, int(dpi), scale*16)
+
+	textureItem, glyphItem := family.Regular.GetGlyph('A')
+	fmt.Printf("%#v\n", textureItem)
+	fmt.Printf("%#v\n", glyphItem)
 
 	window := &Window{
 		Application: application,

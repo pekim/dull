@@ -135,7 +135,6 @@ func (r *RendererFreeType) GetGlyph(char rune) (*font.Glyph, error) {
 
 		TopBearing:  float64(fGlyph.bitmap_top),
 		LeftBearing: float64(fGlyph.bitmap_left),
-		Advance:     float64(fGlyph.advance.x / 64),
 	}
 
 	return glyph, nil
@@ -144,13 +143,15 @@ func (r *RendererFreeType) GetGlyph(char rune) (*font.Glyph, error) {
 func (r *RendererFreeType) GetMetrics() *font.Metrics {
 	face := (*C.FT_FaceRec)(r.face)
 
-	ascent := float64(face.size.metrics.ascender / 64)
-	descent := float64(face.size.metrics.descender / 64)
-	height := float64(face.size.metrics.height / 64)
+	ascent := int(face.size.metrics.ascender / 64)
+	descent := int(face.size.metrics.descender / 64)
+	height := int(face.size.metrics.height / 64)
+	advance := int(face.size.metrics.max_advance / 64)
 
 	return &font.Metrics{
 		Ascent:  ascent,
 		Descent: descent,
 		LineGap: height - (ascent + -descent),
+		Advance: advance,
 	}
 }

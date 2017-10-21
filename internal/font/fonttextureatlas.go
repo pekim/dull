@@ -4,7 +4,6 @@ import "github.com/pekim/dull3/internal/textureatlas"
 
 type GlyphItem struct {
 	TopBearing  float64
-	Advance     float64
 	LeftBearing float64
 }
 
@@ -15,13 +14,12 @@ type FontTextureAtlas struct {
 
 func NewFontTextureAtlas(renderer Renderer) *FontTextureAtlas {
 	metrics := renderer.GetMetrics()
-	height := int32(metrics.Ascent + -metrics.Descent)
+	maxGlyphHeight := int32(metrics.Ascent + -metrics.Descent)
+	maxGlyphWidth := int32(metrics.Advance)
+	textureAtlas := textureatlas.NewTextureAtlas(1000*maxGlyphWidth, maxGlyphHeight)
 
 	ta := &FontTextureAtlas{
-		textureAtlas: textureatlas.NewTextureAtlas(
-			height*300,
-			height,
-		),
+		textureAtlas: textureAtlas,
 		fontRenderer: renderer,
 	}
 
@@ -42,7 +40,6 @@ func (fta *FontTextureAtlas) GetGlyph(rune rune) (*textureatlas.TextureItem, *Gl
 
 	glyphItem := &GlyphItem{
 		TopBearing:  fontGlyph.TopBearing,
-		Advance:     fontGlyph.Advance,
 		LeftBearing: fontGlyph.LeftBearing,
 	}
 	glyph = fta.textureAtlas.AddItem(rune, fontGlyph.Bitmap, fontGlyph.BitmapWidth, fontGlyph.BitmapHeight, glyphItem)

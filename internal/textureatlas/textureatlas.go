@@ -7,9 +7,12 @@ import (
 	"github.com/go-gl/gl/v3.3-core/gl"
 )
 
+// Solid is an item key for an item that is a single solid (opaque) pixel.
+const Solid = '\uE000'
+
 type TextureAtlas struct {
 	Texture uint32
-	items   map[interface{}]*TextureItem
+	items   map[rune]*TextureItem
 
 	width, height int32
 	nextX, nextY  int32
@@ -19,13 +22,13 @@ func NewTextureAtlas(width, height int32) *TextureAtlas {
 	ta := &TextureAtlas{
 		width:  width,
 		height: height,
-		items:  map[interface{}]*TextureItem{},
+		items:  map[rune]*TextureItem{},
 		nextX:  0,
 		nextY:  0,
 	}
 
 	ta.generateTexture()
-	ta.AddItem("solid", &[]byte{0xff}, 1, 1, nil)
+	ta.AddItem(Solid, &[]byte{0xff}, 1, 1, nil)
 
 	return ta
 }
@@ -53,12 +56,12 @@ func (ta *TextureAtlas) generateTexture() {
 	)
 }
 
-func (ta *TextureAtlas) Item(key interface{}) *TextureItem {
+func (ta *TextureAtlas) Item(key rune) *TextureItem {
 	return ta.items[key]
 }
 
 func (ta *TextureAtlas) AddItem(
-	key interface{},
+	key rune,
 	pixels *[]byte, width, height int,
 	customData interface{},
 ) *TextureItem {
