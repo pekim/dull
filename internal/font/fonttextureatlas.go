@@ -8,7 +8,7 @@ type GlyphItem struct {
 }
 
 type FontTextureAtlas struct {
-	textureAtlas *textureatlas.TextureAtlas
+	TextureAtlas *textureatlas.TextureAtlas
 	fontRenderer Renderer
 }
 
@@ -19,7 +19,7 @@ func NewFontTextureAtlas(renderer Renderer) *FontTextureAtlas {
 	textureAtlas := textureatlas.NewTextureAtlas(1000*maxGlyphWidth, maxGlyphHeight)
 
 	ta := &FontTextureAtlas{
-		textureAtlas: textureAtlas,
+		TextureAtlas: textureAtlas,
 		fontRenderer: renderer,
 	}
 
@@ -27,10 +27,13 @@ func NewFontTextureAtlas(renderer Renderer) *FontTextureAtlas {
 }
 
 func (fta *FontTextureAtlas) GetGlyph(rune rune) (*textureatlas.TextureItem, *GlyphItem) {
-	glyph := fta.textureAtlas.Item(rune)
+	glyph := fta.TextureAtlas.Item(rune)
 
 	if glyph != nil {
-		return glyph, glyph.CustomData.(*GlyphItem)
+		if glyph.CustomData != nil {
+			return glyph, glyph.CustomData.(*GlyphItem)
+		}
+		return glyph, nil
 	}
 
 	fontGlyph, err := fta.fontRenderer.GetGlyph(rune)
@@ -42,7 +45,7 @@ func (fta *FontTextureAtlas) GetGlyph(rune rune) (*textureatlas.TextureItem, *Gl
 		TopBearing:  fontGlyph.TopBearing,
 		LeftBearing: fontGlyph.LeftBearing,
 	}
-	glyph = fta.textureAtlas.AddItem(rune, fontGlyph.Bitmap, fontGlyph.BitmapWidth, fontGlyph.BitmapHeight, glyphItem)
+	glyph = fta.TextureAtlas.AddItem(rune, fontGlyph.Bitmap, fontGlyph.BitmapWidth, fontGlyph.BitmapHeight, glyphItem)
 
 	return glyph, glyphItem
 }
