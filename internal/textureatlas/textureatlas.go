@@ -34,6 +34,19 @@ func NewTextureAtlas(width, height int32) *TextureAtlas {
 }
 
 func (ta *TextureAtlas) generateTexture() {
+	var maxTextureSize int32
+	gl.GetIntegerv(gl.MAX_TEXTURE_SIZE, &maxTextureSize)
+
+	width := ta.width
+	if width > maxTextureSize {
+		width = maxTextureSize
+	}
+
+	height := ta.height
+	if height > maxTextureSize {
+		height = maxTextureSize
+	}
+
 	gl.GenTextures(1, &ta.Texture)
 	gl.BindTexture(gl.TEXTURE_2D, ta.Texture)
 
@@ -47,8 +60,8 @@ func (ta *TextureAtlas) generateTexture() {
 		gl.TEXTURE_2D,
 		0,
 		gl.RED,
-		ta.width,
-		ta.height,
+		width,
+		height,
 		0,
 		gl.RED,
 		gl.UNSIGNED_BYTE,
