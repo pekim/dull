@@ -29,9 +29,9 @@ func (w *Window) Draw() {
 }
 
 func (w *Window) drawCells() {
-	textureItem, _ := w.fontFamily.Regular.GetGlyph('A')
-	// fmt.Printf("%#v\n", textureItem)
-	// fmt.Printf("%#v\n", glyphItem)
+	textureItem, glyphItem := w.fontFamily.Regular.GetGlyph('a')
+	fmt.Printf("%#v\n", textureItem)
+	fmt.Printf("%#v\n", glyphItem)
 
 	textureItem2, _ := w.fontFamily.Regular.GetGlyph(textureatlas.Solid)
 	// glyphItem2 := (*font.GlyphItem)(customData2)
@@ -41,16 +41,31 @@ func (w *Window) drawCells() {
 	b := float32(0.1)
 	a := float32(1.0)
 
+	cellHeight := w.viewportCellHeight
+	cellWidth := w.viewportCellWidth
+
+	windowWidth, windowHeight := w.glfwWindow.GetSize()
+	cellContentWidth := float32(textureItem.PixelWidth) / float32(windowWidth) * 2
+	cellContentHeight := float32(textureItem.PixelHeight) / float32(windowHeight) * 2
+
+	x1 := float32(-1.0 + cellWidth)
+	y1 := float32(-1.0 + cellHeight)
+
+	x2 := x1 + cellContentWidth
+	y2 := y1 + cellContentHeight
+
+	fmt.Println(x1, y1, x2, y2)
+
 	vertices := []float32{
 		// triangle 1
-		-0.5, 0, textureItem.X, textureItem.Y, r, g, b, a,
-		-0.5, 0.5, textureItem.X, textureItem.Y + textureItem.Height, r, g, b, a,
-		0, 0, textureItem.X + textureItem.Width, textureItem.Y, r, g, b, a,
+		x1, y1, textureItem.X, textureItem.Y, r, g, b, a,
+		x1, y2, textureItem.X, textureItem.Y + textureItem.Height, r, g, b, a,
+		x2, y1, textureItem.X + textureItem.Width, textureItem.Y, r, g, b, a,
 
 		// triangle 2
-		-0.5, 0.5, textureItem.X, textureItem.Y + textureItem.Height, r, g, b, a,
-		0, 0.5, textureItem.X + textureItem.Width, textureItem.Y + textureItem.Height, r, g, b, a,
-		0, 0, textureItem.X + textureItem.Width, textureItem.Y, r, g, b, a,
+		x1, y2, textureItem.X, textureItem.Y + textureItem.Height, r, g, b, a,
+		x2, y2, textureItem.X + textureItem.Width, textureItem.Y + textureItem.Height, r, g, b, a,
+		x2, y1, textureItem.X + textureItem.Width, textureItem.Y, r, g, b, a,
 
 		// // triangle 1
 		// x1, y1, textureX1, textureY1, r, g, b, a,

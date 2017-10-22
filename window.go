@@ -1,6 +1,7 @@
 package dull
 
 import (
+	"fmt"
 	"math"
 	"time"
 
@@ -19,6 +20,10 @@ type Window struct {
 	program            *program
 	lastRenderDuration time.Duration
 	backgroundColour   Color
+
+	viewportCellHeight float32
+	viewportCellWidth  float32
+
 	// context            *draw.Context
 
 	// newFontRenderer  font.NewRenderer
@@ -86,8 +91,9 @@ func NewWindow(application *Application, options *WindowOptions) (*Window, error
 	w.fontFamily = font.NewFamily(freetype.NewRenderer, int(dpi), scale*16)
 
 	w.glfwWindow.SetSizeCallback(func(_ *glfw.Window, width, height int) {
-		w.resized(width, height)
+		w.resized()
 	})
+	w.resized()
 
 	// Avoid brief automatically stretched version of window
 	// content when window is resized.
@@ -139,12 +145,17 @@ func (w *Window) Destroy() {
 	glfw.PostEmptyEvent()
 }
 
-func (w *Window) resized(width, height int) {
+func (w *Window) resized() {
 	// if w.rootWidget != nil {
 	// 	w.rootWidget.SetBounds(image.Rect(0, 0, width, height))
 	// }
 
 	windowWidth, windowHeight := w.glfwWindow.GetSize()
+
 	w.glfwWindow.MakeContextCurrent()
 	gl.Viewport(0, 0, int32(windowWidth), int32(windowHeight))
+
+	fmt.Println(w.fontFamily.CellWidth, w.fontFamily.CellHeight)
+	w.viewportCellHeight = float32(w.fontFamily.CellHeight) / float32(windowHeight) * 2
+	w.viewportCellWidth = float32(w.fontFamily.CellWidth) / float32(windowWidth) * 2
 }
