@@ -106,27 +106,26 @@ func (w *Window) drawCells() {
 }
 
 func (w *Window) configureVertexAttributes() {
-	positionAttribCount := 2
-	texCoordAttribCount := 2
-	colourAttribCount := 4
+	positionCount := 2
+	texCoordCount := 2
+	colourCount := 4
 	vertexAttribStride := int32(
-		sizeofGlFloat * (positionAttribCount + texCoordAttribCount + colourAttribCount))
+		sizeofGlFloat * (positionCount + texCoordCount + colourCount))
 
-	attribOffset := sizeofGlFloat * 0
-	program := w.program.program
+	attribOffset := 0
 
-	positionAttrib := uint32(gl.GetAttribLocation(program, gl.Str("position\x00")))
-	gl.EnableVertexAttribArray(positionAttrib)
-	gl.VertexAttribPointer(positionAttrib, int32(positionAttribCount), gl.FLOAT, false, vertexAttribStride, gl.PtrOffset(attribOffset))
-	attribOffset += sizeofGlFloat * positionAttribCount
+	w.configureVertexAttribute("position", positionCount, vertexAttribStride, &attribOffset)
+	w.configureVertexAttribute("texCoords", texCoordCount, vertexAttribStride, &attribOffset)
+	w.configureVertexAttribute("color", colourCount, vertexAttribStride, &attribOffset)
+}
 
-	texCoordsAttrib := uint32(gl.GetAttribLocation(program, gl.Str("texCoords\x00")))
-	gl.EnableVertexAttribArray(texCoordsAttrib)
-	gl.VertexAttribPointer(texCoordsAttrib, int32(texCoordAttribCount), gl.FLOAT, false, vertexAttribStride, gl.PtrOffset(attribOffset))
-	attribOffset += sizeofGlFloat * texCoordAttribCount
-
-	colourAttrib := uint32(gl.GetAttribLocation(program, gl.Str("color\x00")))
+func (w *Window) configureVertexAttribute(
+	name string, attributeCount int, vertexAttribStride int32, attributeOffset *int,
+) {
+	colourAttrib := uint32(gl.GetAttribLocation(w.program.program, gl.Str(name+"\x00")))
 	gl.EnableVertexAttribArray(colourAttrib)
-	gl.VertexAttribPointer(colourAttrib, int32(colourAttribCount), gl.FLOAT, false, vertexAttribStride, gl.PtrOffset(attribOffset))
-	attribOffset += sizeofGlFloat * colourAttribCount
+	gl.VertexAttribPointer(colourAttrib, int32(attributeCount), gl.FLOAT, false,
+		vertexAttribStride, gl.PtrOffset(*attributeOffset))
+
+	*attributeOffset += sizeofGlFloat * attributeCount
 }
