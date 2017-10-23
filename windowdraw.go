@@ -105,7 +105,7 @@ func (w *Window) drawCells() {
 func (w *Window) configureTextureUniform() {
 	textureUniform := gl.GetUniformLocation(w.program.program, gl.Str("textur\x00"))
 	gl.Uniform1ui(textureUniform, 0)
-	gl.BindTexture(gl.TEXTURE_2D, w.fontFamily.Regular.TextureAtlas.Texture)
+	gl.BindTexture(gl.TEXTURE_2D, w.fontFamily.TextureAtlas.Texture)
 }
 
 func (w *Window) configureVertexAttributes() {
