@@ -94,15 +94,18 @@ func (w *Window) drawCells() {
 	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
 
 	w.configureVertexAttributes()
-
-	textureUniform := gl.GetUniformLocation(w.program.program, gl.Str("textur\x00"))
-	gl.Uniform1ui(textureUniform, 0)
-	gl.BindTexture(gl.TEXTURE_2D, w.fontFamily.Regular.TextureAtlas.Texture)
+	w.configureTextureUniform()
 
 	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*sizeofGlFloat, gl.Ptr(vertices), gl.STATIC_DRAW)
 
 	// Render quads (each of which is 2 triangles)
 	gl.DrawArrays(gl.TRIANGLES, 0, int32(len(vertices)/4))
+}
+
+func (w *Window) configureTextureUniform() {
+	textureUniform := gl.GetUniformLocation(w.program.program, gl.Str("textur\x00"))
+	gl.Uniform1ui(textureUniform, 0)
+	gl.BindTexture(gl.TEXTURE_2D, w.fontFamily.Regular.TextureAtlas.Texture)
 }
 
 func (w *Window) configureVertexAttributes() {
