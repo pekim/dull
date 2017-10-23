@@ -100,6 +100,9 @@ func (w *Window) drawCells() {
 
 	// Render quads (each of which is 2 triangles)
 	gl.DrawArrays(gl.TRIANGLES, 0, int32(len(vertices)/4))
+
+	gl.DeleteBuffers(1, &vbo)
+	gl.DeleteVertexArrays(1, &vao)
 }
 
 func (w *Window) configureTextureUniform() {
