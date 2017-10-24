@@ -4,7 +4,7 @@ package freetype
 // #include FT_FREETYPE_H
 //
 // #cgo CFLAGS: -I ${SRCDIR}/include
-// #cgo LDFLAGS: -L${SRCDIR} -lfreetype -lpng -lz
+// #cgo LDFLAGS: ${SRCDIR}/libfreetype.a
 import "C"
 import (
 	"fmt"

@@ -1,0 +1,19 @@
+The contents of this directory came from steps along these lines.
+
+Download and untar a release from http://download.savannah.gnu.org/releases/freetype/
+
+Build the library
+  ./configure --with-png=no --with-zlib=no --with-harfbuzz=no
+  make clean
+  make install
+
+Copy
+  objs/.libs/libfreetype.a --> internal/font/freetype/libfreetype.a
+  (recursively) include/ --> internal/font/freetype/include/
+
+No dependencies
+  The flags to configure ensure that the library is build with no dependencies.
+  None of them are required for freetypes use in dull.
+
+  With none of those dependencies there's no risk of trying to dynamically
+  link to incompatible versions of them on any system at run time.
