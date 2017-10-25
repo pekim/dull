@@ -11,6 +11,10 @@ import (
 const sizeofGlFloat = 4
 
 func (w *Window) Draw() {
+	if !w.Cells.dirty {
+		return
+	}
+
 	startTime := time.Now()
 
 	w.glfwWindow.MakeContextCurrent()
@@ -20,19 +24,27 @@ func (w *Window) Draw() {
 	gl.ClearColor(w.bg.R, w.bg.G, w.bg.B, 1.0)
 	gl.Clear(gl.COLOR_BUFFER_BIT)
 
+	w.addCellsToVertices()
 	w.drawCells()
 
 	w.glfwWindow.SwapBuffers()
 
 	w.lastRenderDuration = time.Now().Sub(startTime)
-	fmt.Println(w.lastRenderDuration.Seconds() * 1000)
+	fmt.Printf("%5.2fms\n", w.lastRenderDuration.Seconds()*1000)
+
+	w.Cells.dirty = false
 }
 
-func (w *Window) drawCells() {
+func (w *Window) addCellsToVertices() {
 	textureItemSolid := w.fontFamily.Regular.GetGlyph(textureatlas.Solid)
+
 	w.vertices = w.vertices[:0]
 
 	for index, cell := range w.Cells.Cells {
+		if !cell.dirty {
+			continue
+		}
+
 		columnInt := index % w.Cells.width
 		rowInt := index / w.Cells.width
 
@@ -43,7 +55,12 @@ func (w *Window) drawCells() {
 
 		w.addCellVertices(column, row, textureItemSolid, cell.Bg, true)
 		w.addCellVertices(column, row, textureItem, cell.Fg, false)
+
+		cell.dirty = false
 	}
+}
+
+func (w *Window) drawCells() {
 
 	var vao uint32
 	gl.GenVertexArrays(1, &vao)

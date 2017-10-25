@@ -22,9 +22,10 @@ func newCellGrid(width, height int, bg, fg Color) *CellGrid {
 
 	for index := 0; index < width*height; index++ {
 		g.Cells[index] = &Cell{
-			Bg:   bg,
-			Fg:   fg,
-			Rune: '*',
+			Bg:    bg,
+			Fg:    fg,
+			Rune:  '*',
+			dirty: true,
 		}
 	}
 
