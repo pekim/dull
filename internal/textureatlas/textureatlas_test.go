@@ -7,14 +7,28 @@ import (
 )
 
 func TestTextureDimensionForGlyphs(t *testing.T) {
-	width, height := textureDimensionForGlyphs(100, 50, 8, 10)
+	ta := TextureAtlas{
+		maxTextureSize:                100,
+		approxNumberOfGlyphsToSupport: 50,
+		maxGlyphWidth:                 8,
+		maxGlyphHeight:                10,
+	}
 
-	assert.Equal(t, int32(63), width, "texture width")
-	assert.Equal(t, int32(63), height, "texture height")
+	ta.setTextureDimension()
+
+	assert.Equal(t, int32(63), ta.width, "texture width")
+	assert.Equal(t, int32(63), ta.height, "texture height")
 }
 func TestTextureDimensionForGlyphsCapped(t *testing.T) {
-	width, height := textureDimensionForGlyphs(60, 50, 8, 10)
+	ta := TextureAtlas{
+		maxTextureSize:                60,
+		approxNumberOfGlyphsToSupport: 50,
+		maxGlyphWidth:                 8,
+		maxGlyphHeight:                10,
+	}
 
-	assert.Equal(t, int32(60), width, "texture width")
-	assert.Equal(t, int32(60), height, "texture height")
+	ta.setTextureDimension()
+
+	assert.Equal(t, int32(60), ta.width, "texture width")
+	assert.Equal(t, int32(60), ta.height, "texture height")
 }

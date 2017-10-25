@@ -3,7 +3,6 @@ package textureatlas
 import (
 	"fmt"
 	"math"
-	"os"
 
 	"github.com/go-gl/gl/v3.3-core/gl"
 )
@@ -11,9 +10,16 @@ import (
 // Solid is an item key for an item that is a single solid (opaque) pixel.
 const Solid = '\uE000'
 
+const numberOfGlyphsIncrement = 5
+
 type TextureAtlas struct {
 	Texture uint32
 	items   map[rune]*TextureItem
+
+	maxTextureSize                int32
+	approxNumberOfGlyphsToSupport int
+	maxGlyphWidth                 int
+	maxGlyphHeight                int
 
 	width, height int32
 	nextX, nextY  int32
@@ -22,23 +28,41 @@ type TextureAtlas struct {
 func NewTextureAtlas(maxGlyphWidth, maxGlyphHeight int) *TextureAtlas {
 	var maxTextureSize int32
 	gl.GetIntegerv(gl.MAX_TEXTURE_SIZE, &maxTextureSize)
-	width, height := textureDimensionForGlyphs(maxTextureSize, 256, maxGlyphWidth, maxGlyphHeight)
 
 	ta := &TextureAtlas{
-		width:  width,
-		height: height,
-		items:  map[rune]*TextureItem{},
-		nextX:  0,
-		nextY:  0,
+		maxTextureSize:                maxTextureSize,
+		approxNumberOfGlyphsToSupport: numberOfGlyphsIncrement,
+		maxGlyphWidth:                 maxGlyphHeight,
+		maxGlyphHeight:                maxGlyphHeight,
 	}
-
-	ta.generateTexture()
-	ta.AddItem(Solid, &[]byte{0xff}, 1, 1, nil)
+	ta.init()
 
 	return ta
 }
 
+func (ta *TextureAtlas) init() {
+	oldItems := ta.items
+
+	ta.items = map[rune]*TextureItem{}
+	ta.nextX = 0
+	ta.nextY = 0
+
+	ta.setTextureDimension()
+	fmt.Println(ta.width, ta.height)
+	ta.generateTexture()
+	ta.AddItem(Solid, &[]byte{0xff}, 1, 1, nil)
+
+	// add items that we're already in the old texture
+	for _, item := range oldItems {
+		ta.AddItem(item.key, item.pixels, item.PixelWidth, item.PixelHeight, nil)
+	}
+}
+
 func (ta *TextureAtlas) generateTexture() {
+	if ta.Texture != 0 {
+		gl.DeleteTextures(1, &ta.Texture)
+	}
+
 	gl.GenTextures(1, &ta.Texture)
 	gl.BindTexture(gl.TEXTURE_2D, ta.Texture)
 
@@ -61,6 +85,22 @@ func (ta *TextureAtlas) generateTexture() {
 	)
 }
 
+func (ta *TextureAtlas) ensureRoom(width, height int) {
+	// ensure that the new glyph will fit
+	if ta.nextX+int32(width) > ta.width {
+		// no room in the current row
+		if ta.nextY+(2*int32(ta.maxGlyphHeight)) <= ta.height {
+			// step to the next row
+			ta.nextX = 0
+			ta.nextY += int32(ta.maxGlyphHeight)
+		} else {
+			// no room left in the texture, allocate a larger one
+			ta.approxNumberOfGlyphsToSupport += numberOfGlyphsIncrement
+			ta.init()
+		}
+	}
+}
+
 func (ta *TextureAtlas) Item(key rune) *TextureItem {
 	return ta.items[key]
 }
@@ -70,11 +110,7 @@ func (ta *TextureAtlas) AddItem(
 	pixels *[]byte, width, height int,
 	customData interface{},
 ) *TextureItem {
-	if ta.nextX+int32(width) > ta.width {
-		os.Stderr.WriteString(fmt.Sprintf("No room for '%v' in texture of %dx%d\n",
-			key, ta.width, ta.height))
-		return &TextureItem{CustomData: customData}
-	}
+	ta.ensureRoom(width, height)
 
 	x := ta.nextX
 	y := ta.nextY
@@ -92,6 +128,9 @@ func (ta *TextureAtlas) AddItem(
 	)
 
 	item := &TextureItem{
+		key:    key,
+		pixels: pixels,
+
 		PixelX:      int(x),
 		PixelY:      int(y),
 		PixelWidth:  width,
@@ -105,25 +144,24 @@ func (ta *TextureAtlas) AddItem(
 		CustomData: customData,
 	}
 
-	ta.nextX = ta.nextX + int32(width)
+	ta.nextX += int32(width)
 
 	ta.items[key] = item
 
 	return item
 }
 
-// textureDimensionForGlyphs calculate a suitable texture size to accomodate
+// setTextureDimension calculates a suitable texture size to accomodate
 // an approximate number of glyphs.
 //
 // It's not required that the returned dimensions can contained the numberOfGlyphs,
 // only that it's a reasonably close estimate.
 // If the space in the texture is exhausted a new, larger, texture will be created.
-func textureDimensionForGlyphs(
-	maxTextureSize int32, numberOfGlyphs, maxGlyphWidth, maxGlyphHeight int,
-) (int32, int32) {
-	areaInPixels := numberOfGlyphs * maxGlyphWidth * maxGlyphHeight
+func (ta *TextureAtlas) setTextureDimension() {
+	areaInPixels := ta.approxNumberOfGlyphsToSupport * ta.maxGlyphWidth * ta.maxGlyphHeight
 	size := math.Sqrt(float64(areaInPixels))
-	size = math.Min(float64(maxTextureSize), size)
+	size = math.Min(float64(ta.maxTextureSize), size)
 
-	return int32(size), int32(size)
+	ta.width = int32(size)
+	ta.height = int32(size)
 }

@@ -1,6 +1,9 @@
 package textureatlas
 
 type TextureItem struct {
+	key    rune
+	pixels *[]byte
+
 	PixelX      int
 	PixelY      int
 	PixelWidth  int
