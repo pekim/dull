@@ -56,8 +56,7 @@ func (w *Window) drawCells() {
 	w.fontFamily.Regular.GetGlyph('O')
 	w.fontFamily.Regular.GetGlyph('P')
 
-	textureItem := w.fontFamily.Regular.GetGlyph('a')
-	// fmt.Printf("%#v\n", textureItem)
+	textureItem := w.fontFamily.Regular.GetGlyph('A')
 
 	textureItem2 := w.fontFamily.Regular.GetGlyph(textureatlas.Solid)
 
@@ -66,48 +65,46 @@ func (w *Window) drawCells() {
 	b := float32(0.1)
 	a := float32(1.0)
 
-	cellHeight := w.viewportCellHeight
 	cellWidth := w.viewportCellWidth
+	cellHeight := w.viewportCellHeight
+	// cellWidthPixel := w.viewportCellWidthPixel
+	cellHeightPixel := w.viewportCellHeightPixel
 
-	windowWidth, windowHeight := w.glfwWindow.GetSize()
-	cellContentWidth := float32(textureItem.PixelWidth) / float32(windowWidth) * 2
-	cellContentHeight := float32(textureItem.PixelHeight) / float32(windowHeight) * 2
+	windowWidthInt, windowHeightInt := w.glfwWindow.GetSize()
+	windowWidth := float32(windowWidthInt)
+	windowHeight := float32(windowHeightInt)
 
-	x1 := float32(-1.0 + cellWidth)
-	y1 := float32(-1.0 + cellHeight)
+	cellContentWidth := float32(textureItem.PixelWidth()) / windowWidth * 2
+	cellContentHeight := float32(textureItem.PixelHeight()) / windowHeight * 2
 
-	x2 := x1 + cellContentWidth
-	y2 := y1 + cellContentHeight
+	column := float32(0)
+	row := float32(0)
+
+	leftBearing := textureItem.LeftBearing / windowWidth * 2
+	topBearing := (float32(cellHeightPixel) - textureItem.TopBearing) / windowHeight * 2
+	fmt.Println(leftBearing, topBearing)
+
+	left := float32(-1.0 + (column * cellWidth) + leftBearing)
+	top := float32(-1.0 + (row * cellHeight) + topBearing)
+	right := left + cellContentWidth
+	bottom := top + cellContentHeight
 
 	// fmt.Println(x1, y1, x2, y2)
 
 	vertices := []float32{
 		// triangle 1
-		x1, y1, textureItem.X, textureItem.Y, r, g, b, a,
-		x1, y2, textureItem.X, textureItem.Y + textureItem.Height, r, g, b, a,
-		x2, y1, textureItem.X + textureItem.Width, textureItem.Y, r, g, b, a,
+		left, top, textureItem.Left, textureItem.Top, r, g, b, a,
+		left, bottom, textureItem.Left, textureItem.Bottom, r, g, b, a,
+		right, top, textureItem.Right, textureItem.Top, r, g, b, a,
 
 		// triangle 2
-		x1, y2, textureItem.X, textureItem.Y + textureItem.Height, r, g, b, a,
-		x2, y2, textureItem.X + textureItem.Width, textureItem.Y + textureItem.Height, r, g, b, a,
-		x2, y1, textureItem.X + textureItem.Width, textureItem.Y, r, g, b, a,
+		left, bottom, textureItem.Left, textureItem.Bottom, r, g, b, a,
+		right, bottom, textureItem.Right, textureItem.Bottom, r, g, b, a,
+		right, top, textureItem.Right, textureItem.Top, r, g, b, a,
 
-		// // triangle 1
-		// x1, y1, textureX1, textureY1, r, g, b, a,
-		// x1, y2, textureX1, textureY2, r, g, b, a,
-		// x2, y1, textureX2, textureY1, r, g, b, a,
-
-		// // triangle 2
-		// x1, y2, textureX1, textureY2, r, g, b, a,
-		// x2, y2, textureX2, textureY2, r, g, b, a,
-		// x2, y1, textureX2, textureY1, r, g, b, a,
-
-		0, 0, textureItem2.X, textureItem2.Y, r, g, b, a,
-		0, 1, textureItem2.X, textureItem2.Y + textureItem2.Height, r, g, b, a,
-		1, 0, textureItem2.X + textureItem2.Width, textureItem2.Y, r, g, b, a,
-		// 0, 0, 0, 0, r, g, b, a,
-		// 0, 1, 0, 1, r, g, b, a,
-		// 1, 0, 1, 0, r, g, b, a,
+		0, 0, textureItem2.Left, textureItem2.Top, r, g, b, a,
+		0, 1, textureItem2.Left, textureItem2.Bottom, r, g, b, a,
+		1, 0, textureItem2.Right, textureItem2.Top, r, g, b, a,
 	}
 
 	var vao uint32

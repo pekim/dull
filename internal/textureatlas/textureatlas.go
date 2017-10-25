@@ -55,7 +55,7 @@ func (ta *TextureAtlas) init() {
 
 	// add items that we're already in the old texture
 	for _, item := range oldItems {
-		ta.AddItem(item.key, item.pixels, item.PixelWidth, item.PixelHeight, item.TopBearing, item.LeftBearing)
+		ta.AddItem(item.key, item.pixels, item.PixelWidth(), item.PixelHeight(), item.TopBearing, item.LeftBearing)
 	}
 }
 
@@ -136,15 +136,15 @@ func (ta *TextureAtlas) AddItem(
 		key:    key,
 		pixels: pixels,
 
-		PixelX:      int(x),
-		PixelY:      int(y),
-		PixelWidth:  width,
-		PixelHeight: height,
+		PixelLeft:   int(x),
+		PixelRight:  int(x) + width,
+		PixelTop:    int(y),
+		PixelBottom: int(y) + height,
 
-		X:      float32(x) / float32(ta.width),
-		Y:      float32(y) / float32(ta.height),
-		Width:  float32(width) / float32(ta.width),
-		Height: float32(height) / float32(ta.height),
+		Left:   float32(x) / float32(ta.width),
+		Top:    float32(y) / float32(ta.height),
+		Right:  float32(int(x)+width) / float32(ta.width),
+		Bottom: float32(int(y)+height) / float32(ta.height),
 
 		TopBearing:  topBearing,
 		LeftBearing: leftBearing,
