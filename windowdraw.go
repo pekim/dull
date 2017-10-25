@@ -81,6 +81,15 @@ func (w *Window) drawCells() {
 	w.addCellVertices(1, 1, textureItemSolid, bgColour, true)
 	w.addCellVertices(1, 1, textureItem, fgColour, false)
 
+	for r := float32(1); r < 60; r++ {
+		for c := float32(0); c < 200; c++ {
+			// textureItem := w.fontFamily.Regular.GetGlyph('A')
+			textureItem := w.fontFamily.Regular.GetGlyph(rune((r * 200) + c - 200 + 0x32))
+			w.addCellVertices(c, r, textureItemSolid, bgColour, true)
+			w.addCellVertices(c, r, textureItem, fgColour, false)
+		}
+	}
+
 	var vao uint32
 	gl.GenVertexArrays(1, &vao)
 	gl.BindVertexArray(vao)
