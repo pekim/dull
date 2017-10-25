@@ -33,9 +33,9 @@ func NewFamily(newRenderer NewRenderer, dpi int, height float64) *Family {
 
 		if textureAtlas == nil {
 			metrics := renderer.GetMetrics()
-			maxGlyphHeight := int32(metrics.Ascent + -metrics.Descent)
-			maxGlyphWidth := int32(metrics.Advance)
-			textureAtlas = textureatlas.NewTextureAtlas(1000*maxGlyphWidth, maxGlyphHeight)
+			maxGlyphHeight := metrics.Ascent + -metrics.Descent
+			maxGlyphWidth := metrics.Advance
+			textureAtlas = textureatlas.NewTextureAtlas(maxGlyphWidth, maxGlyphHeight)
 		}
 
 		return NewFontTextureAtlas(renderer, textureAtlas)

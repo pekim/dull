@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	"github.com/go-gl/gl/v3.3-core/gl"
-	"github.com/pekim/dull3/internal/textureatlas"
 )
 
 var vertexShaderSource = `
@@ -45,20 +44,15 @@ var fragmentShaderSource = `
 	}
 `
 
-type program struct {
-	program      uint32
-	defaultAtlas *textureatlas.TextureAtlas
-}
-
-func newProgram() (*program, error) {
+func newProgram() (uint32, error) {
 	vertexShader, err := compileShader(vertexShaderSource, gl.VERTEX_SHADER)
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
 
 	fragmentShader, err := compileShader(fragmentShaderSource, gl.FRAGMENT_SHADER)
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
 
 	programId := gl.CreateProgram()
@@ -76,16 +70,13 @@ func newProgram() (*program, error) {
 		log := strings.Repeat("\x00", int(logLength+1))
 		gl.GetProgramInfoLog(programId, logLength, nil, gl.Str(log))
 
-		return nil, fmt.Errorf("failed to link program: %v", log)
+		return 0, fmt.Errorf("failed to link program: %v", log)
 	}
 
 	gl.DeleteShader(vertexShader)
 	gl.DeleteShader(fragmentShader)
 
-	return &program{
-		program:      programId,
-		defaultAtlas: textureatlas.NewTextureAtlas(1, 1),
-	}, nil
+	return programId, nil
 }
 
 func compileShader(source string, shaderType uint32) (uint32, error) {

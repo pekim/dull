@@ -17,7 +17,7 @@ type Window struct {
 	fontFamily         *font.Family
 	glfwWindow         *glfw.Window
 	dpi                float32
-	program            *program
+	program            uint32
 	lastRenderDuration time.Duration
 	backgroundColour   Color
 

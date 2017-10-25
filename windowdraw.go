@@ -14,7 +14,7 @@ func (w *Window) Draw() {
 	startTime := time.Now()
 
 	w.glfwWindow.MakeContextCurrent()
-	gl.UseProgram(w.program.program)
+	gl.UseProgram(w.program)
 
 	// clear to background colour
 	gl.ClearColor(w.backgroundColour.R, w.backgroundColour.G, w.backgroundColour.B, 1.0)
@@ -106,7 +106,7 @@ func (w *Window) drawCells() {
 }
 
 func (w *Window) configureTextureUniform() {
-	textureUniform := gl.GetUniformLocation(w.program.program, gl.Str("textur\x00"))
+	textureUniform := gl.GetUniformLocation(w.program, gl.Str("textur\x00"))
 	gl.Uniform1ui(textureUniform, 0)
 	gl.BindTexture(gl.TEXTURE_2D, w.fontFamily.TextureAtlas.Texture)
 }
@@ -128,7 +128,7 @@ func (w *Window) configureVertexAttributes() {
 func (w *Window) configureVertexAttribute(
 	name string, attributeCount int, vertexAttribStride int32, attributeOffset *int,
 ) {
-	colourAttrib := uint32(gl.GetAttribLocation(w.program.program, gl.Str(name+"\x00")))
+	colourAttrib := uint32(gl.GetAttribLocation(w.program, gl.Str(name+"\x00")))
 	gl.EnableVertexAttribArray(colourAttrib)
 	gl.VertexAttribPointer(colourAttrib, int32(attributeCount), gl.FLOAT, false,
 		vertexAttribStride, gl.PtrOffset(*attributeOffset))

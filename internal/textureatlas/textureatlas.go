@@ -2,6 +2,7 @@ package textureatlas
 
 import (
 	"fmt"
+	"math"
 	"os"
 
 	"github.com/go-gl/gl/v3.3-core/gl"
@@ -18,7 +19,11 @@ type TextureAtlas struct {
 	nextX, nextY  int32
 }
 
-func NewTextureAtlas(width, height int32) *TextureAtlas {
+func NewTextureAtlas(maxGlyphWidth, maxGlyphHeight int) *TextureAtlas {
+	var maxTextureSize int32
+	gl.GetIntegerv(gl.MAX_TEXTURE_SIZE, &maxTextureSize)
+	width, height := textureDimensionForGlyphs(maxTextureSize, 256, maxGlyphWidth, maxGlyphHeight)
+
 	ta := &TextureAtlas{
 		width:  width,
 		height: height,
@@ -34,19 +39,6 @@ func NewTextureAtlas(width, height int32) *TextureAtlas {
 }
 
 func (ta *TextureAtlas) generateTexture() {
-	var maxTextureSize int32
-	gl.GetIntegerv(gl.MAX_TEXTURE_SIZE, &maxTextureSize)
-
-	width := ta.width
-	if width > maxTextureSize {
-		width = maxTextureSize
-	}
-
-	height := ta.height
-	if height > maxTextureSize {
-		height = maxTextureSize
-	}
-
 	gl.GenTextures(1, &ta.Texture)
 	gl.BindTexture(gl.TEXTURE_2D, ta.Texture)
 
@@ -60,8 +52,8 @@ func (ta *TextureAtlas) generateTexture() {
 		gl.TEXTURE_2D,
 		0,
 		gl.RED,
-		width,
-		height,
+		ta.width,
+		ta.height,
 		0,
 		gl.RED,
 		gl.UNSIGNED_BYTE,
@@ -118,4 +110,20 @@ func (ta *TextureAtlas) AddItem(
 	ta.items[key] = item
 
 	return item
+}
+
+// textureDimensionForGlyphs calculate a suitable texture size to accomodate
+// an approximate number of glyphs.
+//
+// It's not required that the returned dimensions can contained the numberOfGlyphs,
+// only that it's a reasonably close estimate.
+// If the space in the texture is exhausted a new, larger, texture will be created.
+func textureDimensionForGlyphs(
+	maxTextureSize int32, numberOfGlyphs, maxGlyphWidth, maxGlyphHeight int,
+) (int32, int32) {
+	areaInPixels := numberOfGlyphs * maxGlyphWidth * maxGlyphHeight
+	size := math.Sqrt(float64(areaInPixels))
+	size = math.Min(float64(maxTextureSize), size)
+
+	return int32(size), int32(size)
 }
