@@ -50,11 +50,11 @@ func (ta *TextureAtlas) init() {
 	ta.setTextureDimension()
 	fmt.Println(ta.width, ta.height)
 	ta.generateTexture()
-	ta.AddItem(Solid, &[]byte{0xff}, 1, 1, nil)
+	ta.AddItem(Solid, &[]byte{0xff}, 1, 1, 0, 0)
 
 	// add items that we're already in the old texture
 	for _, item := range oldItems {
-		ta.AddItem(item.key, item.pixels, item.PixelWidth, item.PixelHeight, nil)
+		ta.AddItem(item.key, item.pixels, item.PixelWidth, item.PixelHeight, item.TopBearing, item.LeftBearing)
 	}
 }
 
@@ -107,8 +107,9 @@ func (ta *TextureAtlas) Item(key rune) *TextureItem {
 
 func (ta *TextureAtlas) AddItem(
 	key rune,
-	pixels *[]byte, width, height int,
-	customData interface{},
+	pixels *[]byte,
+	width, height int,
+	topBearing, leftBearing float32,
 ) *TextureItem {
 	ta.ensureRoom(width, height)
 
@@ -141,7 +142,8 @@ func (ta *TextureAtlas) AddItem(
 		Width:  float32(width) / float32(ta.width),
 		Height: float32(height) / float32(ta.height),
 
-		CustomData: customData,
+		TopBearing:  topBearing,
+		LeftBearing: leftBearing,
 	}
 
 	ta.nextX += int32(width)

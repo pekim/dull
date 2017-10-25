@@ -56,12 +56,10 @@ func (w *Window) drawCells() {
 	w.fontFamily.Regular.GetGlyph('O')
 	w.fontFamily.Regular.GetGlyph('P')
 
-	textureItem, glyphItem := w.fontFamily.Regular.GetGlyph('J')
+	textureItem := w.fontFamily.Regular.GetGlyph('a')
 	fmt.Printf("%#v\n", textureItem)
-	fmt.Printf("%#v\n", glyphItem)
 
-	textureItem2, _ := w.fontFamily.Regular.GetGlyph(textureatlas.Solid)
-	// glyphItem2 := (*font.GlyphItem)(customData2)
+	textureItem2 := w.fontFamily.Regular.GetGlyph(textureatlas.Solid)
 
 	r := float32(0.1)
 	g := float32(0.1)

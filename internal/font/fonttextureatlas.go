@@ -2,11 +2,6 @@ package font
 
 import "github.com/pekim/dull3/internal/textureatlas"
 
-type GlyphItem struct {
-	TopBearing  float64
-	LeftBearing float64
-}
-
 type FontTextureAtlas struct {
 	textureAtlas *textureatlas.TextureAtlas
 	fontRenderer Renderer
@@ -21,14 +16,11 @@ func NewFontTextureAtlas(renderer Renderer, textureAtlas *textureatlas.TextureAt
 	return ta
 }
 
-func (fta *FontTextureAtlas) GetGlyph(rune rune) (*textureatlas.TextureItem, *GlyphItem) {
+func (fta *FontTextureAtlas) GetGlyph(rune rune) *textureatlas.TextureItem {
 	glyph := fta.textureAtlas.Item(rune)
 
 	if glyph != nil {
-		if glyph.CustomData != nil {
-			return glyph, glyph.CustomData.(*GlyphItem)
-		}
-		return glyph, nil
+		return glyph
 	}
 
 	fontGlyph, err := fta.fontRenderer.GetGlyph(rune)
@@ -36,11 +28,9 @@ func (fta *FontTextureAtlas) GetGlyph(rune rune) (*textureatlas.TextureItem, *Gl
 		panic(err)
 	}
 
-	glyphItem := &GlyphItem{
-		TopBearing:  fontGlyph.TopBearing,
-		LeftBearing: fontGlyph.LeftBearing,
-	}
-	glyph = fta.textureAtlas.AddItem(rune, fontGlyph.Bitmap, fontGlyph.BitmapWidth, fontGlyph.BitmapHeight, glyphItem)
+	glyph = fta.textureAtlas.AddItem(rune, fontGlyph.Bitmap, fontGlyph.BitmapWidth, fontGlyph.BitmapHeight,
+		float32(fontGlyph.TopBearing), float32(fontGlyph.LeftBearing),
+	)
 
-	return glyph, glyphItem
+	return glyph
 }

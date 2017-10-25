@@ -14,5 +14,6 @@ type TextureItem struct {
 	Width  float32
 	Height float32
 
-	CustomData interface{}
+	TopBearing  float32
+	LeftBearing float32
 }
