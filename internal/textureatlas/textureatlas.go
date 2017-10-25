@@ -10,9 +10,7 @@ import (
 // Solid is an item key for an item that is a single solid (opaque) pixel.
 const Solid = '\uE000'
 
-// TODO increase to a more reasonable number when happy it's working well
-// 256
-const numberOfGlyphsIncrement = 5
+const numberOfGlyphsIncrement = 1024
 
 type TextureAtlas struct {
 	Texture uint32
@@ -100,8 +98,7 @@ func (ta *TextureAtlas) ensureRoom(width, height int) {
 			ta.approxNumberOfGlyphsToSupport += numberOfGlyphsIncrement
 			ta.init()
 
-			// TODO remove when comfortable that it's working well
-			fmt.Println("!!! increased texture capacity", len(ta.items), ta.width, ta.height)
+			fmt.Printf("WARNING: increased texture size to %d x %d for %d items\n", ta.width, ta.height, len(ta.items))
 		}
 	}
 }
