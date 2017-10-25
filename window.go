@@ -20,10 +20,14 @@ type Window struct {
 	lastRenderDuration time.Duration
 	backgroundColour   Color
 
+	width                   int
+	height                  int
 	viewportCellHeightPixel int
 	viewportCellWidthPixel  int
 	viewportCellHeight      float32
 	viewportCellWidth       float32
+
+	vertices []float32
 
 	// context            *draw.Context
 
@@ -155,13 +159,13 @@ func (w *Window) resized() {
 	// 	w.rootWidget.SetBounds(image.Rect(0, 0, width, height))
 	// }
 
-	windowWidth, windowHeight := w.glfwWindow.GetSize()
+	w.width, w.height = w.glfwWindow.GetSize()
 
 	w.glfwWindow.MakeContextCurrent()
-	gl.Viewport(0, 0, int32(windowWidth), int32(windowHeight))
+	gl.Viewport(0, 0, int32(w.width), int32(w.height))
 
 	w.viewportCellWidthPixel = w.fontFamily.CellWidth
 	w.viewportCellHeightPixel = w.fontFamily.CellHeight
-	w.viewportCellWidth = float32(w.fontFamily.CellWidth) / float32(windowWidth) * 2
-	w.viewportCellHeight = float32(w.fontFamily.CellHeight) / float32(windowHeight) * 2
+	w.viewportCellWidth = float32(w.fontFamily.CellWidth) / float32(w.width) * 2
+	w.viewportCellHeight = float32(w.fontFamily.CellHeight) / float32(w.height) * 2
 }

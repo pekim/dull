@@ -29,83 +29,65 @@ func (w *Window) Draw() {
 }
 
 func (w *Window) drawCells() {
-	w.fontFamily.Regular.GetGlyph('1')
-	w.fontFamily.Regular.GetGlyph('2')
-	w.fontFamily.Regular.GetGlyph('3')
-	w.fontFamily.Regular.GetGlyph('4')
-	w.fontFamily.Regular.GetGlyph('5')
-	w.fontFamily.Regular.GetGlyph('6')
-	w.fontFamily.Regular.GetGlyph('7')
-	w.fontFamily.Regular.GetGlyph('8')
-	w.fontFamily.Regular.GetGlyph('9')
-	w.fontFamily.Regular.GetGlyph('0')
-	w.fontFamily.Regular.GetGlyph('A')
-	w.fontFamily.Regular.GetGlyph('B')
-	w.fontFamily.Regular.GetGlyph('D')
-	w.fontFamily.Regular.GetGlyph('C')
-	w.fontFamily.Regular.GetGlyph('E')
-	w.fontFamily.Regular.GetGlyph('F')
-	w.fontFamily.Regular.GetGlyph('G')
-	w.fontFamily.Regular.GetGlyph('H')
-	w.fontFamily.Regular.GetGlyph('I')
-	w.fontFamily.Regular.GetGlyph('J')
-	w.fontFamily.Regular.GetGlyph('K')
-	w.fontFamily.Regular.GetGlyph('L')
-	w.fontFamily.Regular.GetGlyph('M')
-	w.fontFamily.Regular.GetGlyph('N')
-	w.fontFamily.Regular.GetGlyph('O')
-	w.fontFamily.Regular.GetGlyph('P')
+	// w.fontFamily.Regular.GetGlyph('1')
+	// w.fontFamily.Regular.GetGlyph('2')
+	// w.fontFamily.Regular.GetGlyph('3')
+	// w.fontFamily.Regular.GetGlyph('4')
+	// w.fontFamily.Regular.GetGlyph('5')
+	// w.fontFamily.Regular.GetGlyph('6')
+	// w.fontFamily.Regular.GetGlyph('7')
+	// w.fontFamily.Regular.GetGlyph('8')
+	// w.fontFamily.Regular.GetGlyph('9')
+	// w.fontFamily.Regular.GetGlyph('0')
+	// w.fontFamily.Regular.GetGlyph('A')
+	// w.fontFamily.Regular.GetGlyph('B')
+	// w.fontFamily.Regular.GetGlyph('D')
+	// w.fontFamily.Regular.GetGlyph('C')
+	// w.fontFamily.Regular.GetGlyph('E')
+	// w.fontFamily.Regular.GetGlyph('F')
+	// w.fontFamily.Regular.GetGlyph('G')
+	// w.fontFamily.Regular.GetGlyph('H')
+	// w.fontFamily.Regular.GetGlyph('I')
+	// w.fontFamily.Regular.GetGlyph('J')
+	// w.fontFamily.Regular.GetGlyph('K')
+	// w.fontFamily.Regular.GetGlyph('L')
+	// w.fontFamily.Regular.GetGlyph('M')
+	// w.fontFamily.Regular.GetGlyph('N')
+	// w.fontFamily.Regular.GetGlyph('O')
+	// w.fontFamily.Regular.GetGlyph('P')
+
+	textureItemSolid := w.fontFamily.Regular.GetGlyph(textureatlas.Solid)
+
+	bgColour := NewColor(0.0, 0.0, 0.0, 1.0)
+	fgColour := NewColor(0.4, 1.0, 0.0, 1.0)
+
+	w.vertices = w.vertices[:0]
 
 	textureItem := w.fontFamily.Regular.GetGlyph('A')
+	w.addCellVertices(0, 0, textureItemSolid, bgColour, true)
+	w.addCellVertices(0, 0, textureItem, fgColour, false)
 
-	textureItem2 := w.fontFamily.Regular.GetGlyph(textureatlas.Solid)
+	textureItem = w.fontFamily.Regular.GetGlyph('g')
+	w.addCellVertices(1, 0, textureItemSolid, bgColour, true)
+	w.addCellVertices(1, 0, textureItem, fgColour, false)
 
-	r := float32(0.1)
-	g := float32(0.1)
-	b := float32(0.1)
-	a := float32(1.0)
+	textureItem = w.fontFamily.Regular.GetGlyph('A')
+	w.addCellVertices(0, 1, textureItemSolid, bgColour, true)
+	w.addCellVertices(0, 1, textureItem, fgColour, false)
 
-	cellWidth := w.viewportCellWidth
-	cellHeight := w.viewportCellHeight
-	// cellWidthPixel := w.viewportCellWidthPixel
-	cellHeightPixel := w.viewportCellHeightPixel
+	textureItem = w.fontFamily.Regular.GetGlyph('-')
+	w.addCellVertices(1, 1, textureItemSolid, bgColour, true)
+	w.addCellVertices(1, 1, textureItem, fgColour, false)
 
-	windowWidthInt, windowHeightInt := w.glfwWindow.GetSize()
-	windowWidth := float32(windowWidthInt)
-	windowHeight := float32(windowHeightInt)
-
-	cellContentWidth := float32(textureItem.PixelWidth()) / windowWidth * 2
-	cellContentHeight := float32(textureItem.PixelHeight()) / windowHeight * 2
-
-	column := float32(0)
-	row := float32(0)
-
-	leftBearing := textureItem.LeftBearing / windowWidth * 2
-	topBearing := (float32(cellHeightPixel) - textureItem.TopBearing) / windowHeight * 2
-	fmt.Println(leftBearing, topBearing)
-
-	left := float32(-1.0 + (column * cellWidth) + leftBearing)
-	top := float32(-1.0 + (row * cellHeight) + topBearing)
-	right := left + cellContentWidth
-	bottom := top + cellContentHeight
-
-	// fmt.Println(x1, y1, x2, y2)
-
-	vertices := []float32{
-		// triangle 1
-		left, top, textureItem.Left, textureItem.Top, r, g, b, a,
-		left, bottom, textureItem.Left, textureItem.Bottom, r, g, b, a,
-		right, top, textureItem.Right, textureItem.Top, r, g, b, a,
-
-		// triangle 2
-		left, bottom, textureItem.Left, textureItem.Bottom, r, g, b, a,
-		right, bottom, textureItem.Right, textureItem.Bottom, r, g, b, a,
-		right, top, textureItem.Right, textureItem.Top, r, g, b, a,
-
-		0, 0, textureItem2.Left, textureItem2.Top, r, g, b, a,
-		0, 1, textureItem2.Left, textureItem2.Bottom, r, g, b, a,
-		1, 0, textureItem2.Right, textureItem2.Top, r, g, b, a,
-	}
+	r := bgColour.R
+	g := bgColour.G
+	b := bgColour.B
+	a := bgColour.A
+	w.vertices = append(w.vertices,
+		0, 0, textureItemSolid.Left, textureItemSolid.Top, r, g, b, a,
+		0, 1, textureItemSolid.Left, textureItemSolid.Bottom, r, g, b, a,
+		1, 0, textureItemSolid.Right, textureItemSolid.Top, r, g, b, a,
+	)
 
 	var vao uint32
 	gl.GenVertexArrays(1, &vao)
@@ -118,13 +100,60 @@ func (w *Window) drawCells() {
 	w.configureVertexAttributes()
 	w.configureTextureUniform()
 
-	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*sizeofGlFloat, gl.Ptr(vertices), gl.STATIC_DRAW)
+	gl.BufferData(gl.ARRAY_BUFFER, len(w.vertices)*sizeofGlFloat, gl.Ptr(w.vertices), gl.STATIC_DRAW)
 
 	// Render quads (each of which is 2 triangles)
-	gl.DrawArrays(gl.TRIANGLES, 0, int32(len(vertices)/4))
+	gl.DrawArrays(gl.TRIANGLES, 0, int32(len(w.vertices)/4))
 
 	gl.DeleteBuffers(1, &vbo)
 	gl.DeleteVertexArrays(1, &vao)
+}
+
+func (w *Window) addCellVertices(column, row float32,
+	textureItem *textureatlas.TextureItem,
+	colour Color,
+	fillCell bool,
+) {
+	r := colour.R
+	g := colour.G
+	b := colour.B
+	a := colour.A
+
+	windowWidth := float32(w.width)
+	windowHeight := float32(w.height)
+
+	cellWidth := w.viewportCellWidth
+	cellHeight := w.viewportCellHeight
+	cellHeightPixel := w.viewportCellHeightPixel
+
+	var width, height float32
+	if fillCell {
+		width = cellWidth
+		height = cellHeight
+	} else {
+		width = float32(textureItem.PixelWidth()) / windowWidth * 2
+		height = float32(textureItem.PixelHeight()) / windowHeight * 2
+	}
+
+	leftBearing := textureItem.LeftBearing / windowWidth * 2
+	topBearing := (float32(cellHeightPixel) - textureItem.TopBearing) / windowHeight * 2
+
+	left := float32(-1.0 + (column * cellWidth) + leftBearing)
+	top := float32(-1.0 + (row * cellHeight) + topBearing)
+	right := left + width
+	bottom := top + height
+
+	w.vertices = append(w.vertices,
+		// triangle 1
+		left, top, textureItem.Left, textureItem.Top, r, g, b, a,
+		left, bottom, textureItem.Left, textureItem.Bottom, r, g, b, a,
+		right, top, textureItem.Right, textureItem.Top, r, g, b, a,
+
+		// triangle 2
+		left, bottom, textureItem.Left, textureItem.Bottom, r, g, b, a,
+		right, bottom, textureItem.Right, textureItem.Bottom, r, g, b, a,
+		right, top, textureItem.Right, textureItem.Top, r, g, b, a,
+	)
 }
 
 func (w *Window) configureTextureUniform() {

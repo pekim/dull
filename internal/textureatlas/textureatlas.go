@@ -37,7 +37,9 @@ func NewTextureAtlas(maxGlyphWidth, maxGlyphHeight int) *TextureAtlas {
 		maxGlyphWidth:                 maxGlyphHeight,
 		maxGlyphHeight:                maxGlyphHeight,
 	}
+
 	ta.init()
+	ta.AddItem(Solid, &[]byte{0xff}, 1, 1, float32(maxGlyphHeight), 0)
 
 	return ta
 }
@@ -51,7 +53,6 @@ func (ta *TextureAtlas) init() {
 
 	ta.setTextureDimension()
 	ta.generateTexture()
-	ta.AddItem(Solid, &[]byte{0xff}, 1, 1, 0, 0)
 
 	// add items that we're already in the old texture
 	for _, item := range oldItems {
