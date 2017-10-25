@@ -17,7 +17,7 @@ func (w *Window) Draw() {
 	gl.UseProgram(w.program)
 
 	// clear to background colour
-	gl.ClearColor(w.backgroundColour.R, w.backgroundColour.G, w.backgroundColour.B, 1.0)
+	gl.ClearColor(w.bg.R, w.bg.G, w.bg.B, 1.0)
 	gl.Clear(gl.COLOR_BUFFER_BIT)
 
 	w.drawCells()
@@ -29,65 +29,20 @@ func (w *Window) Draw() {
 }
 
 func (w *Window) drawCells() {
-	// w.fontFamily.Regular.GetGlyph('1')
-	// w.fontFamily.Regular.GetGlyph('2')
-	// w.fontFamily.Regular.GetGlyph('3')
-	// w.fontFamily.Regular.GetGlyph('4')
-	// w.fontFamily.Regular.GetGlyph('5')
-	// w.fontFamily.Regular.GetGlyph('6')
-	// w.fontFamily.Regular.GetGlyph('7')
-	// w.fontFamily.Regular.GetGlyph('8')
-	// w.fontFamily.Regular.GetGlyph('9')
-	// w.fontFamily.Regular.GetGlyph('0')
-	// w.fontFamily.Regular.GetGlyph('A')
-	// w.fontFamily.Regular.GetGlyph('B')
-	// w.fontFamily.Regular.GetGlyph('D')
-	// w.fontFamily.Regular.GetGlyph('C')
-	// w.fontFamily.Regular.GetGlyph('E')
-	// w.fontFamily.Regular.GetGlyph('F')
-	// w.fontFamily.Regular.GetGlyph('G')
-	// w.fontFamily.Regular.GetGlyph('H')
-	// w.fontFamily.Regular.GetGlyph('I')
-	// w.fontFamily.Regular.GetGlyph('J')
-	// w.fontFamily.Regular.GetGlyph('K')
-	// w.fontFamily.Regular.GetGlyph('L')
-	// w.fontFamily.Regular.GetGlyph('M')
-	// w.fontFamily.Regular.GetGlyph('N')
-	// w.fontFamily.Regular.GetGlyph('O')
-	// w.fontFamily.Regular.GetGlyph('P')
-
 	textureItemSolid := w.fontFamily.Regular.GetGlyph(textureatlas.Solid)
-
-	bgColour := NewColor(0.0, 0.0, 0.0, 1.0)
-	bgColour2 := NewColor(1.0, 1.0, 1.0, 1.0)
-	fgColour := NewColor(0.4, 1.0, 0.0, 1.0)
-	fgColour2 := NewColor(0.1, 0.1, 0.1, 1.0)
-
 	w.vertices = w.vertices[:0]
 
-	textureItem := w.fontFamily.Regular.GetGlyph('A')
-	w.addCellVertices(0, 0, textureItemSolid, bgColour, true)
-	w.addCellVertices(0, 0, textureItem, fgColour, false)
+	for index, cell := range w.Cells.Cells {
+		columnInt := index % w.Cells.width
+		rowInt := index / w.Cells.width
 
-	textureItem = w.fontFamily.Regular.GetGlyph('g')
-	w.addCellVertices(1, 0, textureItemSolid, bgColour2, true)
-	w.addCellVertices(1, 0, textureItem, fgColour2, false)
+		textureItem := w.fontFamily.Regular.GetGlyph(cell.Rune)
 
-	textureItem = w.fontFamily.Regular.GetGlyph('Á')
-	w.addCellVertices(0, 1, textureItemSolid, bgColour2, true)
-	w.addCellVertices(0, 1, textureItem, fgColour2, false)
+		column := float32(columnInt)
+		row := float32(rowInt)
 
-	textureItem = w.fontFamily.Regular.GetGlyph('ϓ')
-	w.addCellVertices(1, 1, textureItemSolid, bgColour, true)
-	w.addCellVertices(1, 1, textureItem, fgColour, false)
-
-	for r := float32(1); r < 60; r++ {
-		for c := float32(0); c < 200; c++ {
-			// textureItem := w.fontFamily.Regular.GetGlyph('A')
-			textureItem := w.fontFamily.Regular.GetGlyph(rune((r * 200) + c - 200 + 0x32))
-			w.addCellVertices(c, r, textureItemSolid, bgColour, true)
-			w.addCellVertices(c, r, textureItem, fgColour, false)
-		}
+		w.addCellVertices(column, row, textureItemSolid, cell.Bg, true)
+		w.addCellVertices(column, row, textureItem, cell.Fg, false)
 	}
 
 	var vao uint32

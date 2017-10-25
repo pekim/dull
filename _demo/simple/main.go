@@ -9,9 +9,9 @@ func initialise(app *dull.Application, err error) {
 		panic(err)
 	}
 
-	bg := dull.NewColor(0, 0, 0, 1)
+	fg := dull.NewColor(0.4, 1.0, 0.0, 1.0)
 	window, err := app.NewWindow(&dull.WindowOptions{
-		Background: &bg,
+		Fg: &fg,
 	})
 	if err != nil {
 		panic(err)

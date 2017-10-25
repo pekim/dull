@@ -18,15 +18,19 @@ type Window struct {
 	dpi                float32
 	program            uint32
 	lastRenderDuration time.Duration
-	backgroundColour   Color
 
-	width                   int
-	height                  int
+	bg Color
+	fg Color
+
+	width  int
+	height int
+
 	viewportCellHeightPixel int
 	viewportCellWidthPixel  int
 	viewportCellHeight      float32
 	viewportCellWidth       float32
 
+	Cells    *CellGrid
 	vertices []float32
 
 	// context            *draw.Context
@@ -40,7 +44,7 @@ type Window struct {
 
 type WindowOptions struct {
 	Width, Height int
-	Background    *Color
+	Bg, Fg        *Color
 }
 
 func NewWindow(application *Application, options *WindowOptions) (*Window, error) {
@@ -61,9 +65,13 @@ func NewWindow(application *Application, options *WindowOptions) (*Window, error
 	if options.Height == 0 {
 		options.Height = 600
 	}
-	if options.Background == nil {
+	if options.Bg == nil {
+		color := NewColor(0.0, 0.0, 0.0, 1.0)
+		options.Bg = &color
+	}
+	if options.Fg == nil {
 		color := NewColor(1.0, 1.0, 1.0, 1.0)
-		options.Background = &color
+		options.Fg = &color
 	}
 
 	glfwWindow, err := glfw.CreateWindow(options.Width, options.Height, "", nil, nil)
@@ -82,10 +90,12 @@ func NewWindow(application *Application, options *WindowOptions) (*Window, error
 	scale = math.Max(scale, 1.0)
 
 	w := &Window{
-		Application:      application,
-		glfwWindow:       glfwWindow,
-		dpi:              dpi,
-		backgroundColour: *options.Background,
+		Application: application,
+		glfwWindow:  glfwWindow,
+		dpi:         dpi,
+
+		bg: *options.Bg,
+		fg: *options.Fg,
 	}
 
 	err = w.glInit()
@@ -160,12 +170,23 @@ func (w *Window) resized() {
 	// }
 
 	w.width, w.height = w.glfwWindow.GetSize()
+	if w.width == 0 || w.height == 0 {
+		return
+	}
 
 	w.glfwWindow.MakeContextCurrent()
 	gl.Viewport(0, 0, int32(w.width), int32(w.height))
 
 	w.viewportCellWidthPixel = w.fontFamily.CellWidth
 	w.viewportCellHeightPixel = w.fontFamily.CellHeight
+	if w.viewportCellWidthPixel == 0 || w.viewportCellHeightPixel == 0 {
+		return
+	}
+
 	w.viewportCellWidth = float32(w.fontFamily.CellWidth) / float32(w.width) * 2
 	w.viewportCellHeight = float32(w.fontFamily.CellHeight) / float32(w.height) * 2
+
+	columns := w.width / int(w.viewportCellWidthPixel)
+	rows := w.height / int(w.viewportCellHeightPixel)
+	w.Cells = newCellGrid(columns, rows, w.bg, w.fg)
 }
