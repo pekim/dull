@@ -111,6 +111,10 @@ func (w *Window) glInit() error {
 		return errors.Wrap(err, "Failed to initialise OpenGL")
 	}
 
+	// Swap buffers immediately when requested.
+	// Avoids flickering and jumping of content, such as when resizing the window.
+	glfw.SwapInterval(0)
+
 	w.program, err = newProgram()
 	if err != nil {
 		return errors.Wrap(err, "Failed to create gl program")
