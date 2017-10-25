@@ -128,12 +128,14 @@ func (r *RendererFreeType) GetGlyph(char rune) (*font.Glyph, error) {
 		buffer = []byte{0x00}
 	}
 
+	ascent := int(face.size.metrics.ascender / 64)
+
 	glyph := &font.Glyph{
 		Bitmap:       &buffer,
 		BitmapWidth:  int(bitmap.pitch),
 		BitmapHeight: int(bitmap.rows),
 
-		TopBearing:  float64(fGlyph.bitmap_top),
+		TopBearing:  float64(ascent - int(fGlyph.bitmap_top)),
 		LeftBearing: float64(fGlyph.bitmap_left),
 	}
 

@@ -39,7 +39,7 @@ func NewTextureAtlas(maxGlyphWidth, maxGlyphHeight int) *TextureAtlas {
 	}
 
 	ta.init()
-	ta.AddItem(Solid, &[]byte{0xff}, 1, 1, float32(maxGlyphHeight), 0)
+	ta.AddItem(Solid, &[]byte{0xff}, 1, 1, 0, 0)
 
 	return ta
 }

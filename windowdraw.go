@@ -59,7 +59,9 @@ func (w *Window) drawCells() {
 	textureItemSolid := w.fontFamily.Regular.GetGlyph(textureatlas.Solid)
 
 	bgColour := NewColor(0.0, 0.0, 0.0, 1.0)
+	bgColour2 := NewColor(1.0, 1.0, 1.0, 1.0)
 	fgColour := NewColor(0.4, 1.0, 0.0, 1.0)
+	fgColour2 := NewColor(0.1, 0.1, 0.1, 1.0)
 
 	w.vertices = w.vertices[:0]
 
@@ -68,26 +70,16 @@ func (w *Window) drawCells() {
 	w.addCellVertices(0, 0, textureItem, fgColour, false)
 
 	textureItem = w.fontFamily.Regular.GetGlyph('g')
-	w.addCellVertices(1, 0, textureItemSolid, bgColour, true)
-	w.addCellVertices(1, 0, textureItem, fgColour, false)
+	w.addCellVertices(1, 0, textureItemSolid, bgColour2, true)
+	w.addCellVertices(1, 0, textureItem, fgColour2, false)
 
-	textureItem = w.fontFamily.Regular.GetGlyph('A')
-	w.addCellVertices(0, 1, textureItemSolid, bgColour, true)
-	w.addCellVertices(0, 1, textureItem, fgColour, false)
+	textureItem = w.fontFamily.Regular.GetGlyph('Á')
+	w.addCellVertices(0, 1, textureItemSolid, bgColour2, true)
+	w.addCellVertices(0, 1, textureItem, fgColour2, false)
 
-	textureItem = w.fontFamily.Regular.GetGlyph('-')
+	textureItem = w.fontFamily.Regular.GetGlyph('ϓ')
 	w.addCellVertices(1, 1, textureItemSolid, bgColour, true)
 	w.addCellVertices(1, 1, textureItem, fgColour, false)
-
-	r := bgColour.R
-	g := bgColour.G
-	b := bgColour.B
-	a := bgColour.A
-	w.vertices = append(w.vertices,
-		0, 0, textureItemSolid.Left, textureItemSolid.Top, r, g, b, a,
-		0, 1, textureItemSolid.Left, textureItemSolid.Bottom, r, g, b, a,
-		1, 0, textureItemSolid.Right, textureItemSolid.Top, r, g, b, a,
-	)
 
 	var vao uint32
 	gl.GenVertexArrays(1, &vao)
@@ -124,7 +116,6 @@ func (w *Window) addCellVertices(column, row float32,
 
 	cellWidth := w.viewportCellWidth
 	cellHeight := w.viewportCellHeight
-	cellHeightPixel := w.viewportCellHeightPixel
 
 	var width, height float32
 	if fillCell {
@@ -136,7 +127,7 @@ func (w *Window) addCellVertices(column, row float32,
 	}
 
 	leftBearing := textureItem.LeftBearing / windowWidth * 2
-	topBearing := (float32(cellHeightPixel) - textureItem.TopBearing) / windowHeight * 2
+	topBearing := (textureItem.TopBearing) / windowHeight * 2
 
 	left := float32(-1.0 + (column * cellWidth) + leftBearing)
 	top := float32(-1.0 + (row * cellHeight) + topBearing)
