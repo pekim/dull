@@ -1,7 +1,6 @@
 package dull
 
 import (
-	"fmt"
 	"math"
 	"time"
 
@@ -159,7 +158,6 @@ func (w *Window) resized() {
 	w.glfwWindow.MakeContextCurrent()
 	gl.Viewport(0, 0, int32(windowWidth), int32(windowHeight))
 
-	fmt.Println(w.fontFamily.CellWidth, w.fontFamily.CellHeight)
 	w.viewportCellHeight = float32(w.fontFamily.CellHeight) / float32(windowHeight) * 2
 	w.viewportCellWidth = float32(w.fontFamily.CellWidth) / float32(windowWidth) * 2
 }

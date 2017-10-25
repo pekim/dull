@@ -57,7 +57,7 @@ func (w *Window) drawCells() {
 	w.fontFamily.Regular.GetGlyph('P')
 
 	textureItem := w.fontFamily.Regular.GetGlyph('a')
-	fmt.Printf("%#v\n", textureItem)
+	// fmt.Printf("%#v\n", textureItem)
 
 	textureItem2 := w.fontFamily.Regular.GetGlyph(textureatlas.Solid)
 
@@ -79,7 +79,7 @@ func (w *Window) drawCells() {
 	x2 := x1 + cellContentWidth
 	y2 := y1 + cellContentHeight
 
-	fmt.Println(x1, y1, x2, y2)
+	// fmt.Println(x1, y1, x2, y2)
 
 	vertices := []float32{
 		// triangle 1
