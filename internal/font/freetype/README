@@ -3,7 +3,7 @@ The contents of this directory came from steps along these lines.
 Download and untar a release from http://download.savannah.gnu.org/releases/freetype/
 
 Build the library
-  ./configure --with-png=no --with-zlib=no --with-harfbuzz=no
+  ./configure --with-png=no --with-zlib=no --with-harfbuzz=no --with-pic
   make clean
   make install
 
@@ -17,3 +17,5 @@ No dependencies
 
   With none of those dependencies there's no risk of trying to dynamically
   link to incompatible versions of them on any system at run time.
+
+Position independent code should avoid issues with older linkers.
