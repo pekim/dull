@@ -34,6 +34,7 @@ type Window struct {
 
 	gridSizeCallback GridSizeCallback
 	keyCallback      KeyCallback
+	charCallback     CharCallback
 }
 
 type WindowOptions struct {
@@ -83,12 +84,13 @@ func NewWindow(application *Application, options *WindowOptions) (*Window, error
 	dpi, scale := w.getDpiAndScale()
 	w.fontFamily = font.NewFamily(freetype.NewRenderer, int(dpi), scale*16)
 
+	w.glfwWindow.SetKeyCallback(w.callKeyCallback)
+	w.glfwWindow.SetCharModsCallback(w.callCharCallback)
+
 	w.glfwWindow.SetSizeCallback(func(_ *glfw.Window, width, height int) {
 		w.resized()
 	})
 	w.resized()
-
-	w.glfwWindow.SetKeyCallback(w.callKeyCallback)
 
 	return w, nil
 }

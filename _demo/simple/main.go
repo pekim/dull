@@ -53,6 +53,11 @@ func initialise(app *dull.Application, err error) {
 			alt, control, shift, super)
 	})
 
+	window.SetCharCallback(func(char rune, alt, control, shift, super bool) {
+		fmt.Println(string(char), char,
+			alt, control, shift, super)
+	})
+
 	window.Do(func() {
 		columns, rows := window.Cells.Size()
 		gridSizeCallback(columns, rows)
