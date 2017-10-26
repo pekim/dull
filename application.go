@@ -26,6 +26,13 @@ func (a *Application) NewWindow(options *WindowOptions) (*Window, error) {
 	return window, nil
 }
 
+func (a *Application) terminate() {
+	for _, window := range a.windows {
+		window.glTerminated = true
+	}
+
+}
+
 func (a *Application) removeWindow(deadWindow *Window) {
 	a.windowsMutex.Lock()
 	defer a.windowsMutex.Unlock()

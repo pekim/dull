@@ -10,6 +10,10 @@ import (
 const sizeofGlFloat = 4
 
 func (w *Window) fullDraw(markAllCellsDirty bool) {
+	if w.glTerminated {
+		return
+	}
+
 	if markAllCellsDirty {
 		w.Cells.markAllDirty()
 	}
@@ -20,6 +24,10 @@ func (w *Window) fullDraw(markAllCellsDirty bool) {
 
 // clear to background colour
 func (w *Window) drawBackground() {
+	if w.glTerminated {
+		return
+	}
+
 	w.glfwWindow.MakeContextCurrent()
 
 	gl.ClearColor(w.bg.R, w.bg.G, w.bg.B, 1.0)
@@ -27,6 +35,10 @@ func (w *Window) drawBackground() {
 }
 
 func (w *Window) draw() {
+	if w.glTerminated {
+		return
+	}
+
 	if !w.Cells.dirty {
 		return
 	}

@@ -21,6 +21,7 @@ type Window struct {
 	fontSize           float64
 	fontFamily         *font.Family
 	glfwWindow         *glfw.Window
+	glTerminated       bool
 	program            uint32
 	lastRenderDuration time.Duration
 
@@ -174,6 +175,7 @@ func (w *Window) SetTitle(title string) {
 }
 
 func (w *Window) Destroy() {
+	w.glTerminated = true
 	w.removeWindow(w)
 	w.glfwWindow.Destroy()
 	glfw.PostEmptyEvent()

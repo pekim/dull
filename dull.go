@@ -60,6 +60,8 @@ func run(initialised InitialisedFn) {
 	})
 
 	defer func() {
+		app.terminate()
+
 		mainthread.Call(func() {
 			glfw.Terminate()
 		})
