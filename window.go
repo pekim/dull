@@ -2,7 +2,6 @@ package dull
 
 import (
 	"math"
-	"sync"
 	"time"
 
 	"github.com/go-gl/gl/v3.3-core/gl"
@@ -14,7 +13,6 @@ import (
 
 type Window struct {
 	*Application
-	mutex              sync.Mutex
 	fontFamily         *font.Family
 	glfwWindow         *glfw.Window
 	program            uint32
@@ -196,9 +194,6 @@ func (w *Window) resized() {
 // Also take care to avoid any long running or blocking
 // operations in the callback function.
 func (w *Window) Do(fn func()) {
-	w.mutex.Lock()
-	defer w.mutex.Unlock()
-
 	Do(func() {
 		fn()
 		w.draw()
