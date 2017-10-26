@@ -80,6 +80,11 @@ func (w *Window) addCellsToVertices() {
 }
 
 func (w *Window) drawCells() {
+	// gl.BufferData panics if the length of the data is 0
+	if len(w.vertices) == 0 {
+		return
+	}
+
 	var vao uint32
 	gl.GenVertexArrays(1, &vao)
 	gl.BindVertexArray(vao)
