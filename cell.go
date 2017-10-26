@@ -28,7 +28,7 @@ type Cell struct {
 	dirty bool
 }
 
-func (c *Cell) markDirty() {
+func (c *Cell) MarkDirty() {
 	c.dirty = true
 	c.grid.dirty = true
 }

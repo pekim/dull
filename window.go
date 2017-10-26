@@ -2,6 +2,7 @@ package dull
 
 import (
 	"math"
+	"sync"
 	"time"
 
 	"github.com/go-gl/gl/v3.3-core/gl"
@@ -13,6 +14,7 @@ import (
 
 type Window struct {
 	*Application
+	mutex              sync.Mutex
 	fontFamily         *font.Family
 	glfwWindow         *glfw.Window
 	program            uint32
@@ -139,6 +141,7 @@ func (*Window) getDpiAndScale() (float32, float64) {
 
 func (w *Window) Show() {
 	w.glfwWindow.Show()
+	w.fullDraw(true)
 }
 
 func (w *Window) SetPosition(top, left int) {
@@ -176,4 +179,28 @@ func (w *Window) resized() {
 	columns := w.width / int(w.viewportCellWidthPixel)
 	rows := w.height / int(w.viewportCellHeightPixel)
 	w.Cells = newCellGrid(columns, rows, w.bg, w.fg)
+
+	w.fullDraw(false)
+}
+
+// Do is used to make updates to cells, and have the changes
+// drawn to the window.
+//
+// Make all of the cells updates in the callback function.
+//
+// Threading and synchronisation issues are taken care off.
+// As this results in some small overheads, take care that
+// batches of changes are made in a single use of Do.
+// This will also avoid a brief appearance of a partial set of changes.
+//
+// Also take care to avoid any long running or blocking
+// operations in the callback function.
+func (w *Window) Do(fn func()) {
+	w.mutex.Lock()
+	defer w.mutex.Unlock()
+
+	Do(func() {
+		fn()
+		w.draw()
+	})
 }

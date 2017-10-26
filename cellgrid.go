@@ -22,6 +22,7 @@ func newCellGrid(width, height int, bg, fg Color) *CellGrid {
 
 	for index := 0; index < width*height; index++ {
 		g.Cells[index] = &Cell{
+			grid:  g,
 			Bg:    bg,
 			Fg:    fg,
 			Rune:  '*',
@@ -30,6 +31,14 @@ func newCellGrid(width, height int, bg, fg Color) *CellGrid {
 	}
 
 	return g
+}
+
+func (g *CellGrid) markAllDirty() {
+	for _, c := range g.Cells {
+		c.dirty = true
+	}
+
+	g.dirty = true
 }
 
 func (g *CellGrid) Size() (int, int) {

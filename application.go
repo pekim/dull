@@ -58,7 +58,7 @@ func (a *Application) runEventLoop() {
 					continue
 				}
 
-				window.Draw()
+				// window.draw()
 			}
 			glfw.WaitEvents()
 		})

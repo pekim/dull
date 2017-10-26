@@ -9,7 +9,24 @@ import (
 
 const sizeofGlFloat = 4
 
-func (w *Window) Draw() {
+func (w *Window) fullDraw(markAllCellsDirty bool) {
+	if markAllCellsDirty {
+		w.Cells.markAllDirty()
+	}
+
+	w.drawBackground()
+	w.draw()
+}
+
+// clear to background colour
+func (w *Window) drawBackground() {
+	w.glfwWindow.MakeContextCurrent()
+
+	gl.ClearColor(w.bg.R, w.bg.G, w.bg.B, 1.0)
+	gl.Clear(gl.COLOR_BUFFER_BIT)
+}
+
+func (w *Window) draw() {
 	if !w.Cells.dirty {
 		return
 	}
@@ -18,10 +35,6 @@ func (w *Window) Draw() {
 
 	w.glfwWindow.MakeContextCurrent()
 	gl.UseProgram(w.program)
-
-	// clear to background colour
-	gl.ClearColor(w.bg.R, w.bg.G, w.bg.B, 1.0)
-	gl.Clear(gl.COLOR_BUFFER_BIT)
 
 	w.addCellsToVertices()
 	w.drawCells()
@@ -52,8 +65,15 @@ func (w *Window) addCellsToVertices() {
 		column := float32(columnInt)
 		row := float32(rowInt)
 
-		w.addCellVertices(column, row, textureItemSolid, cell.Bg, true)
-		w.addCellVertices(column, row, textureItem, cell.Fg, false)
+		bg := cell.Bg
+		fg := cell.Fg
+		if cell.Invert {
+			bg = cell.Fg
+			fg = cell.Bg
+		}
+
+		w.addCellVertices(column, row, textureItemSolid, bg, true)
+		w.addCellVertices(column, row, textureItem, fg, false)
 
 		cell.dirty = false
 	}

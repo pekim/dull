@@ -20,11 +20,14 @@ import (
 // See also the Init function.
 type InitialisedFn func(app *Application, err error)
 
-// Init must be the first dull function called.
+// Run must be the first dull function called.
 //
 // The initialised function will be called once the library
 // has been initialised, and windows may be created.
-func Init(initialised InitialisedFn) {
+//
+// Run blocks, and will not return until dull has closed down.
+// This will typically be when all windows have closed.
+func Run(initialised InitialisedFn) {
 	mainthread.Run(func() {
 		run(initialised)
 	})
