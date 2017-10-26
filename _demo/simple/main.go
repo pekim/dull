@@ -19,8 +19,10 @@ func initialise(app *dull.Application, err error) {
 		panic(err)
 	}
 
-	cell := window.Cells.Cells[7]
-	cell.Invert = true
+	cell, err := window.Cells.GetCell(7, 2)
+	if err == nil {
+		cell.Invert = true
+	}
 
 	window.SetTitle("test")
 	window.SetPosition(200, 200)
@@ -30,13 +32,17 @@ func initialise(app *dull.Application, err error) {
 		t := time.Tick(1 * time.Second)
 		for range t {
 			window.Do(func() {
-				cell := window.Cells.Cells[0]
-				cell.Invert = !cell.Invert
-				cell.MarkDirty()
+				cell, err := window.Cells.GetCell(0, 0)
+				if err == nil {
+					cell.Invert = !cell.Invert
+					cell.MarkDirty()
+				}
 
-				cell2 := window.Cells.Cells[7]
-				cell2.Invert = !cell2.Invert
-				cell2.MarkDirty()
+				cell2, err := window.Cells.GetCell(7, 2)
+				if err == nil {
+					cell2.Invert = !cell2.Invert
+					cell2.MarkDirty()
+				}
 			})
 		}
 	}()
