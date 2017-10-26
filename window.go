@@ -85,12 +85,6 @@ func NewWindow(application *Application, options *WindowOptions) (*Window, error
 	})
 	w.resized()
 
-	// Avoid brief automatically stretched version of window
-	// content when window is resized.
-	w.glfwWindow.SetRefreshCallback(func(_ *glfw.Window) {
-		w.Draw()
-	})
-
 	return w, nil
 }
 
@@ -117,10 +111,6 @@ func (w *Window) glInit() error {
 	if err != nil {
 		return errors.Wrap(err, "Failed to initialise OpenGL")
 	}
-
-	// Swap buffers immediately when requested.
-	// Avoids flickering and jumping of content, such as when resizing the window.
-	glfw.SwapInterval(0)
 
 	w.program, err = newProgram()
 	if err != nil {
