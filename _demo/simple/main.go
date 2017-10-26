@@ -46,6 +46,13 @@ func initialise(app *dull.Application, err error) {
 
 	window.SetGridSizeCallback(gridSizeCallback)
 
+	window.SetKeyCallback(func(key dull.Key, action dull.Action,
+		alt, control, shift, super bool) {
+		fmt.Println(key,
+			action == dull.Press, action == dull.Release, action == dull.Repeat,
+			alt, control, shift, super)
+	})
+
 	window.Do(func() {
 		columns, rows := window.Cells.Size()
 		gridSizeCallback(columns, rows)

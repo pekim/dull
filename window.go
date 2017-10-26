@@ -33,6 +33,7 @@ type Window struct {
 	vertices []float32
 
 	gridSizeCallback GridSizeCallback
+	keyCallback      KeyCallback
 }
 
 type WindowOptions struct {
@@ -86,6 +87,8 @@ func NewWindow(application *Application, options *WindowOptions) (*Window, error
 		w.resized()
 	})
 	w.resized()
+
+	w.glfwWindow.SetKeyCallback(w.callKeyCallback)
 
 	return w, nil
 }
