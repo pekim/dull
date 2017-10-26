@@ -32,14 +32,6 @@ type Window struct {
 
 	Cells    *CellGrid
 	vertices []float32
-
-	// context            *draw.Context
-
-	// newFontRenderer  font.NewRenderer
-	// fontRenderer     font.Renderer
-	// fontTextureAtlas *font.FontTextureAtlas
-
-	// rootWidget *widget.Base
 }
 
 type WindowOptions struct {
@@ -153,11 +145,6 @@ func (w *Window) SetTitle(title string) {
 	w.glfwWindow.SetTitle(title)
 }
 
-// func (w *Window) SetRootWidget(widget *widget.Base) {
-// 	w.rootWidget = widget
-// 	w.resized(w.glfwWindow.GetSize())
-// }
-
 func (w *Window) Destroy() {
 	w.removeWindow(w)
 	w.glfwWindow.Destroy()
@@ -165,10 +152,6 @@ func (w *Window) Destroy() {
 }
 
 func (w *Window) resized() {
-	// if w.rootWidget != nil {
-	// 	w.rootWidget.SetBounds(image.Rect(0, 0, width, height))
-	// }
-
 	w.width, w.height = w.glfwWindow.GetSize()
 	if w.width == 0 || w.height == 0 {
 		return
