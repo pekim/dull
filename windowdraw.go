@@ -1,7 +1,6 @@
 package dull
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/go-gl/gl/v3.3-core/gl"
@@ -30,7 +29,7 @@ func (w *Window) Draw() {
 	w.glfwWindow.SwapBuffers()
 
 	w.lastRenderDuration = time.Now().Sub(startTime)
-	fmt.Printf("%5.2fms\n", w.lastRenderDuration.Seconds()*1000)
+	// fmt.Printf("%5.2fms\n", w.lastRenderDuration.Seconds()*1000)
 
 	w.Cells.dirty = false
 }
@@ -61,7 +60,6 @@ func (w *Window) addCellsToVertices() {
 }
 
 func (w *Window) drawCells() {
-
 	var vao uint32
 	gl.GenVertexArrays(1, &vao)
 	gl.BindVertexArray(vao)
