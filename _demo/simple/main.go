@@ -46,17 +46,16 @@ func initialise(app *dull.Application, err error) {
 
 	window.SetGridSizeCallback(gridSizeCallback)
 
-	window.SetKeyCallback(func(key dull.Key, action dull.Action,
-		alt, control, shift, super bool) {
-		fmt.Println(key,
-			action == dull.Press, action == dull.Release, action == dull.Repeat,
-			alt, control, shift, super)
-	})
+	// window.SetKeyCallback(func(key dull.Key, action dull.Action, mods dull.ModifierKey) {
+	// 	fmt.Println(key,
+	// 		action == dull.Press, action == dull.Release, action == dull.Repeat,
+	// 		mods&dull.ModAlt, mods&dull.ModControl, mods&dull.ModShift, mods&dull.ModSuper)
+	// })
 
-	window.SetCharCallback(func(char rune, alt, control, shift, super bool) {
-		fmt.Println(string(char), char,
-			alt, control, shift, super)
-	})
+	// window.SetCharCallback(func(char rune, mods dull.ModifierKey) {
+	// 	fmt.Println(string(char), char,
+	// 		mods&dull.ModAlt, mods&dull.ModControl, mods&dull.ModShift, mods&dull.ModSuper)
+	// })
 
 	window.Do(func() {
 		columns, rows := window.Cells.Size()

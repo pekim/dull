@@ -136,6 +136,17 @@ const (
 	KeyLast         Key = Key(glfw.KeyLast)
 )
 
+// ModifierKey corresponds to a modifier key.
+type ModifierKey int
+
+// Modifier keys.
+const (
+	ModShift   ModifierKey = ModifierKey(glfw.ModShift)
+	ModControl ModifierKey = ModifierKey(glfw.ModControl)
+	ModAlt     ModifierKey = ModifierKey(glfw.ModAlt)
+	ModSuper   ModifierKey = ModifierKey(glfw.ModSuper)
+)
+
 // Action corresponds to a key or button action.
 type Action int
 

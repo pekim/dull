@@ -11,8 +11,14 @@ import (
 	"github.com/pkg/errors"
 )
 
+const defaultFontSize = 16
+const fontZoomDelta = 0.75
+
 type Window struct {
 	*Application
+	dpi                float32
+	scale              float64
+	fontSize           float64
 	fontFamily         *font.Family
 	glfwWindow         *glfw.Window
 	program            uint32
@@ -69,6 +75,7 @@ func NewWindow(application *Application, options *WindowOptions) (*Window, error
 		Application: application,
 		bg:          *options.Bg,
 		fg:          *options.Fg,
+		fontSize:    defaultFontSize,
 	}
 
 	err := w.createWindow(options)
@@ -81,8 +88,8 @@ func NewWindow(application *Application, options *WindowOptions) (*Window, error
 		return nil, err
 	}
 
-	dpi, scale := w.getDpiAndScale()
-	w.fontFamily = font.NewFamily(freetype.NewRenderer, int(dpi), scale*16)
+	w.dpi, w.scale = w.getDpiAndScale()
+	w.setFontSize(0)
 
 	w.glfwWindow.SetKeyCallback(w.callKeyCallback)
 	w.glfwWindow.SetCharModsCallback(w.callCharCallback)
@@ -90,7 +97,6 @@ func NewWindow(application *Application, options *WindowOptions) (*Window, error
 	w.glfwWindow.SetSizeCallback(func(_ *glfw.Window, width, height int) {
 		w.resized()
 	})
-	w.resized()
 
 	return w, nil
 }
@@ -146,6 +152,12 @@ func (*Window) getDpiAndScale() (float32, float64) {
 	scale = math.Max(scale, 1.0)
 
 	return dpi, scale
+}
+
+func (w *Window) setFontSize(delta float64) {
+	w.fontSize += delta
+	w.fontFamily = font.NewFamily(freetype.NewRenderer, int(w.dpi), w.scale*w.fontSize)
+	w.resized()
 }
 
 func (w *Window) Show() {

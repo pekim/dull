@@ -1,6 +1,8 @@
 package dull
 
-import "github.com/go-gl/glfw/v3.2/glfw"
+import (
+	"github.com/go-gl/glfw/v3.2/glfw"
+)
 
 // GridSizeCallback is a function for use with SetGridSizeCallback.
 type GridSizeCallback func(columns, rows int)
@@ -27,10 +29,7 @@ func (w *Window) callGridSizeCallback() {
 }
 
 // KeyCallback is a function for use with SetKeyCallback.
-type KeyCallback func(
-	key Key, action Action,
-	alt, control, shift, super bool,
-)
+type KeyCallback func(key Key, action Action, mods ModifierKey)
 
 // SetKeyCallback sets or clears a function to call when a key is
 // pressed, repeated or released.
@@ -47,18 +46,32 @@ func (w *Window) SetKeyCallback(fn KeyCallback) {
 func (w *Window) callKeyCallback(_ *glfw.Window,
 	key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey,
 ) {
+	w.handleDefaultKeys(Key(key), Action(action), ModifierKey(mods))
+
 	if w.keyCallback != nil {
-		alt, control, shift, super := decodeMods(mods)
-		w.keyCallback(Key(key), Action(action), alt, control, shift, super)
+		w.keyCallback(Key(key), Action(action), ModifierKey(mods))
 		w.draw()
 	}
 }
 
+func (w *Window) handleDefaultKeys(key Key, action Action, mods ModifierKey) {
+	if mods == ModControl && (action == Press || action == Repeat) {
+		switch key {
+		case Key0, KeyKP0:
+			// reset zoom
+			w.setFontSize(defaultFontSize - w.fontSize)
+		case KeyMinus, KeyKPSubtract:
+			// zoom out
+			w.setFontSize(-fontZoomDelta)
+		case KeyEqual, KeyKPAdd:
+			// zoom in
+			w.setFontSize(+fontZoomDelta)
+		}
+	}
+}
+
 // CharCallback is a function for use with SetCharCallback.
-type CharCallback func(
-	char rune,
-	alt, control, shift, super bool,
-)
+type CharCallback func(char rune, mods ModifierKey)
 
 // SetCharCallback sets or clears a function to call when a character
 // is input.
@@ -74,17 +87,7 @@ func (w *Window) SetCharCallback(fn CharCallback) {
 
 func (w *Window) callCharCallback(_ *glfw.Window, char rune, mods glfw.ModifierKey) {
 	if w.charCallback != nil {
-		alt, control, shift, super := decodeMods(mods)
-		w.charCallback(char, alt, control, shift, super)
+		w.charCallback(char, ModifierKey(mods))
 		w.draw()
 	}
-}
-
-func decodeMods(mods glfw.ModifierKey) (bool, bool, bool, bool) {
-	alt := mods&glfw.ModAlt != 0
-	control := mods&glfw.ModControl != 0
-	shift := mods&glfw.ModShift != 0
-	super := mods&glfw.ModSuper != 0
-
-	return alt, control, shift, super
 }
