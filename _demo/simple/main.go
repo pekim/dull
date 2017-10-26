@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"time"
 
 	dull "github.com/pekim/dull3"
 )
@@ -24,6 +25,11 @@ func initialise(app *dull.Application, err error) {
 	// 	cell.Invert = true
 	// }
 
+	renderDuration := func() {
+		text := fmt.Sprintf("%5.2fms", window.LastRenderDuration().Seconds()*1000)
+		window.Cells.PrintAt(0, 2, text)
+	}
+
 	gridSizeCallback := func(columns, rows int) {
 		text := fmt.Sprintf("%3d %3d", columns, rows)
 
@@ -32,9 +38,6 @@ func initialise(app *dull.Application, err error) {
 		column := columns - len(text)
 		row := rows - 1
 		window.Cells.PrintAt(column, row, text)
-
-		renderDuration := fmt.Sprintf("%5.2fms", window.LastRenderDuration().Seconds()*1000)
-		window.Cells.PrintAt(0, 2, renderDuration)
 	}
 
 	window.SetTitle("test")
@@ -47,6 +50,15 @@ func initialise(app *dull.Application, err error) {
 		columns, rows := window.Cells.Size()
 		gridSizeCallback(columns, rows)
 	})
+
+	go func() {
+		t := time.Tick(time.Second / 5)
+		for range t {
+			window.Do(func() {
+				renderDuration()
+			})
+		}
+	}()
 
 	// invert a couple of cells periodically
 	// go func() {
