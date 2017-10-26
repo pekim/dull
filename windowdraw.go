@@ -96,7 +96,7 @@ func (w *Window) drawCells() {
 	w.configureVertexAttributes()
 	w.configureTextureUniform()
 
-	gl.BufferData(gl.ARRAY_BUFFER, len(w.vertices)*sizeofGlFloat, gl.Ptr(w.vertices), gl.STATIC_DRAW)
+	gl.BufferData(gl.ARRAY_BUFFER, len(w.vertices)*sizeofGlFloat, gl.Ptr(w.vertices), gl.STREAM_DRAW)
 
 	// Render quads (each of which is 2 triangles)
 	gl.DrawArrays(gl.TRIANGLES, 0, int32(len(w.vertices)/4))
