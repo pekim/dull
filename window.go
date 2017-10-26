@@ -15,7 +15,6 @@ type Window struct {
 	*Application
 	fontFamily         *font.Family
 	glfwWindow         *glfw.Window
-	dpi                float32
 	program            uint32
 	lastRenderDuration time.Duration
 
@@ -39,55 +38,38 @@ type WindowOptions struct {
 	Bg, Fg        *Color
 }
 
-func NewWindow(application *Application, options *WindowOptions) (*Window, error) {
-	glfw.WindowHint(glfw.ContextVersionMajor, 3)
-	glfw.WindowHint(glfw.ContextVersionMinor, 3)
-	glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
-	glfw.WindowHint(glfw.OpenGLForwardCompatible, glfw.True)
-	glfw.WindowHint(glfw.Resizable, glfw.True)
-	glfw.WindowHint(glfw.Visible, glfw.False)
+func (o *WindowOptions) applyDefaults() {
+	if o.Width == 0 {
+		o.Width = 800
+	}
+	if o.Height == 0 {
+		o.Height = 600
+	}
+	if o.Bg == nil {
+		color := NewColor(0.0, 0.0, 0.0, 1.0) // black
+		o.Bg = &color
+	}
+	if o.Fg == nil {
+		color := NewColor(1.0, 1.0, 1.0, 1.0) // white
+		o.Fg = &color
+	}
+}
 
+func NewWindow(application *Application, options *WindowOptions) (*Window, error) {
 	if options == nil {
 		options = &WindowOptions{}
 	}
-
-	if options.Width == 0 {
-		options.Width = 800
-	}
-	if options.Height == 0 {
-		options.Height = 600
-	}
-	if options.Bg == nil {
-		color := NewColor(0.0, 0.0, 0.0, 1.0)
-		options.Bg = &color
-	}
-	if options.Fg == nil {
-		color := NewColor(1.0, 1.0, 1.0, 1.0)
-		options.Fg = &color
-	}
-
-	glfwWindow, err := glfw.CreateWindow(options.Width, options.Height, "", nil, nil)
-	if err != nil {
-		return nil, errors.Wrap(err, "Failed to create window")
-	}
-
-	monitor := glfw.GetPrimaryMonitor()
-	mode := monitor.GetVideoMode()
-	widthMm, _ := monitor.GetPhysicalSize()
-	dpi := float32(mode.Width) / float32(widthMm) * 25.4
-
-	// Round down, to limit excesive scaling on high dpi screens.
-	scale := math.Floor(float64(dpi / 96))
-	// Ensure scaling is never less 1.
-	scale = math.Max(scale, 1.0)
+	options.applyDefaults()
 
 	w := &Window{
 		Application: application,
-		glfwWindow:  glfwWindow,
-		dpi:         dpi,
+		bg:          *options.Bg,
+		fg:          *options.Fg,
+	}
 
-		bg: *options.Bg,
-		fg: *options.Fg,
+	err := w.createWindow(options)
+	if err != nil {
+		return nil, err
 	}
 
 	err = w.glInit()
@@ -95,6 +77,7 @@ func NewWindow(application *Application, options *WindowOptions) (*Window, error
 		return nil, err
 	}
 
+	dpi, scale := w.getDpiAndScale()
 	w.fontFamily = font.NewFamily(freetype.NewRenderer, int(dpi), scale*16)
 
 	w.glfwWindow.SetSizeCallback(func(_ *glfw.Window, width, height int) {
@@ -111,8 +94,25 @@ func NewWindow(application *Application, options *WindowOptions) (*Window, error
 	return w, nil
 }
 
+func (w *Window) createWindow(options *WindowOptions) error {
+	glfw.WindowHint(glfw.ContextVersionMajor, 3)
+	glfw.WindowHint(glfw.ContextVersionMinor, 3)
+	glfw.WindowHint(glfw.OpenGLProfile, glfw.OpenGLCoreProfile)
+	glfw.WindowHint(glfw.OpenGLForwardCompatible, glfw.True)
+	glfw.WindowHint(glfw.Resizable, glfw.True)
+	glfw.WindowHint(glfw.Visible, glfw.False)
+
+	glfwWindow, err := glfw.CreateWindow(options.Width, options.Height, "", nil, nil)
+	if err != nil {
+		return errors.Wrap(err, "Failed to create window")
+	}
+	w.glfwWindow = glfwWindow
+	return nil
+}
+
 func (w *Window) glInit() error {
 	w.glfwWindow.MakeContextCurrent()
+
 	err := gl.Init()
 	if err != nil {
 		return errors.Wrap(err, "Failed to initialise OpenGL")
@@ -131,6 +131,20 @@ func (w *Window) glInit() error {
 	gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
 
 	return nil
+}
+
+func (*Window) getDpiAndScale() (float32, float64) {
+	monitor := glfw.GetPrimaryMonitor()
+	mode := monitor.GetVideoMode()
+	widthMm, _ := monitor.GetPhysicalSize()
+	dpi := float32(mode.Width) / float32(widthMm) * 25.4
+
+	// Round down, to limit excesive scaling on high dpi screens.
+	scale := math.Floor(float64(dpi / 96))
+	// Ensure scaling is never less 1.
+	scale = math.Max(scale, 1.0)
+
+	return dpi, scale
 }
 
 func (w *Window) Show() {
