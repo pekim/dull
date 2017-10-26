@@ -41,6 +41,11 @@ func Do(do func()) {
 	mainthread.Call(do)
 }
 
+func DoNoWait(do func()) {
+	go glfw.PostEmptyEvent()
+	mainthread.CallNonBlock(do)
+}
+
 func run(initialised InitialisedFn) {
 	app := &Application{}
 

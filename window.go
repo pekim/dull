@@ -31,6 +31,8 @@ type Window struct {
 
 	Cells    *CellGrid
 	vertices []float32
+
+	gridSizeCallback GridSizeCallback
 }
 
 type WindowOptions struct {
@@ -179,23 +181,31 @@ func (w *Window) resized() {
 	w.Cells = newCellGrid(columns, rows, w.bg, w.fg)
 
 	w.fullDraw(false)
+	w.callGridSizeCallback()
 }
 
 // Do is used to make updates to cells, and have the changes
 // drawn to the window.
-//
-// Make all of the cells updates in the callback function.
+// Make all of the cell updates in the callback function,
+// which will run on the main thread.
 //
 // Threading and synchronisation issues are taken care off.
 // As this results in some small overheads, take care that
 // batches of changes are made in a single use of Do.
 // This will also avoid a brief appearance of a partial set of changes.
-//
-// Also take care to avoid any long running or blocking
+// Take care to avoid any long running or blocking
 // operations in the callback function.
+//
+// Do may return before the callback has run.
 func (w *Window) Do(fn func()) {
-	Do(func() {
+	DoNoWait(func() {
 		fn()
 		w.draw()
 	})
+}
+
+// LastRenderDuration returns the duration of the last render of cells.
+// It is provided for informational purpose only.
+func (w *Window) LastRenderDuration() time.Duration {
+	return w.lastRenderDuration
 }

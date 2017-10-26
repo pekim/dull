@@ -25,7 +25,7 @@ func newCellGrid(width, height int, bg, fg Color) *CellGrid {
 			grid:  g,
 			Bg:    bg,
 			Fg:    fg,
-			Rune:  '*',
+			Rune:  ' ',
 			dirty: true,
 		}
 	}
@@ -96,4 +96,20 @@ func (g *CellGrid) ForAllCells(fn func(column, row int, cell *Cell)) {
 		row := index / g.width
 		fn(column, row, cell)
 	}
+}
+
+func (g *CellGrid) PrintAt(column, row int, text string) {
+	index := (row * g.width) + column
+
+	for _, rune := range text {
+		if index >= len(g.Cells) {
+			return
+		}
+
+		g.Cells[index].Rune = rune
+		g.Cells[index].MarkDirty()
+
+		index++
+	}
+
 }
