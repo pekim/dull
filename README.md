@@ -1,8 +1,9 @@
 # dull
 
-`dull` provides a means of writing applications with windows that display a grid
-of cells.
-The windows bear a striking resemblance to terminal windows, but the similarity
+`dull` is a text user interface library.
+It provides a means of writing applications with windows
+that display a grid of cells.
+The windows bear a resemblance to terminal windows, but the similarity
 is purely visual.
 
 **warning :** dull is currently just an experiment, and is not ready for prime time.

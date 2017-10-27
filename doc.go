@@ -1,8 +1,9 @@
 /*
 
-Package dull provides a means of writing applications with
+Package dull is a text user interface library.
+It provides a means of writing applications with
 windows that display a grid of cells.
-The windows bear a striking resemblance to terminal windows,
+The windows bear a resemblance to terminal windows,
 but the similarity is purely visual.
 
 Example initialisation and window creation
