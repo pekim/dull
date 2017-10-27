@@ -15,7 +15,7 @@ func (w *Window) fullDraw(markAllCellsDirty bool) {
 	}
 
 	if markAllCellsDirty {
-		w.Cells.markAllDirty()
+		w.grid.markAllDirty()
 	}
 
 	w.drawBackground()
@@ -39,7 +39,7 @@ func (w *Window) draw() {
 		return
 	}
 
-	if !w.Cells.dirty {
+	if !w.grid.dirty {
 		return
 	}
 
@@ -56,7 +56,7 @@ func (w *Window) draw() {
 	w.lastRenderDuration = time.Now().Sub(startTime)
 	// fmt.Printf("%5.2fms\n", w.lastRenderDuration.Seconds()*1000)
 
-	w.Cells.dirty = false
+	w.grid.dirty = false
 }
 
 func (w *Window) addCellsToVertices() {
@@ -64,13 +64,13 @@ func (w *Window) addCellsToVertices() {
 
 	w.vertices = w.vertices[:0]
 
-	for index, cell := range w.Cells.Cells {
+	for index, cell := range w.grid.cells {
 		if !cell.dirty {
 			continue
 		}
 
-		columnInt := index % w.Cells.width
-		rowInt := index / w.Cells.width
+		columnInt := index % w.grid.width
+		rowInt := index / w.grid.width
 
 		textureItem := w.fontFamily.Regular.GetGlyph(cell.Rune)
 

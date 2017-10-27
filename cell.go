@@ -1,6 +1,12 @@
 package dull
 
 // Cell represents a single cell in a grid of Cells, that are displayed in a window.
+//
+// Fields in a Cell may be modified in a callback that runs on the main thread.
+// Do not modify the cells outside of a mainthread callback.
+//
+// If any field are modified, then MarkDirty must be called.
+// If the cell is not marked dirty its changes will not be rendered.
 type Cell struct {
 	// Rune is the rune to be rendered.
 	Rune rune
@@ -28,6 +34,8 @@ type Cell struct {
 	dirty bool
 }
 
+// MarkDirty marks the Cell as dirty, and needing to be re-rendered.
+// It must be called if any of the Cell's fields are modified.
 func (c *Cell) MarkDirty() {
 	c.dirty = true
 	c.grid.dirty = true

@@ -8,13 +8,22 @@ import (
 	"github.com/go-gl/glfw/v3.2/glfw"
 )
 
+// Application represents a dull application and its windows.
+//
+// An Application instance is provide to Run's callback function.
 type Application struct {
 	windows      []*Window
 	windowsMutex sync.Mutex
 }
 
+// NewWindow creates a new window.
+//
+// It will not initially be visible.
+// Call window.Show() to make it visible.
+// This allows the window to be positioned (with window.SetPosition)
+// before it becomes visible.
 func (a *Application) NewWindow(options *WindowOptions) (*Window, error) {
-	window, err := NewWindow(a, options)
+	window, err := newWindow(a, options)
 	if err != nil {
 		return nil, err
 	}

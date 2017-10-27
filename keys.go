@@ -8,9 +8,7 @@ import "github.com/go-gl/glfw/v3.2/glfw"
 //Key corresponds to a keyboard key.
 type Key glfw.Key
 
-//These key codes are inspired by the USB HID Usage Tables v1.12 (p. 53-60),
-//but re-arranged to map to 7-bit ASCII for printable keys (function keys are
-//put in the 256+ range).
+// Key codes.
 const (
 	KeyUnknown      Key = Key(glfw.KeyUnknown)
 	KeySpace        Key = Key(glfw.KeySpace)

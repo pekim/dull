@@ -17,33 +17,44 @@ import (
 // If something went wrong during initialisation, perhaps openGL
 // could not be initialised, then err will be an error.
 //
-// See also the Init function.
+// See also the Run function.
 type InitialisedFn func(app *Application, err error)
 
 // Run must be the first dull function called.
 //
-// The initialised function will be called once the library
-// has been initialised, and windows may be created.
+// The initialisedFn function will be called once the library
+// has been initialised, and functions other than Run may be called.
+// The function will typically create and show a window
+// (or multiple windows).
 //
-// Run blocks, and will not return until dull has closed down.
+// The initialisedFn function will run on the main thread.
+//
+// Run blocks, and will not return until dull has terminated.
 // This will typically be when all windows have closed.
-func Run(initialised InitialisedFn) {
+func Run(initialisedFn InitialisedFn) {
 	mainthread.Run(func() {
-		run(initialised)
+		run(initialisedFn)
 	})
 }
 
-// Do will run a function on the main thread.
+// DoWait will run a function on the main thread.
+// It blocks, and does not return until the function fn finishes.
 //
 // Some API functions need to run on the main thread.
-func Do(do func()) {
+// See the package documentation for more details.
+func DoWait(fn func()) {
 	go glfw.PostEmptyEvent()
-	mainthread.Call(do)
+	mainthread.Call(fn)
 }
 
-func DoNoWait(do func()) {
+// DoNoWait will run a function on the main thread.
+// It returns immediately, and does not wait for the function fn to finish.
+//
+// Some API functions need to run on the main thread.
+// See the package documentation for more details.
+func DoNoWait(fn func()) {
 	go glfw.PostEmptyEvent()
-	mainthread.CallNonBlock(do)
+	mainthread.CallNonBlock(fn)
 }
 
 func run(initialised InitialisedFn) {

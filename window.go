@@ -14,6 +14,9 @@ import (
 const defaultFontSize = 16
 const fontZoomDelta = 0.75
 
+// Window represents an X window.
+//
+// Use Application.NewWindow to create a Window.
 type Window struct {
 	*Application
 	dpi                float32
@@ -36,7 +39,7 @@ type Window struct {
 	viewportCellHeight      float32
 	viewportCellWidth       float32
 
-	Cells    *CellGrid
+	grid     *CellGrid
 	vertices []float32
 
 	gridSizeCallback GridSizeCallback
@@ -44,9 +47,14 @@ type Window struct {
 	charCallback     CharCallback
 }
 
+// WindowOptions is used when creating new windows to provide
+// some initial window values.
 type WindowOptions struct {
-	Width, Height int
-	Bg, Fg        *Color
+	Width  int // initial window width, in pixels
+	Height int // initial window height, in pixels
+
+	Bg *Color // default background color for cells
+	Fg *Color // default foreground color for cells
 }
 
 func (o *WindowOptions) applyDefaults() {
@@ -66,7 +74,7 @@ func (o *WindowOptions) applyDefaults() {
 	}
 }
 
-func NewWindow(application *Application, options *WindowOptions) (*Window, error) {
+func newWindow(application *Application, options *WindowOptions) (*Window, error) {
 	if options == nil {
 		options = &WindowOptions{}
 	}
@@ -161,19 +169,55 @@ func (w *Window) setFontSize(delta float64) {
 	w.resized()
 }
 
+// Grid is the grid of Cells.
+//
+// The Cells in the grid may be manipulated in a callback.
+func (w *Window) Grid() *CellGrid {
+	return w.grid
+}
+
+// Show makes the window visible.
+// See also Hide.
+//
+// This function may only be called from the main thread.
 func (w *Window) Show() {
 	w.glfwWindow.Show()
 	w.fullDraw(true)
 }
 
+// Hide hides the window.
+// It does not destroy the window, and the window may be made
+// visible again by calling Show.
+//
+// This function may only be called from the main thread.
+func (w *Window) Hide() {
+	w.glfwWindow.Hide()
+	w.fullDraw(true)
+}
+
+// SetPosition sets the position, in screen coordinates, of the upper-left
+// corner of the client area of the window.
+//
+// It is very rarely a good idea to move an already visible window, as it will
+// confuse and annoy the user.
+//
+// The window manager may put limits on what positions are allowed.
+//
+// This function may only be called from the main thread.
 func (w *Window) SetPosition(top, left int) {
 	w.glfwWindow.SetPos(top, left)
 }
 
+// SetTitle sets the window title.
+//
+// This function may only be called from the main thread.
 func (w *Window) SetTitle(title string) {
 	w.glfwWindow.SetTitle(title)
 }
 
+// Destroy destroys the window, and removes it from the Application.
+//
+// This function may only be called from the main thread.
 func (w *Window) Destroy() {
 	w.glTerminated = true
 	w.removeWindow(w)
@@ -201,7 +245,7 @@ func (w *Window) resized() {
 
 	columns := w.width / int(w.viewportCellWidthPixel)
 	rows := w.height / int(w.viewportCellHeightPixel)
-	w.Cells = newCellGrid(columns, rows, w.bg, w.fg)
+	w.grid = newCellGrid(columns, rows, w.bg, w.fg)
 
 	w.callGridSizeCallback()
 	w.fullDraw(false)
@@ -219,7 +263,7 @@ func (w *Window) resized() {
 // Take care to avoid any long running or blocking
 // operations in the callback function.
 //
-// Do may return before the callback has run.
+// Does not block; it does not wait for the function fn to run.
 func (w *Window) Do(fn func()) {
 	DoNoWait(func() {
 		fn()

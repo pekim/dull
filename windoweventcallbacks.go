@@ -12,6 +12,9 @@ type GridSizeCallback func(columns, rows int)
 // This might occur when the window size changes or when the font
 // size changes.
 //
+// When the callback is called, all cells in the new grid will be
+// set to a blank rune, with default background and foreground colors.
+//
 // To remove a previously set callback, pass nil for the callback.
 //
 // The callback will run on the main thread, so there is no need
@@ -23,7 +26,7 @@ func (w *Window) SetGridSizeCallback(fn GridSizeCallback) {
 
 func (w *Window) callGridSizeCallback() {
 	if w.gridSizeCallback != nil {
-		w.gridSizeCallback(w.Cells.width, w.Cells.height)
+		w.gridSizeCallback(w.grid.width, w.grid.height)
 	}
 }
 

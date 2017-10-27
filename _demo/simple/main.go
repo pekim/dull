@@ -20,24 +20,24 @@ func initialise(app *dull.Application, err error) {
 		panic(err)
 	}
 
-	// cell, err := window.Cells.GetCell(7, 2)
+	// cell, err := window.Grid().GetCell(7, 2)
 	// if err == nil {
 	// 	cell.Invert = true
 	// }
 
 	renderDuration := func() {
 		text := fmt.Sprintf("%5.2fms", window.LastRenderDuration().Seconds()*1000)
-		window.Cells.PrintAt(0, 2, text)
+		window.Grid().PrintAt(0, 2, text)
 	}
 
 	gridSizeCallback := func(columns, rows int) {
 		text := fmt.Sprintf("%3d %3d", columns, rows)
 
-		window.Cells.PrintAt(0, 0, text)
+		window.Grid().PrintAt(0, 0, text)
 
 		column := columns - len(text)
 		row := rows - 1
-		window.Cells.PrintAt(column, row, text)
+		window.Grid().PrintAt(column, row, text)
 
 		renderDuration()
 	}
@@ -48,7 +48,7 @@ func initialise(app *dull.Application, err error) {
 
 	window.SetGridSizeCallback(gridSizeCallback)
 
-	columns, rows := window.Cells.Size()
+	columns, rows := window.Grid().Size()
 	gridSizeCallback(columns, rows)
 
 	// window.SetKeyCallback(func(key dull.Key, action dull.Action, mods dull.ModifierKey) {
@@ -76,13 +76,13 @@ func initialise(app *dull.Application, err error) {
 	// 	t := time.Tick(1 * time.Second)
 	// 	for range t {
 	// 		window.Do(func() {
-	// 			cell, err := window.Cells.GetCell(0, 0)
+	// 			cell, err := window.Grid().GetCell(0, 0)
 	// 			if err == nil {
 	// 				cell.Invert = !cell.Invert
 	// 				cell.MarkDirty()
 	// 			}
 
-	// 			cell2, err := window.Cells.GetCell(7, 2)
+	// 			cell2, err := window.Grid().GetCell(7, 2)
 	// 			if err == nil {
 	// 				cell2.Invert = !cell2.Invert
 	// 				cell2.MarkDirty()
@@ -101,9 +101,9 @@ func initialise(app *dull.Application, err error) {
 	// 			b = !b
 
 	// 			if b {
-	// 				window.Cells.SetAllCellsRune(' ')
+	// 				window.Grid().SetAllCellsRune(' ')
 	// 			} else {
-	// 				window.Cells.SetAllCellsRune('*')
+	// 				window.Grid().SetAllCellsRune('*')
 	// 			}
 	// 		})
 	// 	}

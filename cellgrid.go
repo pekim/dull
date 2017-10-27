@@ -4,10 +4,19 @@ import (
 	"fmt"
 )
 
+// CellGrid represents the grid of cells that are displayed in a window.
+//
+// The cells may be modified in a callback that runs on the main thread.
+// Do not modify the cells outside of a mainthread callback.
+//
+// Cells are addressed at a column and row.
+// An alternative point of view would be x and y.
+//
+// Column and row indexes are zero-based.
 type CellGrid struct {
 	width  int
 	height int
-	Cells  []*Cell
+	cells  []*Cell
 
 	dirty bool
 }
@@ -16,12 +25,12 @@ func newCellGrid(width, height int, bg, fg Color) *CellGrid {
 	g := &CellGrid{
 		width:  width,
 		height: height,
-		Cells:  make([]*Cell, width*height),
+		cells:  make([]*Cell, width*height),
 		dirty:  true,
 	}
 
 	for index := 0; index < width*height; index++ {
-		g.Cells[index] = &Cell{
+		g.cells[index] = &Cell{
 			grid:  g,
 			Bg:    bg,
 			Fg:    fg,
@@ -34,46 +43,39 @@ func newCellGrid(width, height int, bg, fg Color) *CellGrid {
 }
 
 func (g *CellGrid) markAllDirty() {
-	for _, c := range g.Cells {
+	for _, c := range g.cells {
 		c.dirty = true
 	}
 
 	g.dirty = true
 }
 
-func (g *CellGrid) Size() (int, int) {
+// Size returns the size of the grid.
+// That is, the number of columns of cells
+// and the number of rows of cells.
+func (g *CellGrid) Size() (columns int, rows int) {
 	return g.width, g.height
 }
 
-func (g *CellGrid) GetCell(x, y int) (*Cell, error) {
-	index := (y * g.width) + x
-	if index >= len(g.Cells) {
+// GetCell gets a Cell at a particular column and row.
+func (g *CellGrid) GetCell(column, row int) (*Cell, error) {
+	index := (row * g.width) + column
+	if index >= len(g.cells) {
 		return nil, fmt.Errorf("Cell at %d,%d exceeds grid bounds of 0,0 to %d,%d",
-			x, y, g.width-1, g.height-1)
+			column, row, g.width-1, g.height-1)
 	}
 
-	return g.Cells[index], nil
+	return g.cells[index], nil
 }
 
-func (g *CellGrid) SetCell(x, y int, cell *Cell) error {
-	index := (y * g.width) + x
-	if index >= len(g.Cells) {
-		return fmt.Errorf("Cell at %d,%d exceeds grid bounds of 0,0 to %d,%d",
-			x, y, g.width-1, g.height-1)
-	}
-
-	g.Cells[index] = cell
-	g.dirty = true
-
-	return nil
-}
-
+// Clear sets the rune for all cells to the space character \u0020.
 func (g *CellGrid) Clear() {
 	g.SetAllCellsRune(' ')
 }
 
+// SetAllCellsRune sets the rune for all cells to the provided value.
 func (g *CellGrid) SetAllCellsRune(rune rune) {
-	for _, c := range g.Cells {
+	for _, c := range g.cells {
 		c.Rune = rune
 		c.dirty = true
 	}
@@ -81,35 +83,33 @@ func (g *CellGrid) SetAllCellsRune(rune rune) {
 	g.dirty = true
 }
 
-func (g *CellGrid) SetAllCells(fn func(cell *Cell)) {
-	for _, cell := range g.Cells {
-		fn(cell)
-		cell.dirty = true
-	}
-
-	g.dirty = true
-}
-
+// ForAllCells calls the fn function for all cells in the grid.
+//
+// Do not forget to call Cell.MakeDirty for a Cell if any of its
+// fields are changed.
 func (g *CellGrid) ForAllCells(fn func(column, row int, cell *Cell)) {
-	for index, cell := range g.Cells {
+	for index, cell := range g.cells {
 		column := index % g.width
 		row := index / g.width
 		fn(column, row, cell)
 	}
 }
 
+// PrintAt sets the runes for a sequence of cells from the runes
+// in a string.
 func (g *CellGrid) PrintAt(column, row int, text string) {
 	index := (row * g.width) + column
 
 	for _, rune := range text {
-		if index >= len(g.Cells) {
+		if index >= len(g.cells) {
 			return
 		}
 
-		g.Cells[index].Rune = rune
-		g.Cells[index].MarkDirty()
+		g.cells[index].Rune = rune
+		g.cells[index].dirty = true
 
 		index++
 	}
 
+	g.dirty = true
 }
