@@ -24,7 +24,6 @@ func (w *Window) SetGridSizeCallback(fn GridSizeCallback) {
 func (w *Window) callGridSizeCallback() {
 	if w.gridSizeCallback != nil {
 		w.gridSizeCallback(w.Cells.width, w.Cells.height)
-		w.draw()
 	}
 }
 

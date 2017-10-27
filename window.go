@@ -203,8 +203,8 @@ func (w *Window) resized() {
 	rows := w.height / int(w.viewportCellHeightPixel)
 	w.Cells = newCellGrid(columns, rows, w.bg, w.fg)
 
-	w.fullDraw(false)
 	w.callGridSizeCallback()
+	w.fullDraw(false)
 }
 
 // Do is used to make updates to cells, and have the changes
