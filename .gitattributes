@@ -1,0 +1,4 @@
+internal/font/freetype/include/** linguist-vendored
+internal/font/freetype/include/*.a linguist-vendored
+
+internal/asset.go linguist-generated=true
