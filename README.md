@@ -24,3 +24,7 @@ make install
 # run a simple demo
 make run_simple
 ```
+
+## documentation
+
+[godoc.org/github.com/pekim/dull](https://godoc.org/github.com/pekim/dull)
