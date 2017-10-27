@@ -6,8 +6,8 @@ import (
 
 	"github.com/go-gl/gl/v3.3-core/gl"
 	"github.com/go-gl/glfw/v3.2/glfw"
-	"github.com/pekim/dull3/internal/font"
-	"github.com/pekim/dull3/internal/font/freetype"
+	"github.com/pekim/dull/internal/font"
+	"github.com/pekim/dull/internal/font/freetype"
 	"github.com/pkg/errors"
 )
 

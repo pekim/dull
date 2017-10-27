@@ -3,8 +3,8 @@ package font
 import (
 	"fmt"
 
-	"github.com/pekim/dull3/internal"
-	"github.com/pekim/dull3/internal/textureatlas"
+	"github.com/pekim/dull/internal"
+	"github.com/pekim/dull/internal/textureatlas"
 )
 
 type Family struct {

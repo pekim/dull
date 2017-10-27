@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/go-gl/gl/v3.3-core/gl"
-	"github.com/pekim/dull3/internal/textureatlas"
+	"github.com/pekim/dull/internal/textureatlas"
 )
 
 const sizeofGlFloat = 4

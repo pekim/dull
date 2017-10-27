@@ -3,7 +3,7 @@ SHELL := /bin/bash
 TAGS =
 
 SRC = $(shell find . -type f -name '*.go' -not -path "./vendor/*")
-MAIN_PKG = github.com/pekim/dull3
+MAIN_PKG = github.com/pekim/dull
 
 fmt:
 	@gofmt -l -w $(SRC)
@@ -25,7 +25,7 @@ bindata:
 	@go generate
 
 test:
-	@go test -v github.com/pekim/dull3/...
+	@go test -v github.com/pekim/dull/...
 
 test_watch:
 	@modd -n
