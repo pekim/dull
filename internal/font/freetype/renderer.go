@@ -21,14 +21,15 @@ type FreeType struct {
 }
 
 type RendererFreeType struct {
+	name     string
 	ft       *FreeType
 	fontData unsafe.Pointer
 	face     C.FT_Face
 }
 
-func NewRenderer(fontData []byte, dpi int, height float64) (font.Renderer, error) {
+func NewRenderer(name string, fontData []byte, dpi int, height float64) (font.Renderer, error) {
 	ft := NewFreeType(dpi)
-	return ft.NewRenderer(fontData, height)
+	return ft.NewRenderer(name, fontData, height)
 }
 
 func NewFreeType(dpi int) *FreeType {
@@ -69,8 +70,9 @@ func (ft *FreeType) assertLibraryVersion() {
 
 }
 
-func (ft *FreeType) NewRenderer(fontData []byte, pixelHeight float64) (font.Renderer, error) {
+func (ft *FreeType) NewRenderer(name string, fontData []byte, pixelHeight float64) (font.Renderer, error) {
 	renderer := &RendererFreeType{
+		name:     name,
 		ft:       ft,
 		fontData: C.CBytes(fontData),
 	}
@@ -101,6 +103,10 @@ func (ft *FreeType) NewRenderer(fontData []byte, pixelHeight float64) (font.Rend
 
 func rendererFinalizer(r *RendererFreeType) {
 	C.free(r.fontData)
+}
+
+func (r *RendererFreeType) GetName() string {
+	return r.name
 }
 
 func (r *RendererFreeType) GetGlyph(char rune) (*font.Glyph, error) {

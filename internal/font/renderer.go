@@ -23,9 +23,10 @@ type Glyph struct {
 
 // Renderer can provide metrics and Glyph details for a font.
 type Renderer interface {
+	GetName() string
 	GetMetrics() *Metrics
 	GetGlyph(char rune) (*Glyph, error)
 }
 
 // NewRenderer creates a Renderer.
-type NewRenderer func(fontData []byte, dpi int, pixelHeight float64) (Renderer, error)
+type NewRenderer func(name string, fontData []byte, dpi int, pixelHeight float64) (Renderer, error)

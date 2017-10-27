@@ -26,7 +26,7 @@ func NewFamily(newRenderer NewRenderer, dpi int, height float64) *Family {
 	new := func(nameSuffix string) *FontTextureAtlas {
 		path := fmt.Sprintf("internal/font/data/DejaVuSansMono%s.ttf", nameSuffix)
 		fontData := internal.MustAsset(path)
-		renderer, err := newRenderer(fontData, dpi, height)
+		renderer, err := newRenderer(nameSuffix, fontData, dpi, height)
 		if err != nil {
 			panic(err)
 		}

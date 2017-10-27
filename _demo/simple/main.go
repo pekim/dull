@@ -30,6 +30,28 @@ func initialise(app *dull.Application, err error) {
 		window.Grid().PrintAt(0, 2, text)
 	}
 
+	renderFontVariations := func() {
+		cell, _ := window.Grid().GetCell(2, 4)
+		cell.Rune = 'F'
+		cell.MarkDirty()
+
+		cell, _ = window.Grid().GetCell(3, 4)
+		cell.Rune = 'F'
+		cell.Bold = true
+		cell.MarkDirty()
+
+		cell, _ = window.Grid().GetCell(4, 4)
+		cell.Rune = 'F'
+		cell.Italic = true
+		cell.MarkDirty()
+
+		cell, _ = window.Grid().GetCell(5, 4)
+		cell.Rune = 'F'
+		cell.Bold = true
+		cell.Italic = true
+		cell.MarkDirty()
+	}
+
 	gridSizeCallback := func(columns, rows int) {
 		text := fmt.Sprintf("%3d %3d", columns, rows)
 
@@ -40,6 +62,7 @@ func initialise(app *dull.Application, err error) {
 		window.Grid().PrintAt(column, row, text)
 
 		renderDuration()
+		renderFontVariations()
 	}
 
 	window.SetTitle("test")

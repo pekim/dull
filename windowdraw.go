@@ -54,7 +54,6 @@ func (w *Window) draw() {
 	w.glfwWindow.SwapBuffers()
 
 	w.lastRenderDuration = time.Now().Sub(startTime)
-	// fmt.Printf("%5.2fms\n", w.lastRenderDuration.Seconds()*1000)
 
 	w.grid.dirty = false
 }
@@ -72,7 +71,15 @@ func (w *Window) addCellsToVertices() {
 		columnInt := index % w.grid.width
 		rowInt := index / w.grid.width
 
-		textureItem := w.fontFamily.Regular.GetGlyph(cell.Rune)
+		font := w.fontFamily.Regular
+		if cell.Bold && cell.Italic {
+			font = w.fontFamily.BoldItalic
+		} else if cell.Bold {
+			font = w.fontFamily.Bold
+		} else if cell.Italic {
+			font = w.fontFamily.Italic
+		}
+		textureItem := font.GetGlyph(cell.Rune)
 
 		column := float32(columnInt)
 		row := float32(rowInt)

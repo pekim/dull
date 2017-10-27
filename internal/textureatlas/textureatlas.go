@@ -14,7 +14,7 @@ const numberOfGlyphsIncrement = 1024
 
 type TextureAtlas struct {
 	Texture uint32
-	items   map[rune]*TextureItem
+	items   map[string]*TextureItem
 
 	maxTextureSize                int32
 	approxNumberOfGlyphsToSupport int
@@ -37,7 +37,7 @@ func NewTextureAtlas(maxGlyphWidth, maxGlyphHeight int) *TextureAtlas {
 	}
 
 	ta.init()
-	ta.AddItem(Solid, &[]byte{0xff}, 1, 1, 0, 0)
+	ta.AddItem(string(Solid), &[]byte{0xff}, 1, 1, 0, 0)
 
 	return ta
 }
@@ -45,7 +45,7 @@ func NewTextureAtlas(maxGlyphWidth, maxGlyphHeight int) *TextureAtlas {
 func (ta *TextureAtlas) init() {
 	oldItems := ta.items
 
-	ta.items = map[rune]*TextureItem{}
+	ta.items = map[string]*TextureItem{}
 	ta.nextX = 0
 	ta.nextY = 0
 
@@ -103,12 +103,12 @@ func (ta *TextureAtlas) ensureRoom(width, height int) {
 	}
 }
 
-func (ta *TextureAtlas) Item(key rune) *TextureItem {
+func (ta *TextureAtlas) Item(key string) *TextureItem {
 	return ta.items[key]
 }
 
 func (ta *TextureAtlas) AddItem(
-	key rune,
+	key string,
 	pixels *[]byte,
 	width, height int,
 	topBearing, leftBearing float32,

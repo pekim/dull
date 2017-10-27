@@ -17,7 +17,8 @@ func NewFontTextureAtlas(renderer Renderer, textureAtlas *textureatlas.TextureAt
 }
 
 func (fta *FontTextureAtlas) GetGlyph(rune rune) *textureatlas.TextureItem {
-	glyph := fta.textureAtlas.Item(rune)
+	key := string(rune) + fta.fontRenderer.GetName()
+	glyph := fta.textureAtlas.Item(key)
 
 	if glyph != nil {
 		return glyph
@@ -28,7 +29,7 @@ func (fta *FontTextureAtlas) GetGlyph(rune rune) *textureatlas.TextureItem {
 		panic(err)
 	}
 
-	glyph = fta.textureAtlas.AddItem(rune, fontGlyph.Bitmap, fontGlyph.BitmapWidth, fontGlyph.BitmapHeight,
+	glyph = fta.textureAtlas.AddItem(key, fontGlyph.Bitmap, fontGlyph.BitmapWidth, fontGlyph.BitmapHeight,
 		float32(fontGlyph.TopBearing), float32(fontGlyph.LeftBearing),
 	)
 
