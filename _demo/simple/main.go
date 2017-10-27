@@ -38,6 +38,8 @@ func initialise(app *dull.Application, err error) {
 		column := columns - len(text)
 		row := rows - 1
 		window.Cells.PrintAt(column, row, text)
+
+		renderDuration()
 	}
 
 	window.SetTitle("test")
