@@ -46,6 +46,9 @@ func initialise(app *dull.Application, err error) {
 
 	window.SetGridSizeCallback(gridSizeCallback)
 
+	columns, rows := window.Cells.Size()
+	gridSizeCallback(columns, rows)
+
 	// window.SetKeyCallback(func(key dull.Key, action dull.Action, mods dull.ModifierKey) {
 	// 	fmt.Println(key,
 	// 		action == dull.Press, action == dull.Release, action == dull.Repeat,
@@ -56,11 +59,6 @@ func initialise(app *dull.Application, err error) {
 	// 	fmt.Println(string(char), char,
 	// 		mods&dull.ModAlt, mods&dull.ModControl, mods&dull.ModShift, mods&dull.ModSuper)
 	// })
-
-	window.Do(func() {
-		columns, rows := window.Cells.Size()
-		gridSizeCallback(columns, rows)
-	})
 
 	go func() {
 		t := time.Tick(time.Second / 5)
