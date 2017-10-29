@@ -55,7 +55,31 @@ func initialise(app *dull.Application, err error) {
 		cell.MarkDirty()
 	}
 
-	gridSizeCallback := func(columns, rows int) {
+	renderAdditionalVariations := func() {
+		for r, rune := range "Mighty Oaks." {
+			cell, err := window.Grid().GetCell(2+r, 6)
+			if err != nil {
+				return
+			}
+
+			cell.Rune = rune
+			cell.Underline = true
+			cell.MarkDirty()
+		}
+
+		for r, rune := range "Mighty Oaks." {
+			cell, err := window.Grid().GetCell(2+r, 7)
+			if err != nil {
+				return
+			}
+
+			cell.Rune = rune
+			cell.Strikethrough = true
+			cell.MarkDirty()
+		}
+	}
+
+	renderAll := func(columns, rows int) {
 		text := fmt.Sprintf("%3d %3d", columns, rows)
 
 		window.Grid().PrintAt(0, 0, text)
@@ -66,16 +90,17 @@ func initialise(app *dull.Application, err error) {
 
 		renderDuration()
 		renderFontVariations()
+		renderAdditionalVariations()
 	}
 
 	window.SetTitle("test")
 	window.SetPosition(200, 200)
 	window.Show()
 
-	window.SetGridSizeCallback(gridSizeCallback)
+	window.SetGridSizeCallback(renderAll)
 
 	columns, rows := window.Grid().Size()
-	gridSizeCallback(columns, rows)
+	renderAll(columns, rows)
 
 	// window.SetKeyCallback(func(key dull.Key, action dull.Action, mods dull.ModifierKey) {
 	// 	fmt.Println(key,

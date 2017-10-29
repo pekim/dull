@@ -94,6 +94,15 @@ func (w *Window) addCellsToVertices() {
 		w.addCellVertices(column, row, textureItemSolid, bg, true)
 		w.addCellVertices(column, row, textureItem, fg, false)
 
+		if cell.Strikethrough {
+			// COMBINING LONG STROKE OVERLAY
+			w.addCellVertices(column, row, font.GetGlyph('\u0336'), fg, false)
+		}
+		if cell.Underline {
+			// COMBINING LOW LINE
+			w.addCellVertices(column, row, font.GetGlyph('\u0332'), fg, false)
+		}
+
 		cell.dirty = false
 	}
 }
