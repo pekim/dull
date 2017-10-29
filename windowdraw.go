@@ -193,9 +193,9 @@ func (w *Window) configureVertexAttributes() {
 func (w *Window) configureVertexAttribute(
 	name string, attributeCount int, vertexAttribStride int32, attributeOffset *int,
 ) {
-	colourAttrib := uint32(gl.GetAttribLocation(w.program, gl.Str(name+"\x00")))
-	gl.EnableVertexAttribArray(colourAttrib)
-	gl.VertexAttribPointer(colourAttrib, int32(attributeCount), gl.FLOAT, false,
+	attrib := uint32(gl.GetAttribLocation(w.program, gl.Str(name+"\x00")))
+	gl.EnableVertexAttribArray(attrib)
+	gl.VertexAttribPointer(attrib, int32(attributeCount), gl.FLOAT, false,
 		vertexAttribStride, gl.PtrOffset(*attributeOffset))
 
 	*attributeOffset += sizeofGlFloat * attributeCount
