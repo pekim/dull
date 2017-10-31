@@ -192,7 +192,7 @@ func (w *Window) Borders() *Borders {
 // This function may only be called from the main thread.
 func (w *Window) Show() {
 	w.glfwWindow.Show()
-	w.fullDraw(true)
+	w.fullDraw()
 }
 
 // Hide hides the window.
@@ -202,7 +202,7 @@ func (w *Window) Show() {
 // This function may only be called from the main thread.
 func (w *Window) Hide() {
 	w.glfwWindow.Hide()
-	w.fullDraw(true)
+	w.fullDraw()
 }
 
 // SetPosition sets the position, in screen coordinates, of the upper-left
@@ -258,7 +258,7 @@ func (w *Window) resized() {
 	w.grid = newCellGrid(columns, rows, w.bg, w.fg)
 
 	w.callGridSizeCallback()
-	w.fullDraw(false)
+	w.fullDraw()
 }
 
 // Do is used to make updates to cells, and have the changes

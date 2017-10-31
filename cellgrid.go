@@ -31,23 +31,20 @@ func newCellGrid(width, height int, bg, fg Color) *CellGrid {
 
 	for index := 0; index < width*height; index++ {
 		g.cells[index] = &Cell{
-			grid:  g,
-			Bg:    bg,
-			Fg:    fg,
-			Rune:  ' ',
-			dirty: true,
+			grid: g,
+			Bg:   bg,
+			Fg:   fg,
+			Rune: ' ',
 		}
 	}
 
 	return g
 }
 
-func (g *CellGrid) markAllDirty() {
-	for _, c := range g.cells {
-		c.dirty = true
-	}
-
-	g.dirty = true
+// MarkDirty marks the CellGrid as dirty, and needing to be re-rendered.
+// It must be called if any of the grid's Cells' fields are modified.
+func (c *CellGrid) MarkDirty() {
+	c.dirty = true
 }
 
 // Size returns the size of the grid.
@@ -77,7 +74,6 @@ func (g *CellGrid) Clear() {
 func (g *CellGrid) SetAllCellsRune(rune rune) {
 	for _, c := range g.cells {
 		c.Rune = rune
-		c.dirty = true
 	}
 
 	g.dirty = true
@@ -106,7 +102,6 @@ func (g *CellGrid) PrintAt(column, row int, text string) {
 		}
 
 		g.cells[index].Rune = rune
-		g.cells[index].dirty = true
 
 		index++
 	}

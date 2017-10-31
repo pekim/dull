@@ -9,13 +9,9 @@ import (
 
 const sizeofGlFloat = 4
 
-func (w *Window) fullDraw(markAllCellsDirty bool) {
+func (w *Window) fullDraw() {
 	if w.glTerminated {
 		return
-	}
-
-	if markAllCellsDirty {
-		w.grid.markAllDirty()
 	}
 
 	w.drawBackground()
@@ -123,10 +119,6 @@ func (w *Window) addCellsToVertices() {
 	textureItemSolid := w.fontFamily.Regular.GetGlyph(textureatlas.Solid)
 
 	for index, cell := range w.grid.cells {
-		if !cell.dirty {
-			// continue
-		}
-
 		columnInt := index % w.grid.width
 		rowInt := index / w.grid.width
 
@@ -161,8 +153,6 @@ func (w *Window) addCellsToVertices() {
 			// COMBINING LOW LINE
 			w.addCellVertices(column, row, font.GetGlyph('\u0332'), fg, false)
 		}
-
-		cell.dirty = false
 	}
 }
 

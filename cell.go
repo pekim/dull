@@ -30,13 +30,5 @@ type Cell struct {
 	// Invert denotes whether the foreground and background colours should be reversed.
 	Invert bool
 
-	grid  *CellGrid
-	dirty bool
-}
-
-// MarkDirty marks the Cell as dirty, and needing to be re-rendered.
-// It must be called if any of the Cell's fields are modified.
-func (c *Cell) MarkDirty() {
-	c.dirty = true
-	c.grid.dirty = true
+	grid *CellGrid
 }

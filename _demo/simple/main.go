@@ -39,23 +39,19 @@ func initialise(app *dull.Application, err error) {
 	renderFontVariations := func() {
 		cell, _ := window.Grid().GetCell(2, 4)
 		cell.Rune = 'F'
-		cell.MarkDirty()
 
 		cell, _ = window.Grid().GetCell(3, 4)
 		cell.Rune = 'F'
 		cell.Bold = true
-		cell.MarkDirty()
 
 		cell, _ = window.Grid().GetCell(4, 4)
 		cell.Rune = 'F'
 		cell.Italic = true
-		cell.MarkDirty()
 
 		cell, _ = window.Grid().GetCell(5, 4)
 		cell.Rune = 'F'
 		cell.Bold = true
 		cell.Italic = true
-		cell.MarkDirty()
 	}
 
 	renderAdditionalVariations := func() {
@@ -67,7 +63,6 @@ func initialise(app *dull.Application, err error) {
 
 			cell.Rune = rune
 			cell.Underline = true
-			cell.MarkDirty()
 		}
 
 		for r, rune := range "Mighty Oaks." {
@@ -78,7 +73,6 @@ func initialise(app *dull.Application, err error) {
 
 			cell.Rune = rune
 			cell.Strikethrough = true
-			cell.MarkDirty()
 		}
 	}
 
@@ -94,6 +88,8 @@ func initialise(app *dull.Application, err error) {
 		renderDuration()
 		renderFontVariations()
 		renderAdditionalVariations()
+
+		window.Grid().MarkDirty()
 	}
 
 	window.SetTitle("test")
