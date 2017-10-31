@@ -23,6 +23,9 @@ func initialise(app *dull.Application, err error) {
 		panic(err)
 	}
 
+	window.Borders().Add(dull.Border{2, 2 + 3, 7, 7, dull.NewColor(1.0, 0.4, 0.4, 0.5)})
+	window.Borders().Add(dull.Border{2 + 4, 2 + 4 + 5, 7, 7, dull.NewColor(0.0, 0.8, 0.2, 0.5)})
+
 	// cell, err := window.Grid().GetCell(7, 2)
 	// if err == nil {
 	// 	cell.Invert = true

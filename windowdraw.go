@@ -63,41 +63,39 @@ func (w *Window) draw() {
 }
 
 func (w *Window) addBordersToVertices() {
-	w.addBorderToVertices(2, 7, 2+3, 7, NewColor(1.0, 0.4, 0.4, 0.5))
-	w.addBorderToVertices(2+4, 7, 2+4+5, 7, NewColor(0.0, 0.8, 0.2, 0.5))
+	for _, border := range w.borders.borders {
+		w.addBorderToVertices(&border)
+	}
 }
 
-func (w *Window) addBorderToVertices(
-	leftCell, topCell, rightCell, bottomCell int,
-	colour Color,
-) {
+func (w *Window) addBorderToVertices(border *Border) {
 	cellWidth := w.viewportCellWidth
 	cellHeight := w.viewportCellHeight
 
 	thickness := 0.12 * cellHeight
 
-	topTop := float32(-1.0 + (float32(topCell) * cellHeight))
+	topTop := float32(-1.0 + (float32(border.TopRow) * cellHeight))
 	topBottom := topTop + thickness
 
-	bottomBottom := float32(-1.0 + (float32(bottomCell+1) * cellHeight))
+	bottomBottom := float32(-1.0 + (float32(border.BottomRow+1) * cellHeight))
 	bottomTop := bottomBottom - thickness
 
-	leftLeft := float32(-1.0 + (float32(leftCell) * cellWidth))
+	leftLeft := float32(-1.0 + (float32(border.LeftColumn) * cellWidth))
 	leftRight := leftLeft + thickness
 
-	rightRight := float32(-1.0 + (float32(rightCell+1) * cellWidth))
+	rightRight := float32(-1.0 + (float32(border.RightColumn+1) * cellWidth))
 	rightLeft := rightRight - thickness
 
 	textureItem := w.fontFamily.Regular.GetGlyph(textureatlas.Solid)
 
 	// top line
-	w.addQuadToVertices(leftLeft, topTop, rightRight, topBottom, textureItem, colour)
+	w.addQuadToVertices(leftLeft, topTop, rightRight, topBottom, textureItem, border.Color)
 	// bottom line
-	w.addQuadToVertices(leftLeft, bottomTop, rightRight, bottomBottom, textureItem, colour)
+	w.addQuadToVertices(leftLeft, bottomTop, rightRight, bottomBottom, textureItem, border.Color)
 	// left line
-	w.addQuadToVertices(leftLeft, topBottom, leftRight, bottomTop, textureItem, colour)
+	w.addQuadToVertices(leftLeft, topBottom, leftRight, bottomTop, textureItem, border.Color)
 	// right line
-	w.addQuadToVertices(rightLeft, topBottom, rightRight, bottomTop, textureItem, colour)
+	w.addQuadToVertices(rightLeft, topBottom, rightRight, bottomTop, textureItem, border.Color)
 }
 
 func (w *Window) addQuadToVertices(left, top, right, bottom float32,
