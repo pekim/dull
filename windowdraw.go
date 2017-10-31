@@ -48,7 +48,11 @@ func (w *Window) draw() {
 	w.glfwWindow.MakeContextCurrent()
 	gl.UseProgram(w.program)
 
+	// empty vertices
+	w.vertices = w.vertices[:0]
+
 	w.addCellsToVertices()
+	w.addBordersToVertices()
 	w.drawCells()
 
 	w.glfwWindow.SwapBuffers()
@@ -58,14 +62,87 @@ func (w *Window) draw() {
 	w.grid.dirty = false
 }
 
+func (w *Window) addBordersToVertices() {
+	w.addBorderToVertices(2, 7, 2+3, 7, NewColor(1.0, 0.4, 0.4, 0.5))
+	w.addBorderToVertices(2+4, 7, 2+4+5, 7, NewColor(0.0, 0.8, 0.2, 0.5))
+}
+
+func (w *Window) addBorderToVertices(
+	leftCell, topCell, rightCell, bottomCell int,
+	colour Color,
+) {
+	cellWidth := w.viewportCellWidth
+	cellHeight := w.viewportCellHeight
+
+	thickness := 0.12 * cellHeight
+
+	topTop := float32(-1.0 + (float32(topCell) * cellHeight))
+	topBottom := topTop + thickness
+
+	bottomBottom := float32(-1.0 + (float32(bottomCell+1) * cellHeight))
+	bottomTop := bottomBottom - thickness
+
+	leftLeft := float32(-1.0 + (float32(leftCell) * cellWidth))
+	leftRight := leftLeft + thickness
+
+	rightRight := float32(-1.0 + (float32(rightCell+1) * cellWidth))
+	rightLeft := rightRight - thickness
+
+	textureItem := w.fontFamily.Regular.GetGlyph(textureatlas.Solid)
+
+	w.addQuadToVertices(leftLeft, topTop, rightRight, topBottom, textureItem, colour)
+	w.addQuadToVertices(leftLeft, bottomTop, rightRight, bottomBottom, textureItem, colour)
+	w.addQuadToVertices(leftLeft, topBottom, leftRight, bottomTop, textureItem, colour)
+	w.addQuadToVertices(rightLeft, topBottom, rightRight, bottomTop, textureItem, colour)
+
+	// width := 10 * cellWidth
+
+	// column := float32(2)
+	// row := float32(7)
+
+	// left := float32(-1.0 + (column * cellWidth))
+	// top := float32(-1.0 + (row * cellHeight))
+	// right := left + width
+	// bottom := top + thickness
+	// w.addQuadToVertices(left, top, right, bottom, textureItem, colour)
+
+	// top = top + cellHeight - thickness
+	// bottom = top + thickness
+	// w.addQuadToVertices(left, top, right, bottom, textureItem, colour)
+
+	// top = float32(-1.0 + (row * cellHeight) + thickness)
+	// bottom = top + cellHeight - (2 * thickness)
+	// right = left + thickness
+	// w.addQuadToVertices(left, top, right, bottom, textureItem, colour)
+}
+
+func (w *Window) addQuadToVertices(left, top, right, bottom float32,
+	textureItem *textureatlas.TextureItem, colour Color,
+) {
+	r := colour.R
+	g := colour.G
+	b := colour.B
+	a := colour.A
+
+	w.vertices = append(w.vertices,
+		// triangle 1
+		left, top, textureItem.Left, textureItem.Top, r, g, b, a,
+		left, bottom, textureItem.Left, textureItem.Bottom, r, g, b, a,
+		right, top, textureItem.Right, textureItem.Top, r, g, b, a,
+
+		// triangle 2
+		left, bottom, textureItem.Left, textureItem.Bottom, r, g, b, a,
+		right, bottom, textureItem.Right, textureItem.Bottom, r, g, b, a,
+		right, top, textureItem.Right, textureItem.Top, r, g, b, a,
+	)
+}
+
 func (w *Window) addCellsToVertices() {
 	textureItemSolid := w.fontFamily.Regular.GetGlyph(textureatlas.Solid)
 
-	w.vertices = w.vertices[:0]
-
 	for index, cell := range w.grid.cells {
 		if !cell.dirty {
-			continue
+			// continue
 		}
 
 		columnInt := index % w.grid.width
