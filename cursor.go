@@ -1,5 +1,12 @@
 package dull
 
+const (
+	CursorTypeUnder CursorType = 0 + iota
+	CursorTypeBlock CursorType = iota
+)
+
+type CursorType int
+
 // Cursor defines a cursor within a cell.
 type Cursor struct {
 	// The column of the cell to show the cursor in.
@@ -8,6 +15,8 @@ type Cursor struct {
 	Row int
 	// The color to use to draw the cursor.
 	Color Color
+	// How the cursor is to be rendered.
+	Type CursorType
 }
 
 // CursorId is an identifier provided when adding a cursor.

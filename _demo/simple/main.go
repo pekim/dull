@@ -26,8 +26,8 @@ func initialise(app *dull.Application, err error) {
 	window.Borders().Add(dull.Border{2, 2 + 3, 7, 7, dull.NewColor(1.0, 0.4, 0.4, 0.5)})
 	window.Borders().Add(dull.Border{2 + 4, 2 + 4 + 5, 7, 7, dull.NewColor(0.0, 0.8, 0.2, 0.5)})
 
-	window.Cursors().Add(dull.Cursor{1, 2, dull.NewColor(1.0, 0.0, 0.0, 0.9)})
-	window.Cursors().Add(dull.Cursor{3, 7, dull.NewColor(1.0, 0.0, 0.0, 0.9)})
+	window.Cursors().Add(dull.Cursor{1, 2, dull.NewColor(1.0, 0.0, 0.0, 0.9), dull.CursorTypeUnder})
+	window.Cursors().Add(dull.Cursor{3, 7, dull.NewColor(1.0, 0.0, 0.0, 0.9), dull.CursorTypeUnder})
 
 	// cell, err := window.Grid().GetCell(7, 2)
 	// if err == nil {
