@@ -48,6 +48,7 @@ func (w *Window) draw() {
 	w.vertices = w.vertices[:0]
 
 	w.addCellsToVertices()
+	w.addCursorsToVertices()
 	w.addBordersToVertices()
 	w.drawCells()
 
@@ -92,6 +93,29 @@ func (w *Window) addBorderToVertices(border *Border) {
 	w.addQuadToVertices(leftLeft, topBottom, leftRight, bottomTop, textureItem, border.Color)
 	// right line
 	w.addQuadToVertices(rightLeft, topBottom, rightRight, bottomTop, textureItem, border.Color)
+}
+
+func (w *Window) addCursorsToVertices() {
+	for _, cursor := range w.cursors.cursors {
+		w.addCursorToVertices(&cursor)
+	}
+}
+
+func (w *Window) addCursorToVertices(cursor *Cursor) {
+	cellWidth := w.viewportCellWidth
+	cellHeight := w.viewportCellHeight
+
+	thickness := 0.12 * cellHeight
+
+	left := float32(-1.0 + (float32(cursor.Column) * cellWidth))
+	right := float32(-1.0 + (float32(cursor.Column+1) * cellWidth))
+
+	bottom := float32(-1.0 + (float32(cursor.Row+1) * cellHeight))
+	top := bottom - thickness
+
+	textureItem := w.fontFamily.Regular.GetGlyph(textureatlas.Solid)
+
+	w.addQuadToVertices(left, top, right, bottom, textureItem, cursor.Color)
 }
 
 func (w *Window) addQuadToVertices(left, top, right, bottom float32,

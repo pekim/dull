@@ -40,6 +40,7 @@ type Window struct {
 	viewportCellWidth       float32
 
 	borders  *Borders
+	cursors  *Cursors
 	grid     *CellGrid
 	vertices []float32
 
@@ -87,6 +88,7 @@ func newWindow(application *Application, options *WindowOptions) (*Window, error
 		fg:          *options.Fg,
 		fontSize:    defaultFontSize,
 		borders:     newBorders(),
+		cursors:     newCursors(),
 	}
 
 	err := w.createWindow(options)
@@ -181,9 +183,16 @@ func (w *Window) Grid() *CellGrid {
 // Borders are rectangular borders that may be displayed around
 // a rectangle of cells.
 //
-// The border may be manipulated in a callback.
+// The borders may be manipulated in a callback.
 func (w *Window) Borders() *Borders {
 	return w.borders
+}
+
+// Cursors are cursors that may be displayed in a cell.
+//
+// The cursors may be manipulated in a callback.
+func (w *Window) Cursors() *Cursors {
+	return w.cursors
 }
 
 // Show makes the window visible.
