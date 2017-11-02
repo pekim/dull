@@ -1,7 +1,10 @@
 package dull
 
 const (
+	// Render the cursor as a line at the bottom of the cell.
 	CursorTypeUnder CursorType = 0 + iota
+	// Render the cursor as a block,
+	// by inverting the cell's background and foreground colors.
 	CursorTypeBlock CursorType = iota
 )
 
@@ -15,6 +18,8 @@ type Cursor struct {
 	Row int
 	// The color to use to draw the cursor.
 	Color Color
+	// Whether toggle the cursor on and off periodically.
+	Blink bool
 	// How the cursor is to be rendered.
 	Type CursorType
 }

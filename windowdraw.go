@@ -95,6 +95,17 @@ func (w *Window) addBorderToVertices(border *Border) {
 	w.addQuadToVertices(rightLeft, topBottom, rightRight, bottomTop, textureItem, border.Color)
 }
 
+func (w *Window) haveBlockCursorForCell(column, row int) bool {
+	for _, cursor := range w.cursors.cursors {
+		if cursor.Column == column && cursor.Row == row &&
+			cursor.Type == CursorTypeBlock {
+			return true
+		}
+	}
+
+	return false
+}
+
 func (w *Window) addCursorsToVertices() {
 	for _, cursor := range w.cursors.cursors {
 		w.addCursorToVertices(&cursor)
@@ -102,6 +113,12 @@ func (w *Window) addCursorsToVertices() {
 }
 
 func (w *Window) addCursorToVertices(cursor *Cursor) {
+	if cursor.Type == CursorTypeUnder {
+		w.addUnderCursorToVertices(cursor)
+	}
+}
+
+func (w *Window) addUnderCursorToVertices(cursor *Cursor) {
 	cellWidth := w.viewportCellWidth
 	cellHeight := w.viewportCellHeight
 
@@ -164,6 +181,12 @@ func (w *Window) addCellsToVertices() {
 		if cell.Invert {
 			bg = cell.Fg
 			fg = cell.Bg
+		}
+
+		if w.haveBlockCursorForCell(columnInt, rowInt) {
+			bgTemp := bg
+			bg = fg
+			fg = bgTemp
 		}
 
 		w.addCellVertices(column, row, textureItemSolid, bg, true)
