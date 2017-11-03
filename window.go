@@ -39,6 +39,7 @@ type Window struct {
 	viewportCellHeight      float32
 	viewportCellWidth       float32
 
+	dirty    bool
 	borders  *Borders
 	cursors  *Cursors
 	grid     *CellGrid
@@ -193,6 +194,13 @@ func (w *Window) Borders() *Borders {
 // The cursors may be manipulated in a callback.
 func (w *Window) Cursors() *Cursors {
 	return w.cursors
+}
+
+// MarkDirty marks the WIndow as dirty, and needing to be re-rendered.
+// It must be called if any of the window's grid's Cells' fields are modified,
+// or if any of the cursors or borders are modified.
+func (w *Window) MarkDirty() {
+	w.dirty = true
 }
 
 // Show makes the window visible.

@@ -35,7 +35,7 @@ func (w *Window) draw() {
 		return
 	}
 
-	if !w.grid.dirty {
+	if !w.dirty {
 		return
 	}
 
@@ -56,7 +56,7 @@ func (w *Window) draw() {
 
 	w.lastRenderDuration = time.Now().Sub(startTime)
 
-	w.grid.dirty = false
+	w.dirty = false
 }
 
 func (w *Window) addBordersToVertices() {

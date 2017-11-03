@@ -107,7 +107,7 @@ func initialise(app *dull.Application, err error) {
 		renderFontVariations()
 		renderAdditionalVariations()
 
-		window.Grid().MarkDirty()
+		window.MarkDirty()
 	}
 
 	window.SetTitle("test")
@@ -135,6 +135,7 @@ func initialise(app *dull.Application, err error) {
 		for range t {
 			window.Do(func() {
 				renderDuration()
+				window.MarkDirty()
 			})
 		}
 	}()
@@ -146,7 +147,7 @@ func initialise(app *dull.Application, err error) {
 				cursorBlock.Visible = !cursorBlock.Visible
 				cursorUnder.Visible = !cursorUnder.Visible
 
-				window.Grid().MarkDirty()
+				window.MarkDirty()
 			})
 		}
 	}()

@@ -5,8 +5,7 @@ package dull
 // Fields in a Cell may be modified in a callback that runs on the main thread.
 // Do not modify the cells outside of a mainthread callback.
 //
-// If any field are modified, then MarkDirty must be called.
-// If the cell is not marked dirty its changes will not be rendered.
+// If any fields are modified, then the containing window's MarkDirty must be called.
 type Cell struct {
 	// Rune is the rune to be rendered.
 	Rune rune

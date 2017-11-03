@@ -17,8 +17,6 @@ type CellGrid struct {
 	width  int
 	height int
 	cells  []*Cell
-
-	dirty bool
 }
 
 func newCellGrid(width, height int, bg, fg Color) *CellGrid {
@@ -26,7 +24,6 @@ func newCellGrid(width, height int, bg, fg Color) *CellGrid {
 		width:  width,
 		height: height,
 		cells:  make([]*Cell, width*height),
-		dirty:  true,
 	}
 
 	for index := 0; index < width*height; index++ {
@@ -39,12 +36,6 @@ func newCellGrid(width, height int, bg, fg Color) *CellGrid {
 	}
 
 	return g
-}
-
-// MarkDirty marks the CellGrid as dirty, and needing to be re-rendered.
-// It must be called if any of the grid's Cells' fields are modified.
-func (c *CellGrid) MarkDirty() {
-	c.dirty = true
 }
 
 // Size returns the size of the grid.
@@ -75,8 +66,6 @@ func (g *CellGrid) SetAllCellsRune(rune rune) {
 	for _, c := range g.cells {
 		c.Rune = rune
 	}
-
-	g.dirty = true
 }
 
 // ForAllCells calls the fn function for all cells in the grid.
@@ -105,6 +94,4 @@ func (g *CellGrid) PrintAt(column, row int, text string) {
 
 		index++
 	}
-
-	g.dirty = true
 }
