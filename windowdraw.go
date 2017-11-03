@@ -98,7 +98,9 @@ func (w *Window) addBorderToVertices(border *Border) {
 func (w *Window) haveBlockCursorForCell(column, row int) bool {
 	for _, cursor := range w.cursors.cursors {
 		if cursor.Column == column && cursor.Row == row &&
-			cursor.Type == CursorTypeBlock {
+			cursor.Type == CursorTypeBlock &&
+			cursor.Visible {
+
 			return true
 		}
 	}
@@ -108,12 +110,12 @@ func (w *Window) haveBlockCursorForCell(column, row int) bool {
 
 func (w *Window) addCursorsToVertices() {
 	for _, cursor := range w.cursors.cursors {
-		w.addCursorToVertices(&cursor)
+		w.addCursorToVertices(cursor)
 	}
 }
 
 func (w *Window) addCursorToVertices(cursor *Cursor) {
-	if cursor.Type == CursorTypeUnder {
+	if cursor.Visible && cursor.Type == CursorTypeUnder {
 		w.addUnderCursorToVertices(cursor)
 	}
 }

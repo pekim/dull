@@ -18,10 +18,12 @@ type Cursor struct {
 	Row int
 	// The color to use to draw the cursor.
 	Color Color
-	// Whether toggle the cursor on and off periodically.
-	Blink bool
 	// How the cursor is to be rendered.
 	Type CursorType
+	// Whether the cursor is renderer or not.
+	// Should always be set to true, unless it is used
+	// to perform cursor flashing.
+	Visible bool
 }
 
 // CursorId is an identifier provided when adding a cursor.
@@ -33,20 +35,20 @@ type CursorId int
 // An instance is provided by a Window.
 type Cursors struct {
 	nextId  CursorId
-	cursors map[CursorId]Cursor
+	cursors map[CursorId]*Cursor
 }
 
 func newCursors() *Cursors {
 	return &Cursors{
 		nextId:  0,
-		cursors: make(map[CursorId]Cursor),
+		cursors: make(map[CursorId]*Cursor),
 	}
 }
 
 // Add adds a cursor.
 //
 // The returned CursorId may be later used to remove the cursor.
-func (c *Cursors) Add(cursor Cursor) CursorId {
+func (c *Cursors) Add(cursor *Cursor) CursorId {
 	c.nextId++
 	id := c.nextId
 	c.cursors[id] = cursor
@@ -63,5 +65,5 @@ func (c *Cursors) Remove(id CursorId) {
 
 // RemoveAll removes all cursors.
 func (c *Cursors) RemoveAll() {
-	c.cursors = make(map[CursorId]Cursor)
+	c.cursors = make(map[CursorId]*Cursor)
 }
