@@ -56,17 +56,29 @@ func initialise(app *dull.Application, err error) {
 
 	renderFontVariations := func() {
 		cell, _ := window.Grid().GetCell(2, 4)
+		if cell == nil {
+			return
+		}
 		cell.Rune = 'F'
 
 		cell, _ = window.Grid().GetCell(3, 4)
+		if cell == nil {
+			return
+		}
 		cell.Rune = 'F'
 		cell.Bold = true
 
 		cell, _ = window.Grid().GetCell(4, 4)
+		if cell == nil {
+			return
+		}
 		cell.Rune = 'F'
 		cell.Italic = true
 
 		cell, _ = window.Grid().GetCell(5, 4)
+		if cell == nil {
+			return
+		}
 		cell.Rune = 'F'
 		cell.Bold = true
 		cell.Italic = true

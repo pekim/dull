@@ -86,7 +86,7 @@ func (g *CellGrid) PrintAt(column, row int, text string) {
 	index := (row * g.width) + column
 
 	for _, rune := range text {
-		if index >= len(g.cells) {
+		if index < 0 || index >= len(g.cells) {
 			return
 		}
 
