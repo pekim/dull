@@ -209,7 +209,7 @@ func (w *Window) MarkDirty() {
 // This function may only be called from the main thread.
 func (w *Window) Show() {
 	w.glfwWindow.Show()
-	w.fullDraw()
+	w.draw()
 }
 
 // Hide hides the window.
@@ -219,7 +219,7 @@ func (w *Window) Show() {
 // This function may only be called from the main thread.
 func (w *Window) Hide() {
 	w.glfwWindow.Hide()
-	w.fullDraw()
+	w.draw()
 }
 
 // SetPosition sets the position, in screen coordinates, of the upper-left
@@ -275,7 +275,7 @@ func (w *Window) resized() {
 	w.grid = newCellGrid(columns, rows, w.bg, w.fg)
 
 	w.callGridSizeCallback()
-	w.fullDraw()
+	w.draw()
 }
 
 // Do is used to make updates to cells, and have the changes

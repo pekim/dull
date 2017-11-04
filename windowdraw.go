@@ -9,27 +9,6 @@ import (
 
 const sizeofGlFloat = 4
 
-func (w *Window) fullDraw() {
-	if w.glTerminated {
-		return
-	}
-
-	w.drawBackground()
-	w.draw()
-}
-
-// clear to background colour
-func (w *Window) drawBackground() {
-	if w.glTerminated {
-		return
-	}
-
-	w.glfwWindow.MakeContextCurrent()
-
-	gl.ClearColor(w.bg.R, w.bg.G, w.bg.B, 1.0)
-	gl.Clear(gl.COLOR_BUFFER_BIT)
-}
-
 func (w *Window) draw() {
 	if w.glTerminated {
 		return
@@ -43,6 +22,10 @@ func (w *Window) draw() {
 
 	w.glfwWindow.MakeContextCurrent()
 	gl.UseProgram(w.program)
+
+	// clear to background colour
+	gl.ClearColor(w.bg.R, w.bg.G, w.bg.B, 1.0)
+	gl.Clear(gl.COLOR_BUFFER_BIT)
 
 	// empty vertices
 	w.vertices = w.vertices[:0]
