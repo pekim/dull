@@ -23,8 +23,8 @@ func initialise(app *dull.Application, err error) {
 		panic(err)
 	}
 
-	window.Borders().Add(dull.Border{2, 2 + 3, 7, 7, dull.NewColor(1.0, 0.4, 0.4, 0.5)})
-	window.Borders().Add(dull.Border{2 + 4, 2 + 4 + 5, 7, 7, dull.NewColor(0.0, 0.8, 0.2, 0.5)})
+	window.Borders().Add(dull.Border{2, 2 + 3, 7, 7, dull.NewColor(1.0, 0.2, 0.2, 0.7)})
+	window.Borders().Add(dull.Border{2 + 4, 2 + 4 + 5, 7, 7, dull.NewColor(0.0, 0, 0.9, 0.7)})
 
 	cursorBlock := &dull.Cursor{
 		Column:  3,
@@ -36,8 +36,8 @@ func initialise(app *dull.Application, err error) {
 	window.Cursors().Add(cursorBlock)
 
 	cursorUnder := &dull.Cursor{
-		Column:  3,
-		Row:     7,
+		Column:  5,
+		Row:     4,
 		Color:   dull.NewColor(1.0, 0.0, 0.0, 0.9),
 		Type:    dull.CursorTypeUnder,
 		Visible: true,

@@ -52,19 +52,21 @@ func (w *Window) addBorderToVertices(border *Border) {
 	cellWidth := w.viewportCellWidth
 	cellHeight := w.viewportCellHeight
 
-	thickness := 0.12 * cellHeight
+	thicknessVertical := 0.12 * cellHeight
+	thicknessVerticalPixels := float32(w.height) * (thicknessVertical / 2.0)
+	thicknessHorizontal := (thicknessVerticalPixels * 2.0) / float32(w.width)
 
 	topTop := float32(-1.0 + (float32(border.TopRow) * cellHeight))
-	topBottom := topTop + thickness
+	topBottom := topTop + thicknessVertical
 
 	bottomBottom := float32(-1.0 + (float32(border.BottomRow+1) * cellHeight))
-	bottomTop := bottomBottom - thickness
+	bottomTop := bottomBottom - thicknessVertical
 
 	leftLeft := float32(-1.0 + (float32(border.LeftColumn) * cellWidth))
-	leftRight := leftLeft + thickness
+	leftRight := leftLeft + thicknessHorizontal
 
 	rightRight := float32(-1.0 + (float32(border.RightColumn+1) * cellWidth))
-	rightLeft := rightRight - thickness
+	rightLeft := rightRight - thicknessHorizontal
 
 	textureItem := w.fontFamily.Regular.GetGlyph(textureatlas.Solid)
 
