@@ -276,6 +276,7 @@ func (w *Window) resized() {
 	w.grid = newCellGrid(columns, rows, w.bg, w.fg)
 
 	w.callGridSizeCallback()
+	w.MarkDirty()
 	w.draw()
 }
 
