@@ -209,6 +209,7 @@ func (w *Window) MarkDirty() {
 // This function may only be called from the main thread.
 func (w *Window) Show() {
 	w.glfwWindow.Show()
+	w.MarkDirty()
 	w.draw()
 }
 
