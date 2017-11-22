@@ -155,7 +155,7 @@ func (ta *TextureAtlas) AddItem(
 	return item
 }
 
-// setTextureDimension calculates a suitable texture size to accomodate
+// setTextureDimension calculates a suitable texture size to accommodate
 // an approximate number of glyphs.
 //
 // It's not required that the returned dimensions can contained the numberOfGlyphs,

@@ -31,7 +31,7 @@ Example initialisation and window creation
 
 Threads
 
-Because of the way that an underlying libary (glfw) works,
+Because of the way that an underlying library (glfw) works,
 almost all calls to dull functions should occur in the main thread.
 
 All callbacks to functions provided to dull will occur on the main thread.
