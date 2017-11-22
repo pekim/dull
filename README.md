@@ -1,5 +1,8 @@
 # dull
 
+[![GoDoc](https://godoc.org/github.com/pekim/dull?status.svg)](https://godoc.org/github.com/pekim/dull)
+[![Go Report Card](https://goreportcard.com/badge/github.com/pekim/dull)](https://goreportcard.com/report/github.com/pekim/dull)
+
 `dull` is a text user interface library.
 It provides a means of writing applications with windows
 that display a grid of cells.
