@@ -1,13 +1,13 @@
 package dull
 
 import (
+	"github.com/pekim/dull/internal/font/stbtruetype"
 	"math"
 	"time"
 
 	"github.com/go-gl/gl/v3.3-core/gl"
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/pekim/dull/internal/font"
-	"github.com/pekim/dull/internal/font/freetype"
 	"github.com/pkg/errors"
 )
 
@@ -177,7 +177,7 @@ func (*Window) getDpiAndScale() (float32, float64) {
 
 func (w *Window) setFontSize(delta float64) {
 	w.fontSize += delta
-	w.fontFamily = font.NewFamily(freetype.NewRenderer, int(w.dpi), w.scale*w.fontSize)
+	w.fontFamily = font.NewFamily(stbtruetype.NewRenderer, int(w.dpi), w.scale*w.fontSize)
 	w.resized()
 }
 

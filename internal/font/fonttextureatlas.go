@@ -1,6 +1,8 @@
 package font
 
-import "github.com/pekim/dull/internal/textureatlas"
+import (
+	"github.com/pekim/dull/internal/textureatlas"
+)
 
 type FontTextureAtlas struct {
 	textureAtlas *textureatlas.TextureAtlas
