@@ -112,6 +112,11 @@ func newWindow(application *Application, options *WindowOptions) (*Window, error
 		w.resized()
 	})
 
+	w.glfwWindow.SetRefreshCallback(func(_ *glfw.Window) {
+		w.MarkDirty()
+		w.draw()
+	})
+
 	return w, nil
 }
 
@@ -277,7 +282,6 @@ func (w *Window) resized() {
 
 	w.callGridSizeCallback()
 	w.MarkDirty()
-	w.draw()
 }
 
 // Do is used to make updates to cells, and have the changes
