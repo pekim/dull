@@ -104,7 +104,6 @@ func newWindow(application *Application, options *WindowOptions) (*Window, error
 
 	w.dpi, w.scale = w.getDpiAndScale()
 	w.setFontSize(0)
-	w.setResizeIncrement()
 
 	w.glfwWindow.SetKeyCallback(w.callKeyCallback)
 	w.glfwWindow.SetCharModsCallback(w.callCharCallback)
@@ -178,6 +177,7 @@ func (*Window) getDpiAndScale() (float32, float64) {
 func (w *Window) setFontSize(delta float64) {
 	w.fontSize += delta
 	w.fontFamily = font.NewFamily(stbtruetype.NewRenderer, int(w.dpi), w.scale*w.fontSize)
+	w.setResizeIncrement()
 	w.resized()
 }
 
