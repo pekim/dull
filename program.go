@@ -19,7 +19,7 @@ var vertexShaderSource = `
 
 	void main()
 	{
-		vec2 projection = vec2(1.0, -1.0); // Invert y-axis
+		vec2 projection = vec2(1.0, -1.0); // invert y-axis
 
 		gl_Position = vec4(projection * position, 0.0, 1.0);
 		TexCoords = texCoords;

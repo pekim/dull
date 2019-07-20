@@ -44,7 +44,7 @@ func NewFamily(newRenderer NewRenderer, dpi int, height float64) *Family {
 	family := &Family{
 		Name:       "DejaVuSansMono",
 		Regular:    new(""),
-		Bold:       new("-Bold"),
+		Bold:       new("-bold"),
 		BoldItalic: new("-BoldOblique"),
 		Italic:     new("-Oblique"),
 	}

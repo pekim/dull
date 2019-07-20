@@ -28,8 +28,9 @@ type Window struct {
 	program            uint32
 	lastRenderDuration time.Duration
 
-	bg Color
-	fg Color
+	bg      Color
+	fg      Color
+	bgDirty bool
 
 	width  int
 	height int
@@ -87,6 +88,7 @@ func newWindow(application *Application, options *WindowOptions) (*Window, error
 		Application: application,
 		bg:          *options.Bg,
 		fg:          *options.Fg,
+		bgDirty:     true,
 		fontSize:    defaultFontSize,
 		borders:     newBorders(),
 		cursors:     newCursors(),
@@ -114,6 +116,7 @@ func newWindow(application *Application, options *WindowOptions) (*Window, error
 
 	w.glfwWindow.SetRefreshCallback(func(_ *glfw.Window) {
 		w.MarkDirty()
+		w.bgDirty = true
 		w.draw()
 	})
 
@@ -217,6 +220,7 @@ func (w *Window) MarkDirty() {
 func (w *Window) Show() {
 	w.glfwWindow.Show()
 	w.MarkDirty()
+	w.bgDirty = true
 	w.draw()
 }
 
@@ -283,7 +287,10 @@ func (w *Window) resized() {
 	w.grid = newCellGrid(columns, rows, w.bg, w.fg)
 
 	w.callGridSizeCallback()
+	w.grid.markAllDirty()
 	w.MarkDirty()
+	w.bgDirty = true
+	w.draw()
 }
 
 // Do is used to make updates to cells, and have the changes

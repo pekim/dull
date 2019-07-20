@@ -2,9 +2,8 @@ package main
 
 import (
 	"fmt"
+	"github.com/pekim/dull"
 	"time"
-
-	dull "github.com/pekim/dull"
 )
 
 func initialise(app *dull.Application, err error) {
@@ -23,8 +22,8 @@ func initialise(app *dull.Application, err error) {
 		panic(err)
 	}
 
-	window.Borders().Add(dull.Border{2, 2 + 3, 7, 7, dull.NewColor(1.0, 0.2, 0.2, 0.7)})
-	window.Borders().Add(dull.Border{2 + 4, 2 + 4 + 5, 7, 7, dull.NewColor(0.0, 0, 0.9, 0.7)})
+	window.Borders().Add(dull.NewBorder(2, 2+3, 7, 7, dull.NewColor(1.0, 0.2, 0.2, 0.7)))
+	window.Borders().Add(dull.NewBorder(2+4, 2+4+5, 7, 7, dull.NewColor(0.0, 0, 0.9, 0.7)))
 
 	cursorBlock := &dull.Cursor{
 		Column:  3,
@@ -46,7 +45,7 @@ func initialise(app *dull.Application, err error) {
 
 	// cell, err := window.Grid().GetCell(7, 2)
 	// if err == nil {
-	// 	cell.Invert = true
+	// 	cell.invert = true
 	// }
 
 	renderDuration := func() {
@@ -59,29 +58,29 @@ func initialise(app *dull.Application, err error) {
 		if cell == nil {
 			return
 		}
-		cell.Rune = 'F'
+		cell.SetRune('F')
 
 		cell, _ = window.Grid().GetCell(3, 4)
 		if cell == nil {
 			return
 		}
-		cell.Rune = 'F'
-		cell.Bold = true
+		cell.SetRune('F')
+		cell.SetBold(true)
 
 		cell, _ = window.Grid().GetCell(4, 4)
 		if cell == nil {
 			return
 		}
-		cell.Rune = 'F'
-		cell.Italic = true
+		cell.SetRune('F')
+		cell.SetItalic(true)
 
 		cell, _ = window.Grid().GetCell(5, 4)
 		if cell == nil {
 			return
 		}
-		cell.Rune = 'F'
-		cell.Bold = true
-		cell.Italic = true
+		cell.SetRune('F')
+		cell.SetBold(true)
+		cell.SetItalic(true)
 	}
 
 	renderAdditionalVariations := func() {
@@ -91,8 +90,8 @@ func initialise(app *dull.Application, err error) {
 				return
 			}
 
-			cell.Rune = rune
-			cell.Underline = true
+			cell.SetRune(rune)
+			cell.SetUnderline(true)
 		}
 
 		for r, rune := range "Mighty Oaks." {
@@ -101,8 +100,8 @@ func initialise(app *dull.Application, err error) {
 				return
 			}
 
-			cell.Rune = rune
-			cell.Strikethrough = true
+			cell.SetRune(rune)
+			cell.SetStrikethrough(true)
 		}
 	}
 
@@ -171,13 +170,13 @@ func initialise(app *dull.Application, err error) {
 	// 		window.Do(func() {
 	// 			cell, err := window.Grid().GetCell(0, 0)
 	// 			if err == nil {
-	// 				cell.Invert = !cell.Invert
+	// 				cell.invert = !cell.invert
 	// 				cell.MarkDirty()
 	// 			}
 
 	// 			cell2, err := window.Grid().GetCell(7, 2)
 	// 			if err == nil {
-	// 				cell2.Invert = !cell2.Invert
+	// 				cell2.invert = !cell2.invert
 	// 				cell2.MarkDirty()
 	// 			}
 	// 		})

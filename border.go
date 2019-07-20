@@ -7,21 +7,31 @@ package dull
 type Border struct {
 	// The leftmost column.
 	// The border will drawn down the left side of cells in this column.
-	LeftColumn int
+	leftColumn int
 	// The rightmost column.
 	// The border will drawn down the right side of cells in this column.
-	RightColumn int
+	rightColumn int
 	// The topmost row.
 	// The border will drawn across the top side of cells in this row.
-	TopRow int
+	topRow int
 	// The bottommost row.
 	// The border will drawn across the bottom side of cells in this row.
-	BottomRow int
+	bottomRow int
 
 	// The color to use to draw the border.
 	// The alpha value will typically be less than 1.0 to
 	// leave glyphs in border cells readable.
-	Color Color
+	color Color
+}
+
+func NewBorder(leftColumn, rightColumn, topRow, bottomRow int, color Color) Border {
+	return Border{
+		leftColumn:  leftColumn,
+		rightColumn: rightColumn,
+		topRow:      topRow,
+		bottomRow:   bottomRow,
+		color:       color,
+	}
 }
 
 // BorderId is an identifier provided when adding a border.

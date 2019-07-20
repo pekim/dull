@@ -1,6 +1,7 @@
 package dull
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/go-gl/gl/v3.3-core/gl"
@@ -14,9 +15,9 @@ func (w *Window) draw() {
 		return
 	}
 
-	if !w.dirty {
-		return
-	}
+	//if !w.dirty {
+	//	return
+	//}
 
 	startTime := time.Now()
 
@@ -24,8 +25,12 @@ func (w *Window) draw() {
 	gl.UseProgram(w.program)
 
 	// clear to background colour
-	gl.ClearColor(w.bg.R, w.bg.G, w.bg.B, 1.0)
-	gl.Clear(gl.COLOR_BUFFER_BIT)
+	if w.bgDirty {
+		gl.ClearColor(w.bg.R, w.bg.G, w.bg.B, 1.0)
+		gl.Clear(gl.COLOR_BUFFER_BIT)
+
+		w.bgDirty = false
+	}
 
 	// empty vertices
 	w.vertices = w.vertices[:0]
@@ -39,7 +44,7 @@ func (w *Window) draw() {
 
 	w.lastRenderDuration = time.Now().Sub(startTime)
 
-	w.dirty = false
+	//w.dirty = false
 }
 
 func (w *Window) addBordersToVertices() {
@@ -56,28 +61,28 @@ func (w *Window) addBorderToVertices(border *Border) {
 	thicknessVerticalPixels := float32(w.height) * (thicknessVertical / 2.0)
 	thicknessHorizontal := (thicknessVerticalPixels * 2.0) / float32(w.width)
 
-	topTop := float32(-1.0 + (float32(border.TopRow) * cellHeight))
+	topTop := float32(-1.0 + (float32(border.topRow) * cellHeight))
 	topBottom := topTop + thicknessVertical
 
-	bottomBottom := float32(-1.0 + (float32(border.BottomRow+1) * cellHeight))
+	bottomBottom := float32(-1.0 + (float32(border.bottomRow+1) * cellHeight))
 	bottomTop := bottomBottom - thicknessVertical
 
-	leftLeft := float32(-1.0 + (float32(border.LeftColumn) * cellWidth))
+	leftLeft := float32(-1.0 + (float32(border.leftColumn) * cellWidth))
 	leftRight := leftLeft + thicknessHorizontal
 
-	rightRight := float32(-1.0 + (float32(border.RightColumn+1) * cellWidth))
+	rightRight := float32(-1.0 + (float32(border.rightColumn+1) * cellWidth))
 	rightLeft := rightRight - thicknessHorizontal
 
 	textureItem := w.fontFamily.Regular.GetGlyph(textureatlas.Solid)
 
 	// top line
-	w.addQuadToVertices(leftLeft, topTop, rightRight, topBottom, textureItem, border.Color)
+	w.addQuadToVertices(leftLeft, topTop, rightRight, topBottom, textureItem, border.color)
 	// bottom line
-	w.addQuadToVertices(leftLeft, bottomTop, rightRight, bottomBottom, textureItem, border.Color)
+	w.addQuadToVertices(leftLeft, bottomTop, rightRight, bottomBottom, textureItem, border.color)
 	// left line
-	w.addQuadToVertices(leftLeft, topBottom, leftRight, bottomTop, textureItem, border.Color)
+	w.addQuadToVertices(leftLeft, topBottom, leftRight, bottomTop, textureItem, border.color)
 	// right line
-	w.addQuadToVertices(rightLeft, topBottom, rightRight, bottomTop, textureItem, border.Color)
+	w.addQuadToVertices(rightLeft, topBottom, rightRight, bottomTop, textureItem, border.color)
 }
 
 func (w *Window) haveBlockCursorForCell(column, row int) bool {
@@ -147,27 +152,32 @@ func (w *Window) addCellsToVertices() {
 	textureItemSolid := w.fontFamily.Regular.GetGlyph(textureatlas.Solid)
 
 	for index, cell := range w.grid.cells {
+		if !cell.dirty {
+			continue
+		}
+		cell.dirty = false
+
 		columnInt := index % w.grid.width
 		rowInt := index / w.grid.width
 
 		font := w.fontFamily.Regular
-		if cell.Bold && cell.Italic {
+		if cell.bold && cell.italic {
 			font = w.fontFamily.BoldItalic
-		} else if cell.Bold {
+		} else if cell.bold {
 			font = w.fontFamily.Bold
-		} else if cell.Italic {
+		} else if cell.italic {
 			font = w.fontFamily.Italic
 		}
-		textureItem := font.GetGlyph(cell.Rune)
+		textureItem := font.GetGlyph(cell.rune)
 
 		column := float32(columnInt)
 		row := float32(rowInt)
 
-		bg := cell.Bg
-		fg := cell.Fg
-		if cell.Invert {
-			bg = cell.Fg
-			fg = cell.Bg
+		bg := cell.bg
+		fg := cell.fg
+		if cell.invert {
+			bg = cell.fg
+			fg = cell.bg
 		}
 
 		if w.haveBlockCursorForCell(columnInt, rowInt) {
@@ -179,11 +189,11 @@ func (w *Window) addCellsToVertices() {
 		w.addCellVertices(column, row, textureItemSolid, bg, true)
 		w.addCellVertices(column, row, textureItem, fg, false)
 
-		if cell.Strikethrough {
+		if cell.strikethrough {
 			// COMBINING LONG STROKE OVERLAY
 			w.addCellVertices(column, row, font.GetGlyph('\u0336'), fg, false)
 		}
-		if cell.Underline {
+		if cell.underline {
 			// COMBINING LOW LINE
 			w.addCellVertices(column, row, font.GetGlyph('\u0332'), fg, false)
 		}
@@ -195,6 +205,8 @@ func (w *Window) drawCells() {
 	if len(w.vertices) == 0 {
 		return
 	}
+
+	fmt.Println(len(w.vertices))
 
 	var vao uint32
 	gl.GenVertexArrays(1, &vao)

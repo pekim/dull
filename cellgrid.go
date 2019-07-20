@@ -29,9 +29,9 @@ func newCellGrid(width, height int, bg, fg Color) *CellGrid {
 	for index := 0; index < width*height; index++ {
 		g.cells[index] = &Cell{
 			grid: g,
-			Bg:   bg,
-			Fg:   fg,
-			Rune: ' ',
+			bg:   bg,
+			fg:   fg,
+			rune: ' ',
 		}
 	}
 
@@ -64,7 +64,8 @@ func (g *CellGrid) Clear() {
 // SetAllCellsRune sets the rune for all cells to the provided value.
 func (g *CellGrid) SetAllCellsRune(rune rune) {
 	for _, c := range g.cells {
-		c.Rune = rune
+		c.rune = rune
+		c.dirty = true
 	}
 }
 
@@ -80,6 +81,12 @@ func (g *CellGrid) ForAllCells(fn func(column, row int, cell *Cell)) {
 	}
 }
 
+func (g *CellGrid) markAllDirty() {
+	g.ForAllCells(func(column, row int, cell *Cell) {
+		cell.dirty = true
+	})
+}
+
 // PrintAt sets the runes for a sequence of cells from the runes
 // in a string.
 func (g *CellGrid) PrintAt(column, row int, text string) {
@@ -90,7 +97,8 @@ func (g *CellGrid) PrintAt(column, row int, text string) {
 			return
 		}
 
-		g.cells[index].Rune = rune
+		g.cells[index].rune = rune
+		g.cells[index].dirty = true
 
 		index++
 	}
