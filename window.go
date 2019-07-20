@@ -104,6 +104,7 @@ func newWindow(application *Application, options *WindowOptions) (*Window, error
 
 	w.dpi, w.scale = w.getDpiAndScale()
 	w.setFontSize(0)
+	w.setResizeIncrement()
 
 	w.glfwWindow.SetKeyCallback(w.callKeyCallback)
 	w.glfwWindow.SetCharModsCallback(w.callCharCallback)
@@ -133,6 +134,7 @@ func (w *Window) createWindow(options *WindowOptions) error {
 		return errors.Wrap(err, "Failed to create window")
 	}
 	w.glfwWindow = glfwWindow
+
 	return nil
 }
 
