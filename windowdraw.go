@@ -1,7 +1,6 @@
 package dull
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/go-gl/gl/v3.3-core/gl"
@@ -19,6 +18,17 @@ func (w *Window) draw() {
 	//	return
 	//}
 
+	// empty vertices
+	w.vertices = w.vertices[:0]
+
+	w.addCellsToVertices()
+	w.addCursorsToVertices()
+	w.addBordersToVertices()
+
+	if len(w.vertices) == 0 {
+		return
+	}
+
 	startTime := time.Now()
 
 	w.glfwWindow.MakeContextCurrent()
@@ -32,12 +42,6 @@ func (w *Window) draw() {
 		w.bgDirty = false
 	}
 
-	// empty vertices
-	w.vertices = w.vertices[:0]
-
-	w.addCellsToVertices()
-	w.addCursorsToVertices()
-	w.addBordersToVertices()
 	w.drawCells()
 
 	w.glfwWindow.SwapBuffers()
@@ -87,9 +91,9 @@ func (w *Window) addBorderToVertices(border *Border) {
 
 func (w *Window) haveBlockCursorForCell(column, row int) bool {
 	for _, cursor := range w.cursors.cursors {
-		if cursor.Column == column && cursor.Row == row &&
-			cursor.Type == CursorTypeBlock &&
-			cursor.Visible {
+		if cursor.column == column && cursor.row == row &&
+			cursor.typ == CursorTypeBlock &&
+			cursor.visible {
 
 			return true
 		}
@@ -105,7 +109,7 @@ func (w *Window) addCursorsToVertices() {
 }
 
 func (w *Window) addCursorToVertices(cursor *Cursor) {
-	if cursor.Visible && cursor.Type == CursorTypeUnder {
+	if cursor.visible && cursor.typ == CursorTypeUnder {
 		w.addUnderCursorToVertices(cursor)
 	}
 }
@@ -116,15 +120,15 @@ func (w *Window) addUnderCursorToVertices(cursor *Cursor) {
 
 	thickness := 0.12 * cellHeight
 
-	left := float32(-1.0 + (float32(cursor.Column) * cellWidth))
-	right := float32(-1.0 + (float32(cursor.Column+1) * cellWidth))
+	left := float32(-1.0 + (float32(cursor.column) * cellWidth))
+	right := float32(-1.0 + (float32(cursor.column+1) * cellWidth))
 
-	bottom := float32(-1.0 + (float32(cursor.Row+1) * cellHeight))
+	bottom := float32(-1.0 + (float32(cursor.row+1) * cellHeight))
 	top := bottom - thickness
 
 	textureItem := w.fontFamily.Regular.GetGlyph(textureatlas.Solid)
 
-	w.addQuadToVertices(left, top, right, bottom, textureItem, cursor.Color)
+	w.addQuadToVertices(left, top, right, bottom, textureItem, cursor.color)
 }
 
 func (w *Window) addQuadToVertices(left, top, right, bottom float32,
@@ -205,8 +209,6 @@ func (w *Window) drawCells() {
 	if len(w.vertices) == 0 {
 		return
 	}
-
-	fmt.Println(len(w.vertices))
 
 	var vao uint32
 	gl.GenVertexArrays(1, &vao)

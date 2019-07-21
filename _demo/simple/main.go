@@ -25,22 +25,18 @@ func initialise(app *dull.Application, err error) {
 	window.Borders().Add(dull.NewBorder(2, 2+3, 7, 7, dull.NewColor(1.0, 0.2, 0.2, 0.7)))
 	window.Borders().Add(dull.NewBorder(2+4, 2+4+5, 7, 7, dull.NewColor(0.0, 0, 0.9, 0.7)))
 
-	cursorBlock := &dull.Cursor{
-		Column:  3,
-		Row:     4,
-		Color:   dull.NewColor(1.0, 0.0, 0.0, 0.9),
-		Type:    dull.CursorTypeBlock,
-		Visible: true,
-	}
+	cursorBlock := window.Cursors().New()
+	cursorBlock.SetPosition(3, 4)
+	cursorBlock.SetColor(dull.NewColor(1.0, 0.0, 0.0, 0.9))
+	cursorBlock.SetType(dull.CursorTypeBlock)
+	cursorBlock.SetVisible(true)
 	window.Cursors().Add(cursorBlock)
 
-	cursorUnder := &dull.Cursor{
-		Column:  5,
-		Row:     4,
-		Color:   dull.NewColor(1.0, 0.0, 0.0, 0.9),
-		Type:    dull.CursorTypeUnder,
-		Visible: true,
-	}
+	cursorUnder := window.Cursors().New()
+	cursorUnder.SetPosition(5, 4)
+	cursorUnder.SetColor(dull.NewColor(1.0, 0.0, 0.0, 0.9))
+	cursorUnder.SetType(dull.CursorTypeUnder)
+	cursorUnder.SetVisible(true)
 	window.Cursors().Add(cursorUnder)
 
 	// cell, err := window.Grid().GetCell(7, 2)
@@ -155,10 +151,10 @@ func initialise(app *dull.Application, err error) {
 		t := time.Tick(time.Second / 2)
 		for range t {
 			window.Do(func() {
-				cursorBlock.Visible = !cursorBlock.Visible
-				cursorUnder.Visible = !cursorUnder.Visible
+				cursorBlock.SetVisible(!cursorBlock.Visible())
+				cursorUnder.SetVisible(!cursorUnder.Visible())
 
-				window.MarkDirty()
+				//window.MarkDirty()
 			})
 		}
 	}()

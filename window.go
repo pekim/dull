@@ -91,8 +91,10 @@ func newWindow(application *Application, options *WindowOptions) (*Window, error
 		bgDirty:     true,
 		fontSize:    defaultFontSize,
 		borders:     newBorders(),
-		cursors:     newCursors(),
 	}
+
+	w.grid = newCellGrid(0, 0, w.bg, w.fg)
+	w.cursors = newCursors(w)
 
 	err := w.createWindow(options)
 	if err != nil {
@@ -115,8 +117,9 @@ func newWindow(application *Application, options *WindowOptions) (*Window, error
 	})
 
 	w.glfwWindow.SetRefreshCallback(func(_ *glfw.Window) {
-		w.MarkDirty()
 		w.bgDirty = true
+		w.grid.markAllDirty()
+		w.MarkDirty()
 		w.draw()
 	})
 
@@ -287,9 +290,11 @@ func (w *Window) resized() {
 	w.grid = newCellGrid(columns, rows, w.bg, w.fg)
 
 	w.callGridSizeCallback()
+
+	w.bgDirty = true
 	w.grid.markAllDirty()
 	w.MarkDirty()
-	w.bgDirty = true
+
 	w.draw()
 }
 
