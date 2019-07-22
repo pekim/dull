@@ -12,9 +12,8 @@ type CursorType int
 
 // Cursor defines a cursor within a cell.
 type Cursor struct {
-	dirty bool
-	cells *CellGrid
-	cell  *Cell
+	dirty  bool
+	window *Window
 
 	// The column of the cell to show the cursor in.
 	column int
@@ -35,17 +34,17 @@ type Cursor struct {
 type CursorId int
 
 func (c *Cursor) setCellDirty() {
-	if c.cell == nil {
+	cell, _ := c.window.grid.GetCell(c.column, c.row)
+	if cell == nil {
 		return
 	}
 
-	c.cell.dirty = true
+	cell.dirty = true
 }
 
 func (c *Cursor) SetPosition(column int, row int) {
 	c.column = column
 	c.row = row
-	c.cell, _ = c.cells.GetCell(c.column, c.row)
 	c.setCellDirty()
 }
 

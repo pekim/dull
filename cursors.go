@@ -19,7 +19,7 @@ func newCursors(window *Window) *Cursors {
 
 func (c *Cursors) New() *Cursor {
 	return &Cursor{
-		cells: c.window.grid,
+		window: c.window,
 	}
 }
 
@@ -30,8 +30,6 @@ func (c *Cursors) Add(cursor *Cursor) CursorId {
 	c.nextId++
 	id := c.nextId
 	c.cursors[id] = cursor
-
-	cursor.cells = c.window.grid
 
 	return id
 }
