@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	dull "github.com/pekim/dull"
+	"github.com/pekim/dull"
 )
 
 func initialise(app *dull.Application, err error) {
