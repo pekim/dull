@@ -40,7 +40,6 @@ type Window struct {
 	viewportCellHeight      float32
 	viewportCellWidth       float32
 
-	dirty    bool
 	borders  *Borders
 	cursors  *Cursors
 	grid     *CellGrid
@@ -117,10 +116,7 @@ func newWindow(application *Application, options *WindowOptions) (*Window, error
 	})
 
 	w.glfwWindow.SetRefreshCallback(func(_ *glfw.Window) {
-		w.bgDirty = true
-		w.grid.markAllDirty()
-		w.MarkDirty()
-		w.draw()
+		w.drawAll()
 	})
 
 	return w, nil
@@ -209,22 +205,13 @@ func (w *Window) Cursors() *Cursors {
 	return w.cursors
 }
 
-// MarkDirty marks the WIndow as dirty, and needing to be re-rendered.
-// It must be called if any of the window's grid's Cells' fields are modified,
-// or if any of the cursors or borders are modified.
-func (w *Window) MarkDirty() {
-	w.dirty = true
-}
-
 // Show makes the window visible.
 // See also Hide.
 //
 // This function may only be called from the main thread.
 func (w *Window) Show() {
 	w.glfwWindow.Show()
-	w.MarkDirty()
-	w.bgDirty = true
-	w.draw()
+	w.drawAll()
 }
 
 // Hide hides the window.
@@ -290,11 +277,29 @@ func (w *Window) resized() {
 	w.grid = newCellGrid(columns, rows, w.bg, w.fg)
 
 	w.callGridSizeCallback()
+	w.drawAll()
+}
+
+func (w *Window) drawAll() {
+	/*
+		Draw all twice avoid a weird painting problem on some systems.
+		The problem manifests as the background sometimes being black
+		after only some cells are updated.
+
+		It's almost as though there's a buffer somewhere where the
+		background has never been drawn.
+
+		The penalty for doing this twice is not too bad, as drawAll is
+		not called very often. But really need to understand the root
+		cause of the problem.
+	*/
 
 	w.bgDirty = true
 	w.grid.markAllDirty()
-	w.MarkDirty()
+	w.draw()
 
+	w.bgDirty = true
+	w.grid.markAllDirty()
 	w.draw()
 }
 

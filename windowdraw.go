@@ -14,10 +14,6 @@ func (w *Window) draw() {
 		return
 	}
 
-	//if !w.dirty {
-	//	return
-	//}
-
 	// empty vertices
 	w.vertices = w.vertices[:0]
 
@@ -47,8 +43,6 @@ func (w *Window) draw() {
 	w.glfwWindow.SwapBuffers()
 
 	w.lastRenderDuration = time.Now().Sub(startTime)
-
-	//w.dirty = false
 }
 
 func (w *Window) addBordersToVertices() {
