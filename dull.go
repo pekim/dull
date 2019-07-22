@@ -6,7 +6,11 @@ import (
 	"github.com/faiface/mainthread"
 	"github.com/go-gl/glfw/v3.2/glfw"
 	"github.com/pkg/errors"
+	"sync"
 )
+
+var glfwTerminated = false
+var glfwTerminatedLock sync.Mutex
 
 // InitialisedFn is a function that will be called
 // once library initialisation is complete.
@@ -43,6 +47,12 @@ func Run(initialisedFn InitialisedFn) {
 // Some API functions need to run on the main thread.
 // See the package documentation for more details.
 func DoWait(fn func()) {
+	glfwTerminatedLock.Lock()
+	defer glfwTerminatedLock.Unlock()
+	if glfwTerminated {
+		return
+	}
+
 	go glfw.PostEmptyEvent()
 	mainthread.Call(fn)
 }
@@ -53,6 +63,12 @@ func DoWait(fn func()) {
 // Some API functions need to run on the main thread.
 // See the package documentation for more details.
 func DoNoWait(fn func()) {
+	glfwTerminatedLock.Lock()
+	defer glfwTerminatedLock.Unlock()
+	if glfwTerminated {
+		return
+	}
+
 	go glfw.PostEmptyEvent()
 	mainthread.CallNonBlock(fn)
 }
@@ -75,6 +91,10 @@ func run(initialised InitialisedFn) {
 
 		mainthread.Call(func() {
 			glfw.Terminate()
+
+			glfwTerminatedLock.Lock()
+			defer glfwTerminatedLock.Unlock()
+			glfwTerminated = true
 		})
 	}()
 
