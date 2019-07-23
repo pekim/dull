@@ -31,7 +31,8 @@ type Cell struct {
 	// invert denotes whether the foreground and background colours should be reversed.
 	invert bool
 
-	grid *CellGrid
+	grid     *CellGrid
+	vertices []float32
 }
 
 func (c *Cell) SetRune(rune rune) {

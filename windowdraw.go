@@ -104,11 +104,14 @@ func (w *Window) addCursorsToVertices() {
 
 func (w *Window) addCursorToVertices(cursor *Cursor) {
 	if cursor.visible && cursor.typ == CursorTypeUnder {
-		w.addUnderCursorToVertices(cursor)
+		cell, _ := w.grid.GetCell(cursor.column, cursor.row)
+		if cell != nil {
+			w.addUnderCursorToCellVertices(cell, cursor)
+		}
 	}
 }
 
-func (w *Window) addUnderCursorToVertices(cursor *Cursor) {
+func (w *Window) addUnderCursorToCellVertices(cell *Cell, cursor *Cursor) {
 	cellWidth := w.viewportCellWidth
 	cellHeight := w.viewportCellHeight
 
@@ -122,10 +125,33 @@ func (w *Window) addUnderCursorToVertices(cursor *Cursor) {
 
 	textureItem := w.fontFamily.Regular.GetGlyph(textureatlas.Solid)
 
-	w.addQuadToVertices(left, top, right, bottom, textureItem, cursor.color)
+	w.addQuadToCellVertices(cell, left, top, right, bottom, textureItem, cursor.color)
 }
 
-func (w *Window) addQuadToVertices(left, top, right, bottom float32,
+func (w *Window) addQuadToCellVertices(cell *Cell,
+	left, top, right, bottom float32,
+	textureItem *textureatlas.TextureItem, colour Color,
+) {
+	r := colour.R
+	g := colour.G
+	b := colour.B
+	a := colour.A
+
+	cell.vertices = append(cell.vertices,
+		// triangle 1
+		left, top, textureItem.Left, textureItem.Top, r, g, b, a,
+		left, bottom, textureItem.Left, textureItem.Bottom, r, g, b, a,
+		right, top, textureItem.Right, textureItem.Top, r, g, b, a,
+
+		// triangle 2
+		left, bottom, textureItem.Left, textureItem.Bottom, r, g, b, a,
+		right, bottom, textureItem.Right, textureItem.Bottom, r, g, b, a,
+		right, top, textureItem.Right, textureItem.Top, r, g, b, a,
+	)
+}
+
+func (w *Window) addQuadToVertices(
+	left, top, right, bottom float32,
 	textureItem *textureatlas.TextureItem, colour Color,
 ) {
 	r := colour.R
@@ -151,9 +177,12 @@ func (w *Window) addCellsToVertices() {
 
 	for index, cell := range w.grid.cells {
 		if !cell.dirty {
+			w.vertices = append(w.vertices, cell.vertices...)
 			continue
 		}
+
 		cell.dirty = false
+		cell.vertices = cell.vertices[:0]
 
 		columnInt := index % w.grid.width
 		rowInt := index / w.grid.width
@@ -184,17 +213,19 @@ func (w *Window) addCellsToVertices() {
 			fg = bgTemp
 		}
 
-		w.addCellVertices(column, row, textureItemSolid, bg, true)
-		w.addCellVertices(column, row, textureItem, fg, false)
+		w.addCellVertices(cell, column, row, textureItemSolid, bg, true)
+		w.addCellVertices(cell, column, row, textureItem, fg, false)
 
 		if cell.strikethrough {
 			// COMBINING LONG STROKE OVERLAY
-			w.addCellVertices(column, row, font.GetGlyph('\u0336'), fg, false)
+			w.addCellVertices(cell, column, row, font.GetGlyph('\u0336'), fg, false)
 		}
 		if cell.underline {
 			// COMBINING LOW LINE
-			w.addCellVertices(column, row, font.GetGlyph('\u0332'), fg, false)
+			w.addCellVertices(cell, column, row, font.GetGlyph('\u0332'), fg, false)
 		}
+
+		w.vertices = append(w.vertices, cell.vertices...)
 	}
 }
 
@@ -224,7 +255,8 @@ func (w *Window) drawCells() {
 	gl.DeleteVertexArrays(1, &vao)
 }
 
-func (w *Window) addCellVertices(column, row float32,
+func (w *Window) addCellVertices(cell *Cell,
+	column, row float32,
 	textureItem *textureatlas.TextureItem,
 	colour Color,
 	fillCell bool,
@@ -252,7 +284,7 @@ func (w *Window) addCellVertices(column, row float32,
 	right := left + width
 	bottom := top + height
 
-	w.addQuadToVertices(left, top, right, bottom, textureItem, colour)
+	w.addQuadToCellVertices(cell, left, top, right, bottom, textureItem, colour)
 }
 
 func (w *Window) configureTextureUniform() {

@@ -281,23 +281,6 @@ func (w *Window) resized() {
 }
 
 func (w *Window) drawAll() {
-	/*
-		Draw all twice avoid a weird painting problem on some systems.
-		The problem manifests as the background sometimes being black
-		after only some cells are updated.
-
-		It's almost as though there's a buffer somewhere where the
-		background has never been drawn.
-
-		The penalty for doing this twice is not too bad, as drawAll is
-		not called very often. But really need to understand the root
-		cause of the problem.
-	*/
-
-	w.bgDirty = true
-	w.grid.markAllDirty()
-	w.draw()
-
 	w.bgDirty = true
 	w.grid.markAllDirty()
 	w.draw()
