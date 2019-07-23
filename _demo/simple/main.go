@@ -44,8 +44,18 @@ func initialise(app *dull.Application, err error) {
 	// 	cell.invert = true
 	// }
 
+	durations := make([]float64, 10, 10)
 	renderDuration := func() {
-		text := fmt.Sprintf("%5.2fms", window.LastRenderDuration().Seconds()*1000)
+		durations = durations[1:len(durations)]
+		durations = append(durations, window.LastRenderDuration().Seconds())
+
+		avgDuration := float64(0)
+		for _, dur := range durations {
+			avgDuration += dur
+		}
+		avgDuration /= float64(len(durations))
+
+		text := fmt.Sprintf("%5.2fms", avgDuration*1000)
 		window.Grid().PrintAt(0, 2, text)
 	}
 
