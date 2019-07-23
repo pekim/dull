@@ -155,56 +155,57 @@ func (w *Window) addCellsToVertices() {
 	textureItemSolid := w.fontFamily.Regular.GetGlyph(textureatlas.Solid)
 
 	for index, cell := range w.grid.cells {
-		if !cell.dirty {
-			w.vertices = append(w.vertices, cell.vertices...)
-			continue
-		}
+		if cell.dirty {
+			columnInt := index % w.grid.width
+			rowInt := index / w.grid.width
+			w.generateCellVertices(cell, columnInt, rowInt, textureItemSolid)
 
-		cell.dirty = false
-		cell.vertices = cell.vertices[:0]
-
-		columnInt := index % w.grid.width
-		rowInt := index / w.grid.width
-
-		font := w.fontFamily.Regular
-		if cell.bold && cell.italic {
-			font = w.fontFamily.BoldItalic
-		} else if cell.bold {
-			font = w.fontFamily.Bold
-		} else if cell.italic {
-			font = w.fontFamily.Italic
-		}
-		textureItem := font.GetGlyph(cell.rune)
-
-		column := float32(columnInt)
-		row := float32(rowInt)
-
-		bg := cell.bg
-		fg := cell.fg
-		if cell.invert {
-			bg = cell.fg
-			fg = cell.bg
-		}
-
-		if w.haveBlockCursorForCell(columnInt, rowInt) {
-			bgTemp := bg
-			bg = fg
-			fg = bgTemp
-		}
-
-		w.addCellVertices(cell, column, row, textureItemSolid, bg, true)
-		w.addCellVertices(cell, column, row, textureItem, fg, false)
-
-		if cell.strikethrough {
-			// COMBINING LONG STROKE OVERLAY
-			w.addCellVertices(cell, column, row, font.GetGlyph('\u0336'), fg, false)
-		}
-		if cell.underline {
-			// COMBINING LOW LINE
-			w.addCellVertices(cell, column, row, font.GetGlyph('\u0332'), fg, false)
+			cell.dirty = false
 		}
 
 		w.vertices = append(w.vertices, cell.vertices...)
+	}
+}
+
+func (w *Window) generateCellVertices(cell *Cell, columnInt int, rowInt int, textureItemSolid *textureatlas.TextureItem) {
+	cell.vertices = cell.vertices[:0]
+
+	font := w.fontFamily.Regular
+	if cell.bold && cell.italic {
+		font = w.fontFamily.BoldItalic
+	} else if cell.bold {
+		font = w.fontFamily.Bold
+	} else if cell.italic {
+		font = w.fontFamily.Italic
+	}
+	textureItem := font.GetGlyph(cell.rune)
+
+	column := float32(columnInt)
+	row := float32(rowInt)
+
+	bg := cell.bg
+	fg := cell.fg
+	if cell.invert {
+		bg = cell.fg
+		fg = cell.bg
+	}
+
+	if w.haveBlockCursorForCell(columnInt, rowInt) {
+		bgTemp := bg
+		bg = fg
+		fg = bgTemp
+	}
+
+	w.addCellVertices(cell, column, row, textureItemSolid, bg, true)
+	w.addCellVertices(cell, column, row, textureItem, fg, false)
+
+	if cell.strikethrough {
+		// COMBINING LONG STROKE OVERLAY
+		w.addCellVertices(cell, column, row, font.GetGlyph('\u0336'), fg, false)
+	}
+	if cell.underline {
+		// COMBINING LOW LINE
+		w.addCellVertices(cell, column, row, font.GetGlyph('\u0332'), fg, false)
 	}
 }
 
