@@ -74,13 +74,13 @@ func (w *Window) addBorderToVertices(border *Border) {
 	textureItem := w.fontFamily.Regular.GetGlyph(textureatlas.Solid)
 
 	// top line
-	w.addQuadToVertices(leftLeft, topTop, rightRight, topBottom, textureItem, border.color)
+	w.addQuadToVertices(&w.vertices, leftLeft, topTop, rightRight, topBottom, textureItem, border.color)
 	// bottom line
-	w.addQuadToVertices(leftLeft, bottomTop, rightRight, bottomBottom, textureItem, border.color)
+	w.addQuadToVertices(&w.vertices, leftLeft, bottomTop, rightRight, bottomBottom, textureItem, border.color)
 	// left line
-	w.addQuadToVertices(leftLeft, topBottom, leftRight, bottomTop, textureItem, border.color)
+	w.addQuadToVertices(&w.vertices, leftLeft, topBottom, leftRight, bottomTop, textureItem, border.color)
 	// right line
-	w.addQuadToVertices(rightLeft, topBottom, rightRight, bottomTop, textureItem, border.color)
+	w.addQuadToVertices(&w.vertices, rightLeft, topBottom, rightRight, bottomTop, textureItem, border.color)
 }
 
 func (w *Window) haveBlockCursorForCell(column, row int) bool {
@@ -125,32 +125,11 @@ func (w *Window) addUnderCursorToCellVertices(cell *Cell, cursor *Cursor) {
 
 	textureItem := w.fontFamily.Regular.GetGlyph(textureatlas.Solid)
 
-	w.addQuadToCellVertices(cell, left, top, right, bottom, textureItem, cursor.color)
-}
-
-func (w *Window) addQuadToCellVertices(cell *Cell,
-	left, top, right, bottom float32,
-	textureItem *textureatlas.TextureItem, colour Color,
-) {
-	r := colour.R
-	g := colour.G
-	b := colour.B
-	a := colour.A
-
-	cell.vertices = append(cell.vertices,
-		// triangle 1
-		left, top, textureItem.Left, textureItem.Top, r, g, b, a,
-		left, bottom, textureItem.Left, textureItem.Bottom, r, g, b, a,
-		right, top, textureItem.Right, textureItem.Top, r, g, b, a,
-
-		// triangle 2
-		left, bottom, textureItem.Left, textureItem.Bottom, r, g, b, a,
-		right, bottom, textureItem.Right, textureItem.Bottom, r, g, b, a,
-		right, top, textureItem.Right, textureItem.Top, r, g, b, a,
-	)
+	w.addQuadToVertices(&cell.vertices, left, top, right, bottom, textureItem, cursor.color)
 }
 
 func (w *Window) addQuadToVertices(
+	vertices *[]float32,
 	left, top, right, bottom float32,
 	textureItem *textureatlas.TextureItem, colour Color,
 ) {
@@ -159,7 +138,7 @@ func (w *Window) addQuadToVertices(
 	b := colour.B
 	a := colour.A
 
-	w.vertices = append(w.vertices,
+	*vertices = append(*vertices,
 		// triangle 1
 		left, top, textureItem.Left, textureItem.Top, r, g, b, a,
 		left, bottom, textureItem.Left, textureItem.Bottom, r, g, b, a,
@@ -284,7 +263,7 @@ func (w *Window) addCellVertices(cell *Cell,
 	right := left + width
 	bottom := top + height
 
-	w.addQuadToCellVertices(cell, left, top, right, bottom, textureItem, colour)
+	w.addQuadToVertices(&cell.vertices, left, top, right, bottom, textureItem, colour)
 }
 
 func (w *Window) configureTextureUniform() {
