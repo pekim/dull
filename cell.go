@@ -50,6 +50,16 @@ func (c *Cell) SetItalic(italic bool) {
 	c.dirty = true
 }
 
+func (c *Cell) SetFg(fg Color) {
+	c.fg = fg
+	c.dirty = true
+}
+
+func (c *Cell) SetBg(bg Color) {
+	c.bg = bg
+	c.dirty = true
+}
+
 func (c *Cell) SetUnderline(underline bool) {
 	c.underline = underline
 	c.dirty = true

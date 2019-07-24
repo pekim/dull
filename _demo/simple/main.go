@@ -72,6 +72,8 @@ func initialise(app *dull.Application, err error) {
 		}
 		cell.SetRune('F')
 		cell.SetBold(true)
+		cell.SetFg(dull.NewColor(0.7, 0.0, 0.2, 1.0))
+		cell.SetBg(dull.NewColor(0.7, 0.7, 0.9, 1.0))
 
 		cell, _ = window.Grid().GetCell(4, 4)
 		if cell == nil {
@@ -123,6 +125,10 @@ func initialise(app *dull.Application, err error) {
 		renderDuration()
 		renderFontVariations()
 		renderAdditionalVariations()
+
+		//cell, _ := window.Grid().GetCell(1, 1)
+		//cell.SetRune('\u2295')
+		//cell.SetInvert(true)
 	}
 
 	window.SetTitle("test")
