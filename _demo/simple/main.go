@@ -46,7 +46,7 @@ func initialise(app *dull.Application, err error) {
 
 	durations := make([]float64, 10, 10)
 	renderDuration := func() {
-		durations = durations[1:len(durations)]
+		durations = durations[1:]
 		durations = append(durations, window.LastRenderDuration().Seconds())
 
 		avgDuration := float64(0)
@@ -92,23 +92,23 @@ func initialise(app *dull.Application, err error) {
 	}
 
 	renderAdditionalVariations := func() {
-		for r, rune := range "Mighty Oaks." {
+		for r, cellRune := range "Mighty Oaks." {
 			cell, err := window.Grid().GetCell(2+r, 6)
 			if err != nil {
 				return
 			}
 
-			cell.SetRune(rune)
+			cell.SetRune(cellRune)
 			cell.SetUnderline(true)
 		}
 
-		for r, rune := range "Mighty Oaks." {
+		for r, cellRune := range "Mighty Oaks." {
 			cell, err := window.Grid().GetCell(2+r, 7)
 			if err != nil {
 				return
 			}
 
-			cell.SetRune(rune)
+			cell.SetRune(cellRune)
 			cell.SetStrikethrough(true)
 		}
 	}
