@@ -26,6 +26,7 @@ type Window struct {
 	glTerminated       bool
 	program            uint32
 	lastRenderDuration time.Duration
+	dirty              bool
 
 	bg      Color
 	fg      Color
@@ -88,10 +89,10 @@ func newWindow(application *Application, options *WindowOptions) (*Window, error
 		fg:          *options.Fg,
 		bgDirty:     true,
 		fontSize:    defaultFontSize,
-		borders:     newBorders(),
 	}
 
-	w.grid = newCellGrid(0, 0, w.bg, w.fg)
+	w.borders = newBorders(w.setDirty)
+	w.grid = newCellGrid(0, 0, w.bg, w.fg, w.setDirty)
 	w.cursors = newCursors(w)
 
 	err := w.createWindow(options)
@@ -119,6 +120,10 @@ func newWindow(application *Application, options *WindowOptions) (*Window, error
 	})
 
 	return w, nil
+}
+
+func (w *Window) setDirty() {
+	w.dirty = true
 }
 
 func (w *Window) createWindow(options *WindowOptions) error {
@@ -273,7 +278,7 @@ func (w *Window) resized() {
 
 	columns := w.width / int(w.viewportCellWidthPixel)
 	rows := w.height / int(w.viewportCellHeightPixel)
-	w.grid = newCellGrid(columns, rows, w.bg, w.fg)
+	w.grid = newCellGrid(columns, rows, w.bg, w.fg, w.setDirty)
 
 	w.callGridSizeCallback()
 	w.drawAll()

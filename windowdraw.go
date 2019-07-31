@@ -14,6 +14,11 @@ func (w *Window) draw() {
 		return
 	}
 
+	if !w.dirty {
+		return
+	}
+	w.dirty = false
+
 	// empty vertices
 	w.vertices = w.vertices[:0]
 
@@ -161,9 +166,8 @@ func (w *Window) addCellsToVertices() {
 			w.generateCellVertices(cell, columnInt, rowInt, textureItemSolid)
 
 			cell.dirty = false
+			w.vertices = append(w.vertices, cell.vertices...)
 		}
-
-		w.vertices = append(w.vertices, cell.vertices...)
 	}
 }
 

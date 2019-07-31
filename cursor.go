@@ -39,7 +39,7 @@ func (c *Cursor) setCellDirty() {
 		return
 	}
 
-	cell.dirty = true
+	cell.setDirty()
 }
 
 func (c *Cursor) SetPosition(column int, row int) {

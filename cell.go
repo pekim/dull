@@ -35,42 +35,47 @@ type Cell struct {
 	vertices []float32
 }
 
+func (c *Cell) setDirty() {
+	c.dirty = true
+	c.grid.dirty()
+}
+
 func (c *Cell) SetRune(rune rune) {
 	c.rune = rune
-	c.dirty = true
+	c.setDirty()
 }
 
 func (c *Cell) SetBold(bold bool) {
 	c.bold = bold
-	c.dirty = true
+	c.setDirty()
 }
 
 func (c *Cell) SetItalic(italic bool) {
 	c.italic = italic
-	c.dirty = true
+	c.setDirty()
 }
 
 func (c *Cell) SetFg(fg Color) {
 	c.fg = fg
-	c.dirty = true
+	c.setDirty()
 }
 
 func (c *Cell) SetBg(bg Color) {
 	c.bg = bg
-	c.dirty = true
+	c.setDirty()
 }
 
 func (c *Cell) SetUnderline(underline bool) {
 	c.underline = underline
-	c.dirty = true
+	c.setDirty()
 }
 
 func (c *Cell) SetStrikethrough(strikethrough bool) {
 	c.strikethrough = strikethrough
-	c.dirty = true
+	c.setDirty()
 }
 
 func (c *Cell) SetInvert(invert bool) {
 	c.invert = invert
-	c.dirty = true
+	c.setDirty()
 }

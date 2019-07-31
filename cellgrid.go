@@ -17,13 +17,15 @@ type CellGrid struct {
 	width  int
 	height int
 	cells  []*Cell
+	dirty  func()
 }
 
-func newCellGrid(width, height int, bg, fg Color) *CellGrid {
+func newCellGrid(width, height int, bg, fg Color, dirty func()) *CellGrid {
 	g := &CellGrid{
 		width:  width,
 		height: height,
 		cells:  make([]*Cell, width*height),
+		dirty:  dirty,
 	}
 
 	for index := 0; index < width*height; index++ {
