@@ -19,6 +19,10 @@ type Application struct {
 
 // SetFontRenderer allows the font renderering library to be specified.
 // The default is FontRendererStbtruetype, as it should build on all platforms.
+//
+// This function affects all subsequently created windows.
+// A reasonable place to call it would be early in the dull.Initialised function
+// that is passed to dull.Run.
 func (a *Application) SetFontRenderer(renderer FontRenderer) {
 	a.fontRenderer = renderer
 }
