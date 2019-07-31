@@ -1,3 +1,5 @@
+// +build linux
+
 package freetype
 
 // #include <ft2build.h>
