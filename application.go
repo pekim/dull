@@ -12,8 +12,15 @@ import (
 //
 // An Application instance is provide to Run's callback function.
 type Application struct {
+	fontRenderer FontRenderer
 	windows      []*Window
 	windowsMutex sync.Mutex
+}
+
+// SetFontRenderer allows the font renderering library to be specified.
+// The default is FontRendererStbtruetype, as it should build on all platforms.
+func (a *Application) SetFontRenderer(renderer FontRenderer) {
+	a.fontRenderer = renderer
 }
 
 // NewWindow creates a new window.

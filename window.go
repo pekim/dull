@@ -1,7 +1,6 @@
 package dull
 
 import (
-	"github.com/pekim/dull/internal/font/stbtruetype"
 	"math"
 	"time"
 
@@ -178,7 +177,7 @@ func (*Window) getDpiAndScale() (float32, float64) {
 
 func (w *Window) setFontSize(delta float64) {
 	w.fontSize += delta
-	w.fontFamily = font.NewFamily(stbtruetype.NewRenderer, int(w.dpi), w.scale*w.fontSize)
+	w.fontFamily = font.NewFamily(w.Application.fontRenderer.new(), int(w.dpi), w.scale*w.fontSize)
 	w.setResizeIncrement()
 	w.resized()
 }
