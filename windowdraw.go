@@ -130,7 +130,7 @@ func (w *Window) addUnderCursorToCellVertices(cell *Cell, cursor *Cursor) {
 
 	textureItem := w.fontFamily.Regular.GetGlyph(textureatlas.Solid)
 
-	w.addQuadToVertices(&cell.vertices, left, top, right, bottom, textureItem, cursor.color)
+	w.addQuadToVertices(&w.vertices, left, top, right, bottom, textureItem, cursor.color)
 }
 
 func (w *Window) addQuadToVertices(
