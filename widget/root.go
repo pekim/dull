@@ -1,7 +1,6 @@
 package widget
 
 import (
-	"fmt"
 	"github.com/pekim/dull"
 )
 
@@ -37,7 +36,6 @@ func (r *Root) sizeChange(columns int, rows int) {
 	r.view.width = columns
 	r.view.height = rows
 
-	fmt.Println("sz chg")
 	r.Layout()
 	r.Draw()
 }
@@ -49,7 +47,6 @@ func (r *Root) SetChild(child Widget) {
 }
 
 func (r *Root) Draw() {
-	fmt.Println("draw")
 	if r.child == nil {
 		return
 	}
@@ -58,7 +55,6 @@ func (r *Root) Draw() {
 }
 
 func (r *Root) Layout() {
-	fmt.Println("lay")
 	if r.child == nil {
 		return
 	}
@@ -67,6 +63,10 @@ func (r *Root) Layout() {
 }
 
 func (r *Root) charHandler(char rune, mods dull.ModifierKey) {
+	if r.child == nil {
+		return
+	}
+
 	// TODO offer to children
 
 	r.child.Draw(r.view)
