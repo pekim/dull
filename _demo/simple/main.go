@@ -133,7 +133,7 @@ func initialise(app *dull.Application, err error) {
 		//cell.SetInvert(true)
 	}
 
-	window.SetTitle("test")
+	window.SetTitle("dull - simple")
 	window.SetPosition(200, 200)
 	window.Show()
 

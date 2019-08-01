@@ -42,10 +42,18 @@ func (r *Root) SetChild(child Widget) {
 }
 
 func (r *Root) Draw() {
+	if r.child == nil {
+		return
+	}
+
 	r.child.Draw(r.view)
 }
 
 func (r *Root) Layout(v *View) {
+	if r.child == nil {
+		return
+	}
+
 	r.child.Layout(r.view)
 }
 
@@ -53,5 +61,4 @@ func (r *Root) charHandler(char rune, mods dull.ModifierKey) {
 	// TODO offer to children
 
 	r.child.Draw(r.view)
-	// TODO ask window to draw
 }
