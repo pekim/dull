@@ -287,6 +287,7 @@ func (w *Window) resized() {
 func (w *Window) drawAll() {
 	w.bgDirty = true
 	w.grid.markAllDirty()
+	w.setDirty()
 	w.draw()
 }
 

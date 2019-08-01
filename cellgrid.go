@@ -104,4 +104,6 @@ func (g *CellGrid) PrintAt(column, row int, text string) {
 
 		index++
 	}
+
+	g.dirty()
 }
