@@ -8,18 +8,14 @@ MAIN_PKG = github.com/pekim/dull
 fmt:
 	@gofmt -l -w $(SRC)
 
-install: install_tools dep_ensure install_packages
+install: install_tools install_packages
 
 install_packages:
 	go install $(TAGS) $(MAIN_PKG)
 
 install_tools:
-	go get -v -u github.com/golang/dep/...
 	go get -v -u github.com/jteeuwen/go-bindata/...
 	go get -v -u github.com/cortesi/modd/cmd/modd
-
-dep_ensure:
-	@dep ensure
 
 bindata:
 	@go generate
