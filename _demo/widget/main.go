@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/pekim/dull"
+	"github.com/pekim/dull/widget"
 )
 
 func initialise(app *dull.Application, err error) {
@@ -21,6 +22,8 @@ func initialise(app *dull.Application, err error) {
 	if err != nil {
 		panic(err)
 	}
+
+	widget.NewRoot(window, nil)
 
 	window.SetTitle("dull - widgets")
 	window.SetPosition(200, 200)

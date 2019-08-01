@@ -1,6 +1,9 @@
 package widget
 
-import "github.com/pekim/dull"
+import (
+	"fmt"
+	"github.com/pekim/dull"
+)
 
 type Root struct {
 	window *dull.Window
@@ -34,14 +37,19 @@ func (r *Root) sizeChange(columns int, rows int) {
 	r.view.width = columns
 	r.view.height = rows
 
-	r.child.Layout(r.view)
+	fmt.Println("sz chg")
+	r.Layout()
+	r.Draw()
 }
 
 func (r *Root) SetChild(child Widget) {
 	r.child = child
+	r.Layout()
+	r.Draw()
 }
 
 func (r *Root) Draw() {
+	fmt.Println("draw")
 	if r.child == nil {
 		return
 	}
@@ -49,7 +57,8 @@ func (r *Root) Draw() {
 	r.child.Draw(r.view)
 }
 
-func (r *Root) Layout(v *View) {
+func (r *Root) Layout() {
+	fmt.Println("lay")
 	if r.child == nil {
 		return
 	}
