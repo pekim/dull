@@ -26,9 +26,7 @@ func initialise(app *dull.Application, err error) {
 	root := widget.NewRoot(window, nil)
 	box := widget.NewBox()
 
-	window.Do(func() {
-		root.SetChild(box)
-	})
+	root.SetChild(box)
 
 	window.SetTitle("dull - widgets")
 	window.SetPosition(200, 200)

@@ -6,18 +6,10 @@ import (
 )
 
 type Box struct {
-	*View
 }
 
 func NewBox() *Box {
-	return &Box{
-		View: &View{
-			x:      3,
-			y:      3,
-			width:  4,
-			height: 4,
-		},
-	}
+	return &Box{}
 }
 
 func (b *Box) Draw(v *View) {
@@ -37,8 +29,4 @@ func (b *Box) Layout(v *View) {
 
 func (b *Box) PreferredSize(v *View) (int, int) {
 	return 0, 0
-}
-
-func (b *Box) view() *View {
-	return b.View
 }

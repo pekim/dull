@@ -42,8 +42,6 @@ func (r *Root) sizeChange(columns int, rows int) {
 }
 
 func (r *Root) SetChild(child Widget) {
-	child.view().window = r.window
-
 	r.child = child
 	r.Layout()
 	r.Draw()
