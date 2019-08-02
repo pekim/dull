@@ -21,6 +21,11 @@ func (b *Box) Draw(v *View) {
 
 	cell.SetFg(dull.NewColor(0.0, 0.0, 0.0, 1.0))
 	cell.SetRune('A')
+
+	_, height := v.Size()
+	text := "The quick brown for jumped over the lazy dog."
+	v.PrintAt(0, 0, text)
+	v.PrintAt(0, height-1, text)
 }
 
 func (b *Box) Layout(v *View) {

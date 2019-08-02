@@ -94,12 +94,12 @@ func (g *CellGrid) markAllDirty() {
 func (g *CellGrid) PrintAt(column, row int, text string) {
 	index := (row * g.width) + column
 
-	for _, rune := range text {
+	for _, r := range text {
 		if index < 0 || index >= len(g.cells) {
 			return
 		}
 
-		g.cells[index].rune = rune
+		g.cells[index].rune = r
 		g.cells[index].dirty = true
 
 		index++
