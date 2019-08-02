@@ -34,7 +34,7 @@ type Cursor struct {
 type CursorId int
 
 func (c *Cursor) setCellDirty() {
-	cell, _ := c.window.grid.GetCell(c.column, c.row)
+	cell, _ := c.window.grid.Cell(c.column, c.row)
 	if cell == nil {
 		return
 	}

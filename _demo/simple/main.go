@@ -41,7 +41,7 @@ func initialise(app *dull.Application, err error) {
 	cursorUnder.SetVisible(true)
 	window.Cursors().Add(cursorUnder)
 
-	// cell, err := window.Grid().GetCell(7, 2)
+	// cell, err := window.Grid().Cell(7, 2)
 	// if err == nil {
 	// 	cell.invert = true
 	// }
@@ -62,13 +62,13 @@ func initialise(app *dull.Application, err error) {
 	}
 
 	renderFontVariations := func() {
-		cell, _ := window.Grid().GetCell(2, 4)
+		cell, _ := window.Grid().Cell(2, 4)
 		if cell == nil {
 			return
 		}
 		cell.SetRune('F')
 
-		cell, _ = window.Grid().GetCell(3, 4)
+		cell, _ = window.Grid().Cell(3, 4)
 		if cell == nil {
 			return
 		}
@@ -77,14 +77,14 @@ func initialise(app *dull.Application, err error) {
 		cell.SetFg(dull.NewColor(0.7, 0.0, 0.2, 1.0))
 		cell.SetBg(dull.NewColor(0.7, 0.7, 0.9, 1.0))
 
-		cell, _ = window.Grid().GetCell(4, 4)
+		cell, _ = window.Grid().Cell(4, 4)
 		if cell == nil {
 			return
 		}
 		cell.SetRune('F')
 		cell.SetItalic(true)
 
-		cell, _ = window.Grid().GetCell(5, 4)
+		cell, _ = window.Grid().Cell(5, 4)
 		if cell == nil {
 			return
 		}
@@ -95,7 +95,7 @@ func initialise(app *dull.Application, err error) {
 
 	renderAdditionalVariations := func() {
 		for r, rune := range "Mighty Oaks." {
-			cell, err := window.Grid().GetCell(2+r, 6)
+			cell, err := window.Grid().Cell(2+r, 6)
 			if err != nil {
 				return
 			}
@@ -105,7 +105,7 @@ func initialise(app *dull.Application, err error) {
 		}
 
 		for r, rune := range "Mighty Oaks." {
-			cell, err := window.Grid().GetCell(2+r, 7)
+			cell, err := window.Grid().Cell(2+r, 7)
 			if err != nil {
 				return
 			}
@@ -128,7 +128,7 @@ func initialise(app *dull.Application, err error) {
 		renderFontVariations()
 		renderAdditionalVariations()
 
-		//cell, _ := window.Grid().GetCell(1, 1)
+		//cell, _ := window.Grid().Cell(1, 1)
 		//cell.SetRune('\u2295')
 		//cell.SetInvert(true)
 	}
@@ -177,13 +177,13 @@ func initialise(app *dull.Application, err error) {
 	// 	t := time.Tick(1 * time.Second)
 	// 	for range t {
 	// 		window.Do(func() {
-	// 			cell, err := window.Grid().GetCell(0, 0)
+	// 			cell, err := window.Grid().Cell(0, 0)
 	// 			if err == nil {
 	// 				cell.invert = !cell.invert
 	// 				cell.MarkDirty()
 	// 			}
 
-	// 			cell2, err := window.Grid().GetCell(7, 2)
+	// 			cell2, err := window.Grid().Cell(7, 2)
 	// 			if err == nil {
 	// 				cell2.invert = !cell2.invert
 	// 				cell2.MarkDirty()

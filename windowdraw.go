@@ -109,7 +109,7 @@ func (w *Window) addCursorsToVertices() {
 
 func (w *Window) addCursorToVertices(cursor *Cursor) {
 	if cursor.visible && cursor.typ == CursorTypeUnder {
-		cell, _ := w.grid.GetCell(cursor.column, cursor.row)
+		cell, _ := w.grid.Cell(cursor.column, cursor.row)
 		if cell != nil {
 			w.addUnderCursorToCellVertices(cell, cursor)
 		}

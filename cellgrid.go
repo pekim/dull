@@ -47,8 +47,8 @@ func (g *CellGrid) Size() (columns int, rows int) {
 	return g.width, g.height
 }
 
-// GetCell gets a Cell at a particular column and row.
-func (g *CellGrid) GetCell(column, row int) (*Cell, error) {
+// Cell gets a Cell at a particular column and row.
+func (g *CellGrid) Cell(column, row int) (*Cell, error) {
 	index := (row * g.width) + column
 	if index >= len(g.cells) {
 		return nil, fmt.Errorf("Cell at %d,%d exceeds grid bounds of 0,0 to %d,%d",

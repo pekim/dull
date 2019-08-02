@@ -25,6 +25,7 @@ func NewRoot(window *dull.Window, child Widget) *Root {
 		child:  child,
 		view:   view,
 	}
+	r.view.window = window
 
 	window.SetGridSizeCallback(r.sizeChange)
 	window.SetCharCallback(r.charHandler)
@@ -41,6 +42,8 @@ func (r *Root) sizeChange(columns int, rows int) {
 }
 
 func (r *Root) SetChild(child Widget) {
+	child.view().window = r.window
+
 	r.child = child
 	r.Layout()
 	r.Draw()
