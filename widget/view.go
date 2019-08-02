@@ -40,17 +40,17 @@ func (v *View) Cell(x, y int) (*dull.Cell, error) {
 //
 // It will be clipped to the View.
 // Only a single row will be printed; no wrapping is performed;
-func (v *View) PrintAt(x, y int, text string) {
-	//if y < 0 || y >= v.height {
-	//	return
-	//}
-
+func (v *View) PrintAt(x, y int, text string, options *dull.CellOptions) {
 	for _, r := range text {
 		cell, err := v.Cell(x, y)
 		if err != nil {
 			break
 		}
+
 		cell.SetRune(r)
+		if options != nil {
+			cell.ApplyOptions(options)
+		}
 
 		x++
 	}

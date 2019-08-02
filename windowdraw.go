@@ -48,6 +48,7 @@ func (w *Window) draw() {
 	w.glfwWindow.SwapBuffers()
 
 	w.lastRenderDuration = time.Now().Sub(startTime)
+	//fmt.Printf("%.1fms\n", w.lastRenderDuration.Seconds()*1000)
 }
 
 func (w *Window) addBordersToVertices() {

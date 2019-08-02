@@ -1,5 +1,15 @@
 package dull
 
+type CellOptions struct {
+	Fg            Color
+	Bg            Color
+	Bold          bool
+	Italic        bool
+	Underline     bool
+	Strikethrough bool
+	Invert        bool
+}
+
 // Cell represents a single cell in a grid of Cells, that are displayed in a window.
 //
 // Fields in a Cell may be modified in a callback that runs on the main thread.
@@ -77,5 +87,17 @@ func (c *Cell) SetStrikethrough(strikethrough bool) {
 
 func (c *Cell) SetInvert(invert bool) {
 	c.invert = invert
+	c.setDirty()
+}
+
+func (c *Cell) ApplyOptions(options *CellOptions) {
+	c.fg = options.Fg
+	c.bg = options.Bg
+	c.bold = options.Bold
+	c.invert = options.Invert
+	c.italic = options.Italic
+	c.strikethrough = options.Strikethrough
+	c.underline = options.Underline
+
 	c.setDirty()
 }
