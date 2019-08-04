@@ -14,10 +14,12 @@ func NewRoot(window *dull.Window, child Widget) *Root {
 	columns, rows := window.Grid().Size()
 
 	view := &View{
-		x:      0,
-		y:      0,
-		width:  columns,
-		height: rows,
+		bounds: bounds{
+			x:      0,
+			y:      0,
+			width:  columns,
+			height: rows,
+		},
 	}
 
 	r := &Root{

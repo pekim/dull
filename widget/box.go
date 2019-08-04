@@ -16,9 +16,11 @@ func (b *Box) Draw(v *View) {
 	white := dull.NewColor(1.0, 1.0, 1.0, 1.0)
 	darkGreen := dull.NewColor(0.0, 0.3, 0.0, 1.0)
 
-	cell, _ := v.Cell(2, 2)
-	cell.SetFg(black)
-	cell.SetRune('A')
+	cell, err := v.Cell(2, 2)
+	if err == nil {
+		cell.SetFg(black)
+		cell.SetRune('A')
+	}
 
 	_, height := v.Size()
 	text := "The quick brown for jumped over the lazy dog."
@@ -35,6 +37,6 @@ func (b *Box) Layout(v *View) {
 
 }
 
-func (b *Box) PreferredSize(v *View) (int, int) {
+func (b *Box) PreferredSize() (int, int) {
 	return 0, 0
 }

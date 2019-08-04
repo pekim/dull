@@ -13,10 +13,7 @@ only those within the view.
 */
 type View struct {
 	window *dull.Window
-	x      int
-	y      int
-	width  int
-	height int
+	bounds
 }
 
 // Size returns the width and height of the View.
