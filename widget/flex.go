@@ -58,6 +58,7 @@ func (f *Flex) Layout(v *View) {
 		}
 	}
 
+	// distribute space
 	spaceForDistribution := v.width - totalFixedSize
 	x := 0
 	widthRemaining := v.width
@@ -71,11 +72,8 @@ func (f *Flex) Layout(v *View) {
 			}
 		} else {
 			_, height = child.widget.PreferredSize()
-			width = (child.options.Proportion / totalProportion) * spaceForDistribution
+			width = child.options.Proportion * spaceForDistribution / totalProportion
 		}
-
-		x += width
-		widthRemaining = widthRemaining - width
 
 		if height > v.height {
 			height = v.height
@@ -87,9 +85,12 @@ func (f *Flex) Layout(v *View) {
 			width:  width,
 			height: height,
 		}
+
+		x += width
+		widthRemaining = widthRemaining - width
 	}
 }
 
-func (f *Flex) PreferredSize(v *View) (int, int) {
+func (f *Flex) PreferredSize() (int, int) {
 	return 0, 0
 }
