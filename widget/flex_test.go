@@ -31,41 +31,72 @@ func TestFlexLayout(t *testing.T) {
 		expected bounds
 	}
 
-	addChild := func(flex *Flex, child testChild) {
-		flex.Add(
-			&flexTestChild{
-				width:  child.width,
-				height: child.height,
+	tests := []struct {
+		name     string
+		children []testChild
+	}{
+		{
+			"fixed only",
+			[]testChild{
+				{10, 50, true, 0,
+					bounds{0, 0, 10, 50}},
+				{20, 50, true, 0,
+					bounds{10, 0, 20, 50}},
+				{30, 50, true, 0,
+					bounds{30, 0, 30, 50}},
 			},
-			FlexChildOptions{
-				FixedSize:  child.fixed,
-				Proportion: child.proportion,
-			},
-		)
-	}
-
-	testChildren := []testChild{
-		{10, 50, false, 1,
-			bounds{0, 0, 30, 50}},
-		{10, 50, true, 0,
-			bounds{30, 0, 10, 50}},
-		{10, 50, false, 2,
-			bounds{40, 0, 60, 50}},
-	}
-
-	flex := NewFlex(FlexHorizontal)
-	for _, child := range testChildren {
-		addChild(flex, child)
-	}
-
-	flex.Layout(&View{
-		bounds: bounds{
-			x: 0, y: 0,
-			width: 100, height: 100,
 		},
-	})
+		{
+			"proportions only",
+			[]testChild{
+				{10, 50, false, 1,
+					bounds{0, 0, 10, 50}},
+				{10, 50, false, 7,
+					bounds{10, 0, 70, 50}},
+				{10, 50, false, 2,
+					bounds{80, 0, 20, 50}},
+			},
+		},
+		{
+			"mix of fixed & proportions",
+			[]testChild{
+				{10, 50, false, 1,
+					bounds{0, 0, 30, 50}},
+				{10, 50, true, 0,
+					bounds{30, 0, 10, 50}},
+				{10, 50, false, 2,
+					bounds{40, 0, 60, 50}},
+			},
+		},
+	}
 
-	for c, child := range flex.children {
-		assert.Equal(t, testChildren[c].expected, child.view)
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			flex := NewFlex(FlexHorizontal)
+
+			for _, child := range test.children {
+				flex.Add(
+					&flexTestChild{
+						width:  child.width,
+						height: child.height,
+					},
+					FlexChildOptions{
+						FixedSize:  child.fixed,
+						Proportion: child.proportion,
+					},
+				)
+			}
+
+			flex.Layout(&View{
+				bounds: bounds{
+					x: 0, y: 0,
+					width: 100, height: 100,
+				},
+			})
+
+			for c, child := range flex.children {
+				assert.Equal(t, test.children[c].expected, child.view)
+			}
+		})
 	}
 }
