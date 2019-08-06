@@ -72,7 +72,7 @@ func TestFlexLayout(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			flex := NewFlex(FlexHorizontal)
+			flex := NewFlex(DirectionHorizontal)
 
 			for _, child := range test.children {
 				flex.Add(

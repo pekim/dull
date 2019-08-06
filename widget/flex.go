@@ -1,12 +1,5 @@
 package widget
 
-type FlexDirection int
-
-const (
-	FlexHorizontal FlexDirection = iota
-	FlexVertical
-)
-
 type FlexChildOptions struct {
 	FixedSize  bool
 	Proportion int
@@ -42,8 +35,8 @@ func (f *Flex) Draw(v *View) {
 }
 
 func (f *Flex) Layout(v *View) {
-	if f.direction == FlexVertical {
-		panic("FlexVertical not yet supported")
+	if f.direction == DirectionVertical {
+		panic("DirectionVertical not yet supported")
 	}
 
 	// gather child preferences
