@@ -23,7 +23,7 @@ func (b *Box) Draw(v *View) {
 	}
 
 	_, height := v.Size()
-	text := "The quick brown for jumped over the lazy dog."
+	text := "The quick brown fox jumped over the lazy dog."
 	options := &dull.CellOptions{
 		Fg:     white,
 		Bg:     darkGreen,
