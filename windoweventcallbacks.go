@@ -2,6 +2,7 @@ package dull
 
 import (
 	"github.com/go-gl/glfw/v3.2/glfw"
+	"github.com/pekim/dull/geometry"
 )
 
 // GridSizeCallback is a function for use with SetGridSizeCallback.
@@ -57,18 +58,53 @@ func (w *Window) callKeyCallback(_ *glfw.Window,
 }
 
 func (w *Window) handleDefaultKeys(key Key, action Action, mods ModifierKey) {
-	if mods == ModControl && (action == Press || action == Repeat) {
-		switch key {
-		case Key0, KeyKP0:
-			// reset zoom
-			w.setFontSize(defaultFontSize - w.fontSize)
-		case KeyMinus, KeyKPSubtract:
-			// zoom out
-			w.setFontSize(-fontZoomDelta)
-		case KeyEqual, KeyKPAdd:
-			// zoom in
-			w.setFontSize(+fontZoomDelta)
+	if action == Press || action == Repeat {
+		if mods == ModControl {
+			switch key {
+			case Key0, KeyKP0:
+				// reset zoom
+				w.setFontSize(defaultFontSize - w.fontSize)
+			case KeyMinus, KeyKPSubtract:
+				// zoom out
+				w.setFontSize(-fontZoomDelta)
+			case KeyEqual, KeyKPAdd:
+				// zoom in
+				w.setFontSize(+fontZoomDelta)
+			}
 		}
+
+		if (mods == ModAlt && key == KeyF) || (mods == 0 && key == KeyF11) {
+			w.ToggleFullscreen()
+		}
+	}
+}
+
+func (w *Window) ToggleFullscreen() {
+	videoMode := glfw.GetPrimaryMonitor().GetVideoMode()
+
+	if w.glfwWindow.GetMonitor() == nil {
+		// preserve current windowed bounds
+		x, y := w.glfwWindow.GetPos()
+		width, height := w.glfwWindow.GetSize()
+		w.windowedBounds = geometry.RectNewLTWH(x, y, width, height)
+
+		// make fullscreen
+		w.glfwWindow.SetMonitor(glfw.GetPrimaryMonitor(),
+			0, 0,
+			videoMode.Width, videoMode.Height,
+			videoMode.RefreshRate,
+		)
+	} else {
+		// make windowed.
+		w.glfwWindow.SetMonitor(nil,
+			w.windowedBounds.Left, w.windowedBounds.Top,
+			w.windowedBounds.Width(), w.windowedBounds.Height(),
+			videoMode.RefreshRate,
+		)
+
+		// Need to set this again, because it appears to no longer be honoured
+		// after window has been fullscreened and then windowed again..
+		w.setResizeIncrement()
 	}
 }
 

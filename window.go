@@ -1,6 +1,7 @@
 package dull
 
 import (
+	"github.com/pekim/dull/geometry"
 	"math"
 	"time"
 
@@ -27,6 +28,7 @@ type Window struct {
 	program            uint32
 	lastRenderDuration time.Duration
 	dirty              bool
+	windowedBounds     *geometry.Rect
 
 	bg      Color
 	fg      Color
