@@ -2,6 +2,7 @@ package widget
 
 import (
 	"github.com/pekim/dull"
+	"golang.org/x/text/unicode/norm"
 )
 
 type Box struct {
@@ -23,7 +24,8 @@ func (b *Box) Draw(v *View) {
 	}
 
 	_, height := v.Size()
-	text := "The quick brown fox jumped over the lazy dog."
+	text := "The quick brown\u0303 fox jumped over the lazy dog."
+	text = norm.NFC.String(text)
 	options := &dull.CellOptions{
 		Fg:     white,
 		Bg:     darkGreen,

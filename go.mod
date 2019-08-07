@@ -8,4 +8,5 @@ require (
 	github.com/go-gl/glfw v0.0.0-20190409004039-e6da0acd62b1
 	github.com/pkg/errors v0.8.1
 	github.com/stretchr/testify v1.3.0
+	golang.org/x/text v0.3.2
 )
