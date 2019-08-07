@@ -34,7 +34,7 @@ type Window struct {
 	program            uint32
 	lastRenderDuration time.Duration
 	dirty              bool
-	windowedBounds     *geometry.Rect
+	windowedBounds     geometry.Rect
 	keybindings        []keybinding
 
 	bg      Color
@@ -286,8 +286,8 @@ func (w *Window) resized() {
 	w.viewportCellWidth = float32(w.fontFamily.CellWidth) / float32(w.width) * 2
 	w.viewportCellHeight = float32(w.fontFamily.CellHeight) / float32(w.height) * 2
 
-	columns := w.width / int(w.viewportCellWidthPixel)
-	rows := w.height / int(w.viewportCellHeightPixel)
+	columns := w.width / w.viewportCellWidthPixel
+	rows := w.height / w.viewportCellHeightPixel
 	w.grid = newCellGrid(columns, rows, w.bg, w.fg, w.setDirty)
 
 	w.callGridSizeCallback()

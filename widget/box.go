@@ -2,6 +2,7 @@ package widget
 
 import (
 	"github.com/pekim/dull"
+	"github.com/pekim/dull/geometry"
 	"golang.org/x/text/unicode/norm"
 )
 
@@ -12,7 +13,14 @@ func NewBox() *Box {
 	return &Box{}
 }
 
-func (b *Box) Draw(v *View) {
+func (c *Box) Constrain(constraint Constraint) geometry.Size {
+	return constraint.Constrain(geometry.Size{
+		Width:  0,
+		Height: 0,
+	})
+}
+
+func (b *Box) Paint(v *View) {
 	black := dull.NewColor(0.0, 0.0, 0.0, 1.0)
 	white := dull.NewColor(1.0, 1.0, 1.0, 1.0)
 	darkGreen := dull.NewColor(0.0, 0.3, 0.0, 1.0)
@@ -23,7 +31,6 @@ func (b *Box) Draw(v *View) {
 		cell.SetRune('A')
 	}
 
-	_, height := v.Size()
 	text := "The quick brown\u0303 fox jumped over the lazy dog."
 	text = norm.NFC.String(text)
 	options := &dull.CellOptions{
@@ -32,13 +39,13 @@ func (b *Box) Draw(v *View) {
 		Italic: true,
 	}
 	v.PrintAt(0, 0, text, nil)
-	v.PrintAt(0, height-1, text, options)
+	v.PrintAt(0, v.Size.Height-1, text, options)
 }
 
-func (b *Box) Layout(v *View) {
-
-}
-
-func (b *Box) PreferredSize() (int, int) {
-	return 0, 0
-}
+//func (b *Box) Layout(v *View) {
+//
+//}
+//
+//func (b *Box) PreferredSize() (int, int) {
+//	return 0, 0
+//}

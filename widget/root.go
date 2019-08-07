@@ -2,6 +2,7 @@ package widget
 
 import (
 	"github.com/pekim/dull"
+	"github.com/pekim/dull/geometry"
 )
 
 type Root struct {
@@ -14,12 +15,7 @@ func NewRoot(window *dull.Window, child Widget) *Root {
 	columns, rows := window.Grid().Size()
 
 	view := &View{
-		bounds: bounds{
-			x:      0,
-			y:      0,
-			width:  columns,
-			height: rows,
-		},
+		Rect: geometry.RectNewXYWH(0, 0, columns, rows),
 	}
 
 	r := &Root{
@@ -36,25 +32,25 @@ func NewRoot(window *dull.Window, child Widget) *Root {
 }
 
 func (r *Root) sizeChange(columns int, rows int) {
-	r.view.width = columns
-	r.view.height = rows
+	r.view.Size.Width = columns
+	r.view.Size.Height = rows
 
 	r.Layout()
-	r.Draw()
+	r.Paint()
 }
 
 func (r *Root) SetChild(child Widget) {
 	r.child = child
 	r.Layout()
-	r.Draw()
+	r.Paint()
 }
 
-func (r *Root) Draw() {
+func (r *Root) Paint() {
 	if r.child == nil {
 		return
 	}
 
-	r.child.Draw(r.view)
+	r.child.Paint(r.view)
 }
 
 func (r *Root) Layout() {
@@ -62,7 +58,7 @@ func (r *Root) Layout() {
 		return
 	}
 
-	r.child.Layout(r.view)
+	//r.child.Constrain(r.view.Size)
 }
 
 func (r *Root) charHandler(char rune, mods dull.ModifierKey) {
@@ -72,5 +68,5 @@ func (r *Root) charHandler(char rune, mods dull.ModifierKey) {
 
 	// TODO offer to children
 
-	r.child.Draw(r.view)
+	r.child.Paint(r.view)
 }

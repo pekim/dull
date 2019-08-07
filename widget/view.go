@@ -3,6 +3,7 @@ package widget
 import (
 	"fmt"
 	"github.com/pekim/dull"
+	"github.com/pekim/dull/geometry"
 )
 
 /*
@@ -13,20 +14,15 @@ only those within the view.
 */
 type View struct {
 	window *dull.Window
-	bounds
-}
-
-// Size returns the width and height of the View.
-func (v *View) Size() (int, int) {
-	return v.width, v.height
+	geometry.Rect
 }
 
 // Cell gets a Cell at a particular position within the View.
 func (v *View) Cell(x, y int) (*dull.Cell, error) {
-	if x < 0 || x >= v.width ||
-		y < 0 || y >= v.height {
+	if x < 0 || x >= v.Size.Width ||
+		y < 0 || y >= v.Size.Height {
 		return nil, fmt.Errorf("Cell at %d,%d exceeds view size of %d,%d",
-			x, y, v.width, v.height)
+			x, y, v.Size.Width, v.Size.Height)
 	}
 
 	return v.window.Grid().Cell(x, y)

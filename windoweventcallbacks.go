@@ -79,10 +79,6 @@ func (w *Window) windowZoomOut() {
 	w.setFontSize(-fontZoomDelta)
 }
 
-func windowToggleFullscreen(w *Window) {
-	w.ToggleFullscreen()
-}
-
 func (w *Window) ToggleFullscreen() {
 	videoMode := glfw.GetPrimaryMonitor().GetVideoMode()
 
@@ -90,7 +86,7 @@ func (w *Window) ToggleFullscreen() {
 		// preserve current windowed bounds
 		x, y := w.glfwWindow.GetPos()
 		width, height := w.glfwWindow.GetSize()
-		w.windowedBounds = geometry.RectNewLTWH(x, y, width, height)
+		w.windowedBounds = geometry.RectNewXYWH(x, y, width, height)
 
 		// make fullscreen
 		w.glfwWindow.SetMonitor(glfw.GetPrimaryMonitor(),
@@ -101,8 +97,8 @@ func (w *Window) ToggleFullscreen() {
 	} else {
 		// make windowed.
 		w.glfwWindow.SetMonitor(nil,
-			w.windowedBounds.Left, w.windowedBounds.Top,
-			w.windowedBounds.Width(), w.windowedBounds.Height(),
+			w.windowedBounds.Position.X, w.windowedBounds.Position.Y,
+			w.windowedBounds.Size.Width, w.windowedBounds.Size.Height,
 			videoMode.RefreshRate,
 		)
 

@@ -1,24 +1,24 @@
 package widget
 
 import (
+	"github.com/pekim/dull/geometry"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
 type flexTestChild struct {
-	width  int
-	height int
+	geometry.Size
 }
 
-func (c *flexTestChild) Draw(v *View) {
+func (c *flexTestChild) Paint(v *View) {
 }
 
-func (c *flexTestChild) Layout(v *View) {
-
+func (c *flexTestChild) Constrain(constraint Constraint) geometry.Size {
+	return constraint.Constrain(c.Size)
 }
 
 func (c *flexTestChild) PreferredSize() (int, int) {
-	return c.width, c.height
+	return c.Width, c.Height
 }
 
 func TestFlexLayout(t *testing.T) {
@@ -28,7 +28,7 @@ func TestFlexLayout(t *testing.T) {
 		fixed      bool
 		proportion int
 
-		expected bounds
+		expected geometry.Rect
 	}
 
 	tests := []struct {
@@ -39,33 +39,33 @@ func TestFlexLayout(t *testing.T) {
 			"fixed only",
 			[]testChild{
 				{10, 50, true, 0,
-					bounds{0, 0, 10, 50}},
+					geometry.RectNewXYWH(0, 0, 10, 50)},
 				{20, 50, true, 0,
-					bounds{10, 0, 20, 50}},
+					geometry.RectNewXYWH(10, 0, 20, 50)},
 				{30, 50, true, 0,
-					bounds{30, 0, 30, 50}},
+					geometry.RectNewXYWH(30, 0, 30, 50)},
 			},
 		},
 		{
 			"proportions only",
 			[]testChild{
 				{10, 50, false, 1,
-					bounds{0, 0, 10, 50}},
+					geometry.RectNewXYWH(0, 0, 10, 50)},
 				{10, 50, false, 7,
-					bounds{10, 0, 70, 50}},
+					geometry.RectNewXYWH(10, 0, 70, 50)},
 				{10, 50, false, 2,
-					bounds{80, 0, 20, 50}},
+					geometry.RectNewXYWH(80, 0, 20, 50)},
 			},
 		},
 		{
 			"mix of fixed & proportions",
 			[]testChild{
 				{10, 50, false, 1,
-					bounds{0, 0, 30, 50}},
+					geometry.RectNewXYWH(0, 0, 30, 50)},
 				{10, 50, true, 0,
-					bounds{30, 0, 10, 50}},
+					geometry.RectNewXYWH(30, 0, 10, 50)},
 				{10, 50, false, 2,
-					bounds{40, 0, 60, 50}},
+					geometry.RectNewXYWH(40, 0, 60, 50)},
 			},
 		},
 	}
@@ -77,8 +77,10 @@ func TestFlexLayout(t *testing.T) {
 			for _, child := range test.children {
 				flex.Add(
 					&flexTestChild{
-						width:  child.width,
-						height: child.height,
+						Size: geometry.Size{
+							Width:  child.width,
+							Height: child.height,
+						},
 					},
 					FlexChildOptions{
 						FixedSize:  child.fixed,
@@ -88,10 +90,7 @@ func TestFlexLayout(t *testing.T) {
 			}
 
 			flex.Layout(&View{
-				bounds: bounds{
-					x: 0, y: 0,
-					width: 100, height: 100,
-				},
+				Rect: geometry.RectNewXYWH(0, 0, 100, 100),
 			})
 
 			for c, child := range flex.children {
