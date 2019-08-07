@@ -14,6 +14,12 @@ import (
 const defaultFontSize = 16
 const fontZoomDelta = 0.75
 
+type keybinding struct {
+	key  Key
+	mods ModifierKey
+	fn   func()
+}
+
 // Window represents an X window.
 //
 // Use Application.NewWindow to create a Window.
@@ -29,6 +35,7 @@ type Window struct {
 	lastRenderDuration time.Duration
 	dirty              bool
 	windowedBounds     *geometry.Rect
+	keybindings        []keybinding
 
 	bg      Color
 	fg      Color
@@ -96,6 +103,7 @@ func newWindow(application *Application, options *WindowOptions) (*Window, error
 	w.borders = newBorders(w.setDirty)
 	w.grid = newCellGrid(0, 0, w.bg, w.fg, w.setDirty)
 	w.cursors = newCursors(w)
+	w.setKeybindings()
 
 	err := w.createWindow(options)
 	if err != nil {
@@ -317,4 +325,20 @@ func (w *Window) Do(fn func()) {
 // It is provided for informational purpose only.
 func (w *Window) LastRenderDuration() time.Duration {
 	return w.lastRenderDuration
+}
+
+func (w *Window) setKeybindings() {
+	w.keybindings = []keybinding{
+		// zoom
+		{key: Key0, mods: ModControl, fn: w.windowZoomReset},
+		{key: KeyKP0, mods: ModControl, fn: w.windowZoomReset},
+		{key: KeyEqual, mods: ModControl, fn: w.windowZoomIn},
+		{key: KeyKPAdd, mods: ModControl, fn: w.windowZoomIn},
+		{key: KeyMinus, mods: ModControl, fn: w.windowZoomOut},
+		{key: KeyKPSubtract, mods: ModControl, fn: w.windowZoomOut},
+
+		// fullscreen
+		{key: KeyF, mods: ModAlt | ModControl, fn: w.ToggleFullscreen},
+		{key: KeyF11, mods: 0, fn: w.ToggleFullscreen},
+	}
 }

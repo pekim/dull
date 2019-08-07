@@ -49,7 +49,7 @@ func (w *Window) SetKeyCallback(fn KeyCallback) {
 func (w *Window) callKeyCallback(_ *glfw.Window,
 	key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey,
 ) {
-	w.handleDefaultKeys(Key(key), Action(action), ModifierKey(mods))
+	w.handleKeyEvent(Key(key), Action(action), ModifierKey(mods))
 
 	if w.keyCallback != nil {
 		w.keyCallback(Key(key), Action(action), ModifierKey(mods))
@@ -57,26 +57,30 @@ func (w *Window) callKeyCallback(_ *glfw.Window,
 	}
 }
 
-func (w *Window) handleDefaultKeys(key Key, action Action, mods ModifierKey) {
+func (w *Window) handleKeyEvent(key Key, action Action, mods ModifierKey) {
 	if action == Press || action == Repeat {
-		if mods == ModControl {
-			switch key {
-			case Key0, KeyKP0:
-				// reset zoom
-				w.setFontSize(defaultFontSize - w.fontSize)
-			case KeyMinus, KeyKPSubtract:
-				// zoom out
-				w.setFontSize(-fontZoomDelta)
-			case KeyEqual, KeyKPAdd:
-				// zoom in
-				w.setFontSize(+fontZoomDelta)
+		for _, binding := range w.keybindings {
+			if key == binding.key && mods == binding.mods {
+				binding.fn()
 			}
 		}
-
-		if (mods == ModAlt && key == KeyF) || (mods == 0 && key == KeyF11) {
-			w.ToggleFullscreen()
-		}
 	}
+}
+
+func (w *Window) windowZoomReset() {
+	w.setFontSize(defaultFontSize - w.fontSize)
+}
+
+func (w *Window) windowZoomIn() {
+	w.setFontSize(+fontZoomDelta)
+}
+
+func (w *Window) windowZoomOut() {
+	w.setFontSize(-fontZoomDelta)
+}
+
+func windowToggleFullscreen(w *Window) {
+	w.ToggleFullscreen()
 }
 
 func (w *Window) ToggleFullscreen() {
