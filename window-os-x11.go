@@ -12,6 +12,14 @@ import (
 	"unsafe"
 )
 
+// setResizeIncrement sets the Window's X11 window's window manager
+// hints, requesting that the window be resized in increments matching
+// the cell size.
+//
+// This should result in the window being resized horizontally to match
+// the width of cells.
+// And it should be resized vertically to match the height of cells.
+// The window's client area should always be a whole number of cells.
 func (w *Window) setResizeIncrement() {
 	xDisplay := glfw.GetX11Display()
 	xWindow := w.glfwWindow.GetX11Window()
