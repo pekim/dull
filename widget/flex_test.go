@@ -32,11 +32,13 @@ func TestFlexLayout(t *testing.T) {
 	}
 
 	tests := []struct {
-		name     string
-		children []testChild
+		name      string
+		direction FlexDirection
+		children  []testChild
 	}{
 		{
-			"fixed only",
+			"fixed only - horizontal",
+			DirectionHorizontal,
 			[]testChild{
 				{10, 50, true, 0,
 					geometry.RectNewXYWH(0, 0, 10, 50)},
@@ -47,7 +49,20 @@ func TestFlexLayout(t *testing.T) {
 			},
 		},
 		{
-			"proportions only",
+			"fixed only - vertical",
+			DirectionVertical,
+			[]testChild{
+				{50, 10, true, 0,
+					geometry.RectNewXYWH(0, 0, 50, 10)},
+				{50, 20, true, 0,
+					geometry.RectNewXYWH(0, 10, 50, 20)},
+				{50, 30, true, 0,
+					geometry.RectNewXYWH(0, 30, 50, 30)},
+			},
+		},
+		{
+			"proportions only - horizontal",
+			DirectionHorizontal,
 			[]testChild{
 				{10, 50, false, 1,
 					geometry.RectNewXYWH(0, 0, 10, 50)},
@@ -58,7 +73,20 @@ func TestFlexLayout(t *testing.T) {
 			},
 		},
 		{
-			"mix of fixed & proportions",
+			"proportions only - vertical",
+			DirectionVertical,
+			[]testChild{
+				{50, 10, false, 1,
+					geometry.RectNewXYWH(0, 0, 50, 10)},
+				{50, 10, false, 7,
+					geometry.RectNewXYWH(0, 10, 50, 70)},
+				{50, 10, false, 2,
+					geometry.RectNewXYWH(0, 80, 50, 20)},
+			},
+		},
+		{
+			"mix of fixed & proportions - horizontal",
+			DirectionHorizontal,
 			[]testChild{
 				{10, 50, false, 1,
 					geometry.RectNewXYWH(0, 0, 30, 50)},
@@ -68,11 +96,23 @@ func TestFlexLayout(t *testing.T) {
 					geometry.RectNewXYWH(40, 0, 60, 50)},
 			},
 		},
+		{
+			"mix of fixed & proportions - vertical",
+			DirectionVertical,
+			[]testChild{
+				{50, 10, false, 1,
+					geometry.RectNewXYWH(0, 0, 50, 30)},
+				{50, 10, true, 0,
+					geometry.RectNewXYWH(0, 30, 50, 10)},
+				{50, 10, false, 2,
+					geometry.RectNewXYWH(0, 40, 50, 60)},
+			},
+		},
 	}
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			flex := NewFlex(DirectionHorizontal)
+			flex := NewFlex(test.direction)
 
 			for _, child := range test.children {
 				flex.Add(

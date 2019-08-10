@@ -25,7 +25,8 @@ func initialise(app *dull.Application, err error) {
 
 	root := widget.NewRoot(window, nil)
 
-	flex := widget.NewFlex(widget.DirectionHorizontal)
+	//flex := widget.NewFlex(widget.DirectionHorizontal)
+	flex := widget.NewFlex(widget.DirectionVertical)
 
 	flex.Add(widget.NewLabel("One", nil), widget.FlexChildOptions{
 		FixedSize:  true,

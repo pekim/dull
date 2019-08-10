@@ -53,9 +53,16 @@ func (f *Flex) Constrain(constraint Constraint) geometry.Size {
 
 func (f *Flex) layout(v *View) {
 	if f.direction == DirectionVertical {
-		panic("DirectionVertical not yet supported")
+		f.layoutVertical(v)
+	} else {
+		f.layoutVertical(v)
 	}
+}
 
+func (f *Flex) layoutHorizontal(v *View) {
+}
+
+func (f *Flex) layoutVertical(v *View) {
 	// gather child preferences
 	var totalFixedSize int
 	var totalProportion int
@@ -66,38 +73,80 @@ func (f *Flex) layout(v *View) {
 				Max: v.Size,
 			}
 			size := child.widget.Constrain(constraint)
-			totalFixedSize += size.Width
+			if f.direction == DirectionVertical {
+				totalFixedSize += size.Height
+			} else {
+				totalFixedSize += size.Width
+			}
 		} else {
 			totalProportion += child.options.Proportion
 		}
 	}
 
 	// distribute space
-	spaceForDistribution := v.Size.Width - totalFixedSize
-	x := 0
-	widthRemaining := v.Size.Width
+	var spaceForDistribution int
+	if f.direction == DirectionVertical {
+		spaceForDistribution = v.Size.Height - totalFixedSize
+	} else {
+		spaceForDistribution = v.Size.Width - totalFixedSize
+	}
+	pos := 0
+	var remaining int
+	if f.direction == DirectionVertical {
+		remaining = v.Size.Height
+	} else {
+		remaining = v.Size.Width
+	}
 	for _, child := range f.children {
+		var max geometry.Size
+		if f.direction == DirectionVertical {
+			max = geometry.Size{v.Size.Width, remaining}
+		} else {
+			max = geometry.Size{remaining, v.Size.Height}
+		}
 		constraint := Constraint{
 			Min: geometry.Size{0, 0},
-			Max: geometry.Size{widthRemaining, v.Size.Height},
+			Max: max,
 		}
 		size := child.widget.Constrain(constraint)
 
 		if child.options.FixedSize {
-			if size.Width > widthRemaining {
-				size.Width = widthRemaining
+			if f.direction == DirectionVertical {
+				if size.Height > remaining {
+					size.Height = remaining
+				}
+			} else {
+				if size.Width > remaining {
+					size.Width = remaining
+				}
 			}
 		} else {
-			size.Width = child.options.Proportion * spaceForDistribution / totalProportion
+			value := child.options.Proportion * spaceForDistribution / totalProportion
+			if f.direction == DirectionVertical {
+				size.Height = value
+			} else {
+				size.Width = value
+			}
 		}
 
+		var viewPos geometry.Point
+		if f.direction == DirectionVertical {
+			viewPos = geometry.Point{0, pos}
+		} else {
+			viewPos = geometry.Point{pos, 0}
+		}
 		child.view = geometry.Rect{
-			Position: geometry.Point{x, 0},
+			Position: viewPos,
 			Size:     size,
 		}
 
-		x += size.Width
-		widthRemaining = widthRemaining - size.Width
+		if f.direction == DirectionVertical {
+			pos += size.Height
+			remaining = remaining - size.Height
+		} else {
+			pos += size.Width
+			remaining = remaining - size.Width
+		}
 	}
 }
 
