@@ -24,9 +24,29 @@ func initialise(app *dull.Application, err error) {
 	}
 
 	root := widget.NewRoot(window, nil)
-	box := widget.NewBox()
 
-	root.SetChild(box)
+	flex := widget.NewFlex(widget.DirectionHorizontal)
+
+	flex.Add(widget.NewLabel("One", nil), widget.FlexChildOptions{
+		FixedSize:  true,
+		Proportion: 0,
+	})
+
+	flex.Add(widget.NewBox(), widget.FlexChildOptions{
+		FixedSize:  false,
+		Proportion: 1,
+	})
+
+	opts := &dull.CellOptions{
+		Fg: dull.NewColor(1.0, 1.0, 1.0, 1.0),
+		Bg: dull.NewColor(0.0, 0.3, 0.0, 1.0),
+	}
+	flex.Add(widget.NewLabel("Two", opts), widget.FlexChildOptions{
+		FixedSize:  true,
+		Proportion: 0,
+	})
+
+	root.SetChild(flex)
 
 	window.SetTitle("dull - widgets")
 	window.SetPosition(200, 200)

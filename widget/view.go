@@ -25,7 +25,7 @@ func (v *View) Cell(x, y int) (*dull.Cell, error) {
 			x, y, v.Size.Width, v.Size.Height)
 	}
 
-	return v.window.Grid().Cell(x, y)
+	return v.window.Grid().Cell(v.Position.X+x, v.Position.Y+y)
 }
 
 // PrintAt sets the runes for a sequence of cells from the runes

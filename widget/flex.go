@@ -34,11 +34,24 @@ func (f *Flex) Add(child Widget, options FlexChildOptions) {
 	})
 }
 
-func (f *Flex) Draw(v *View) {
+func (f *Flex) Paint(v *View) {
+	f.layout(v)
 
+	for _, child := range f.children {
+		childView := &View{
+			window: v.window,
+			Rect:   child.view,
+		}
+
+		child.widget.Paint(childView)
+	}
 }
 
-func (f *Flex) Layout(v *View) {
+func (f *Flex) Constrain(constraint Constraint) geometry.Size {
+	return constraint.Constrain(constraint.Max)
+}
+
+func (f *Flex) layout(v *View) {
 	if f.direction == DirectionVertical {
 		panic("DirectionVertical not yet supported")
 	}

@@ -89,7 +89,7 @@ func TestFlexLayout(t *testing.T) {
 				)
 			}
 
-			flex.Layout(&View{
+			flex.layout(&View{
 				Rect: geometry.RectNewXYWH(0, 0, 100, 100),
 			})
 
