@@ -12,7 +12,6 @@ type CursorType int
 
 // Cursor defines a cursor within a cell.
 type Cursor struct {
-	dirty  bool
 	window *Window
 
 	// The column of the cell to show the cursor in.
@@ -38,8 +37,6 @@ func (c *Cursor) setCellDirty() {
 	if cell == nil {
 		return
 	}
-
-	cell.setDirty()
 }
 
 func (c *Cursor) SetPosition(column int, row int) {

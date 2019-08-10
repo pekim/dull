@@ -17,8 +17,6 @@ type CellOptions struct {
 //
 // If any fields are modified, then the containing window's MarkDirty must be called.
 type Cell struct {
-	dirty bool
-
 	// rune is the rune to be rendered.
 	rune rune
 	// fg is the foreground colour, used to render the rune.
@@ -45,49 +43,36 @@ type Cell struct {
 	vertices []float32
 }
 
-func (c *Cell) setDirty() {
-	c.dirty = true
-	c.grid.dirty()
-}
-
 func (c *Cell) SetRune(rune rune) {
 	c.rune = rune
-	c.setDirty()
 }
 
 func (c *Cell) SetBold(bold bool) {
 	c.bold = bold
-	c.setDirty()
 }
 
 func (c *Cell) SetItalic(italic bool) {
 	c.italic = italic
-	c.setDirty()
 }
 
 func (c *Cell) SetFg(fg Color) {
 	c.fg = fg
-	c.setDirty()
 }
 
 func (c *Cell) SetBg(bg Color) {
 	c.bg = bg
-	c.setDirty()
 }
 
 func (c *Cell) SetUnderline(underline bool) {
 	c.underline = underline
-	c.setDirty()
 }
 
 func (c *Cell) SetStrikethrough(strikethrough bool) {
 	c.strikethrough = strikethrough
-	c.setDirty()
 }
 
 func (c *Cell) SetInvert(invert bool) {
 	c.invert = invert
-	c.setDirty()
 }
 
 func (c *Cell) ApplyOptions(options *CellOptions) {
@@ -98,6 +83,4 @@ func (c *Cell) ApplyOptions(options *CellOptions) {
 	c.italic = options.Italic
 	c.strikethrough = options.Strikethrough
 	c.underline = options.Underline
-
-	c.setDirty()
 }

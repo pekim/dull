@@ -33,7 +33,6 @@ type Window struct {
 	glTerminated       bool
 	program            uint32
 	lastRenderDuration time.Duration
-	dirty              bool
 	windowedBounds     geometry.Rect
 	keybindings        []keybinding
 
@@ -100,8 +99,8 @@ func newWindow(application *Application, options *WindowOptions) (*Window, error
 		fontSize:    defaultFontSize,
 	}
 
-	w.borders = newBorders(w.setDirty)
-	w.grid = newCellGrid(0, 0, w.bg, w.fg, w.setDirty)
+	w.borders = newBorders()
+	w.grid = newCellGrid(0, 0, w.bg, w.fg)
 	w.cursors = newCursors(w)
 	w.setKeybindings()
 
@@ -130,10 +129,6 @@ func newWindow(application *Application, options *WindowOptions) (*Window, error
 	})
 
 	return w, nil
-}
-
-func (w *Window) setDirty() {
-	w.dirty = true
 }
 
 func (w *Window) createWindow(options *WindowOptions) error {
@@ -288,7 +283,7 @@ func (w *Window) resized() {
 
 	columns := w.width / w.viewportCellWidthPixel
 	rows := w.height / w.viewportCellHeightPixel
-	w.grid = newCellGrid(columns, rows, w.bg, w.fg, w.setDirty)
+	w.grid = newCellGrid(columns, rows, w.bg, w.fg)
 
 	w.callGridSizeCallback()
 	w.drawAll()
@@ -297,7 +292,6 @@ func (w *Window) resized() {
 func (w *Window) drawAll() {
 	w.bgDirty = true
 	w.grid.markAllDirty()
-	w.setDirty()
 	w.draw()
 }
 

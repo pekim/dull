@@ -44,14 +44,12 @@ type BorderId int
 type Borders struct {
 	nextId  BorderId
 	borders map[BorderId]Border
-	dirty   func()
 }
 
-func newBorders(dirty func()) *Borders {
+func newBorders() *Borders {
 	return &Borders{
 		nextId:  0,
 		borders: make(map[BorderId]Border),
-		dirty:   dirty,
 	}
 }
 
@@ -62,7 +60,6 @@ func (b *Borders) Add(border Border) BorderId {
 	b.nextId++
 	id := b.nextId
 	b.borders[id] = border
-	b.dirty()
 
 	return id
 }
@@ -72,11 +69,9 @@ func (b *Borders) Add(border Border) BorderId {
 // The border is identified by an id returned from the Add function.
 func (b *Borders) Remove(id BorderId) {
 	delete(b.borders, id)
-	b.dirty()
 }
 
 // RemoveAll removes all borders.
 func (b *Borders) RemoveAll() {
 	b.borders = make(map[BorderId]Border)
-	b.dirty()
 }

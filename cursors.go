@@ -7,7 +7,6 @@ type Cursors struct {
 	nextId  CursorId
 	window  *Window
 	cursors map[CursorId]*Cursor
-	dirty   func()
 }
 
 func newCursors(window *Window) *Cursors {
@@ -31,7 +30,6 @@ func (c *Cursors) Add(cursor *Cursor) CursorId {
 	c.nextId++
 	id := c.nextId
 	c.cursors[id] = cursor
-	c.window.setDirty()
 
 	return id
 }
@@ -41,11 +39,9 @@ func (c *Cursors) Add(cursor *Cursor) CursorId {
 // The cursor is identified by an id returned from the Add function.
 func (c *Cursors) Remove(id CursorId) {
 	delete(c.cursors, id)
-	c.window.setDirty()
 }
 
 // RemoveAll removes all cursors.
 func (c *Cursors) RemoveAll() {
 	c.cursors = make(map[CursorId]*Cursor)
-	c.window.setDirty()
 }

@@ -14,11 +14,6 @@ func (w *Window) draw() {
 		return
 	}
 
-	if !w.dirty {
-		return
-	}
-	w.dirty = false
-
 	// empty vertices
 	w.vertices = w.vertices[:0]
 
@@ -36,12 +31,8 @@ func (w *Window) draw() {
 	gl.UseProgram(w.program)
 
 	// clear to background colour
-	if w.bgDirty {
-		gl.ClearColor(w.bg.R, w.bg.G, w.bg.B, 1.0)
-		gl.Clear(gl.COLOR_BUFFER_BIT)
-
-		w.bgDirty = false
-	}
+	gl.ClearColor(w.bg.R, w.bg.G, w.bg.B, 1.0)
+	gl.Clear(gl.COLOR_BUFFER_BIT)
 
 	w.drawCells()
 
@@ -161,14 +152,11 @@ func (w *Window) addCellsToVertices() {
 	textureItemSolid := w.fontFamily.Regular.GetGlyph(textureatlas.Solid)
 
 	for index, cell := range w.grid.cells {
-		if cell.dirty {
-			columnInt := index % w.grid.width
-			rowInt := index / w.grid.width
-			w.generateCellVertices(cell, columnInt, rowInt, textureItemSolid)
+		columnInt := index % w.grid.width
+		rowInt := index / w.grid.width
 
-			cell.dirty = false
-			w.vertices = append(w.vertices, cell.vertices...)
-		}
+		w.generateCellVertices(cell, columnInt, rowInt, textureItemSolid)
+		w.vertices = append(w.vertices, cell.vertices...)
 	}
 }
 

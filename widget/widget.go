@@ -1,10 +1,6 @@
 package widget
 
 type Widget interface {
-	//Paint(v *View)
-	//Layout(v *View)
-	//PreferredSize() (int, int)
-
 	//Parent
 	Constrainer
 	Painter

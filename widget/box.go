@@ -41,11 +41,3 @@ func (b *Box) Paint(v *View) {
 	v.PrintAt(0, 0, text, nil)
 	v.PrintAt(0, v.Size.Height-1, text, options)
 }
-
-//func (b *Box) Layout(v *View) {
-//
-//}
-//
-//func (b *Box) PreferredSize() (int, int) {
-//	return 0, 0
-//}

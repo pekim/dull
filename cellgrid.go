@@ -17,15 +17,13 @@ type CellGrid struct {
 	width  int
 	height int
 	cells  []*Cell
-	dirty  func()
 }
 
-func newCellGrid(width, height int, bg, fg Color, dirty func()) *CellGrid {
+func newCellGrid(width, height int, bg, fg Color) *CellGrid {
 	g := &CellGrid{
 		width:  width,
 		height: height,
 		cells:  make([]*Cell, width*height),
-		dirty:  dirty,
 	}
 
 	for index := 0; index < width*height; index++ {
@@ -67,7 +65,6 @@ func (g *CellGrid) Clear() {
 func (g *CellGrid) SetAllCellsRune(rune rune) {
 	for _, c := range g.cells {
 		c.rune = rune
-		c.dirty = true
 	}
 }
 
@@ -85,7 +82,6 @@ func (g *CellGrid) ForAllCells(fn func(column, row int, cell *Cell)) {
 
 func (g *CellGrid) markAllDirty() {
 	g.ForAllCells(func(column, row int, cell *Cell) {
-		cell.dirty = true
 	})
 }
 
@@ -100,10 +96,7 @@ func (g *CellGrid) PrintAt(column, row int, text string) {
 		}
 
 		g.cells[index].rune = r
-		g.cells[index].dirty = true
 
 		index++
 	}
-
-	g.dirty()
 }
