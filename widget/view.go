@@ -48,3 +48,21 @@ func (v *View) PrintAt(x, y int, text string, options *dull.CellOptions) {
 		x++
 	}
 }
+
+// Fill with fill a rectangular area in the view with a rune and optional
+// CellOptions.
+func (v *View) Fill(rect geometry.Rect, rune rune, options *dull.CellOptions) {
+	for y := v.Position.Y + rect.Position.Y; y < v.Position.Y+rect.Size.Height; y++ {
+		for x := v.Position.X + rect.Position.X; x < v.Position.X+rect.Size.Width; x++ {
+			cell, err := v.window.Grid().Cell(x, y)
+			if err != nil {
+				continue
+			}
+
+			cell.SetRune(rune)
+			if options != nil {
+				cell.ApplyOptions(options)
+			}
+		}
+	}
+}

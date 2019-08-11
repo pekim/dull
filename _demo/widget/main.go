@@ -33,7 +33,8 @@ func initialise(app *dull.Application, err error) {
 		Proportion: 0,
 	})
 
-	flex.Add(widget.NewBox(), widget.FlexChildOptions{
+	red := dull.NewColor(0.7, 0.3, 0.3, 1.0)
+	flex.Add(widget.NewBox(red), widget.FlexChildOptions{
 		FixedSize:  false,
 		Proportion: 1,
 	})
