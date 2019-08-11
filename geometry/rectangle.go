@@ -36,6 +36,31 @@ func (r Rect) Bottom() int {
 	return r.Position.Y + r.Size.Height
 }
 
-func (r Rect) Translate(x, y int) {
-	r.Position.Translate(x, y)
+func (r Rect) Translate(x, y int) Rect {
+	new := r
+	new.Position.Translate(x, y)
+	return new
 }
+
+func (r Rect) TranslateForPos(pos Point) Rect {
+	return r.Translate(pos.X, pos.Y)
+}
+
+func (r Rect) Clip(other Rect) Rect {
+	x := Max(r.Position.X, other.Position.X)
+	y := Max(r.Position.Y, other.Position.Y)
+	right := Min(r.Right(), other.Right())
+	bottom := Min(r.Bottom(), other.Bottom())
+
+	return RectNewLTRB(x, y, right, bottom)
+}
+
+/*
+	+-------------+
+	|             |
+	|   +---------|---+
+	|   |         |   |
+	+-------------+   |
+        |             |
+        +-------------+
+*/

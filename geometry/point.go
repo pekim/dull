@@ -5,7 +5,7 @@ type Point struct {
 	Y int
 }
 
-func (p Point) Translate(x, y int) {
+func (p *Point) Translate(x, y int) {
 	p.X += x
 	p.Y += y
 }
