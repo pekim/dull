@@ -25,7 +25,8 @@ func TestFlexLayout(t *testing.T) {
 	type testChild struct {
 		width      int
 		height     int
-		fixed      bool
+		sizeType   FlexChildSize
+		fixedSize  int
 		proportion int
 
 		expected geometry.Rect
@@ -37,26 +38,26 @@ func TestFlexLayout(t *testing.T) {
 		children  []testChild
 	}{
 		{
-			"fixed only - horizontal",
+			"widget size only - horizontal",
 			DirectionHorizontal,
 			[]testChild{
-				{10, 50, true, 0,
+				{10, 50, FlexChildSizeWidget, 0, 0,
 					geometry.RectNewXYWH(0, 0, 10, 50)},
-				{20, 50, true, 0,
+				{20, 50, FlexChildSizeWidget, 0, 0,
 					geometry.RectNewXYWH(10, 0, 20, 50)},
-				{30, 50, true, 0,
+				{30, 50, FlexChildSizeWidget, 0, 0,
 					geometry.RectNewXYWH(30, 0, 30, 50)},
 			},
 		},
 		{
-			"fixed only - vertical",
+			"widget size only - vertical",
 			DirectionVertical,
 			[]testChild{
-				{50, 10, true, 0,
+				{50, 10, FlexChildSizeWidget, 0, 0,
 					geometry.RectNewXYWH(0, 0, 50, 10)},
-				{50, 20, true, 0,
+				{50, 20, FlexChildSizeWidget, 0, 0,
 					geometry.RectNewXYWH(0, 10, 50, 20)},
-				{50, 30, true, 0,
+				{50, 30, FlexChildSizeWidget, 0, 0,
 					geometry.RectNewXYWH(0, 30, 50, 30)},
 			},
 		},
@@ -64,11 +65,11 @@ func TestFlexLayout(t *testing.T) {
 			"proportions only - horizontal",
 			DirectionHorizontal,
 			[]testChild{
-				{10, 50, false, 1,
+				{10, 50, FlexChildSizeProportion, 0, 1,
 					geometry.RectNewXYWH(0, 0, 10, 50)},
-				{10, 50, false, 7,
+				{10, 50, FlexChildSizeProportion, 0, 7,
 					geometry.RectNewXYWH(10, 0, 70, 50)},
-				{10, 50, false, 2,
+				{10, 50, FlexChildSizeProportion, 0, 2,
 					geometry.RectNewXYWH(80, 0, 20, 50)},
 			},
 		},
@@ -76,35 +77,63 @@ func TestFlexLayout(t *testing.T) {
 			"proportions only - vertical",
 			DirectionVertical,
 			[]testChild{
-				{50, 10, false, 1,
+				{50, 10, FlexChildSizeProportion, 0, 1,
 					geometry.RectNewXYWH(0, 0, 50, 10)},
-				{50, 10, false, 7,
+				{50, 10, FlexChildSizeProportion, 0, 7,
 					geometry.RectNewXYWH(0, 10, 50, 70)},
-				{50, 10, false, 2,
+				{50, 10, FlexChildSizeProportion, 0, 2,
 					geometry.RectNewXYWH(0, 80, 50, 20)},
 			},
 		},
 		{
-			"mix of fixed & proportions - horizontal",
+			"fixed only - horizontal",
 			DirectionHorizontal,
 			[]testChild{
-				{10, 50, false, 1,
-					geometry.RectNewXYWH(0, 0, 30, 50)},
-				{10, 50, true, 0,
+				{10, 50, FlexChildSizeFixed, 10, 1,
+					geometry.RectNewXYWH(0, 0, 10, 50)},
+				{10, 50, FlexChildSizeFixed, 12, 7,
+					geometry.RectNewXYWH(10, 0, 12, 50)},
+				{10, 50, FlexChildSizeFixed, 3, 2,
+					geometry.RectNewXYWH(22, 0, 3, 50)},
+			},
+		},
+		{
+			"fixed only - vertical",
+			DirectionVertical,
+			[]testChild{
+				{50, 10, FlexChildSizeFixed, 10, 1,
+					geometry.RectNewXYWH(0, 0, 50, 10)},
+				{50, 10, FlexChildSizeFixed, 12, 7,
+					geometry.RectNewXYWH(0, 10, 50, 12)},
+				{50, 10, FlexChildSizeFixed, 3, 2,
+					geometry.RectNewXYWH(0, 22, 50, 3)},
+			},
+		},
+		{
+			"mix of all size types - horizontal",
+			DirectionHorizontal,
+			[]testChild{
+				{10, 50, FlexChildSizeProportion, 0, 1,
+					geometry.RectNewXYWH(0, 0, 20, 50)},
+				{10, 50, FlexChildSizeWidget, 0, 0,
+					geometry.RectNewXYWH(20, 0, 10, 50)},
+				{0, 50, FlexChildSizeFixed, 10, 0,
 					geometry.RectNewXYWH(30, 0, 10, 50)},
-				{10, 50, false, 2,
+				{10, 50, FlexChildSizeProportion, 0, 3,
 					geometry.RectNewXYWH(40, 0, 60, 50)},
 			},
 		},
 		{
-			"mix of fixed & proportions - vertical",
+			"mix of all size types - vertical",
 			DirectionVertical,
 			[]testChild{
-				{50, 10, false, 1,
-					geometry.RectNewXYWH(0, 0, 50, 30)},
-				{50, 10, true, 0,
+				{50, 10, FlexChildSizeProportion, 0, 1,
+					geometry.RectNewXYWH(0, 0, 50, 20)},
+				{50, 10, FlexChildSizeWidget, 0, 0,
+					geometry.RectNewXYWH(0, 20, 50, 10)},
+				{50, 0, FlexChildSizeFixed, 10, 0,
 					geometry.RectNewXYWH(0, 30, 50, 10)},
-				{50, 10, false, 2,
+				{50, 10, FlexChildSizeProportion, 0, 3,
 					geometry.RectNewXYWH(0, 40, 50, 60)},
 			},
 		},
@@ -123,7 +152,8 @@ func TestFlexLayout(t *testing.T) {
 						},
 					},
 					FlexChildOptions{
-						FixedSize:  child.fixed,
+						Size:       child.sizeType,
+						FixedSize:  child.fixedSize,
 						Proportion: child.proportion,
 					},
 				)

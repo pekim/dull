@@ -14,6 +14,7 @@ func initialise(app *dull.Application, err error) {
 
 	white := dull.NewColor(1.0, 1.0, 1.0, 1.0)
 	black := dull.NewColor(0.0, 0.0, 0.0, 1.0)
+	red := dull.NewColor(0.7, 0.3, 0.3, 1.0)
 
 	window, err := app.NewWindow(&dull.WindowOptions{
 		Bg: &white,
@@ -25,17 +26,21 @@ func initialise(app *dull.Application, err error) {
 
 	root := widget.NewRoot(window, nil)
 
-	//flex := widget.NewFlex(widget.DirectionHorizontal)
+	topBar := widget.NewFlex(widget.DirectionHorizontal)
+
+	topBar.Add(widget.NewLabel("left", nil), widget.FlexChildOptions{Size: widget.FlexChildSizeWidget})
+	topBar.Add(widget.NewBox(black), widget.FlexChildOptions{Size: widget.FlexChildSizeProportion, Proportion: 1})
+	topBar.Add(widget.NewLabel("right", nil), widget.FlexChildOptions{Size: widget.FlexChildSizeWidget})
+
 	flex := widget.NewFlex(widget.DirectionVertical)
 
-	flex.Add(widget.NewLabel("One", nil), widget.FlexChildOptions{
-		FixedSize:  true,
-		Proportion: 0,
+	flex.Add(topBar, widget.FlexChildOptions{
+		Size:      widget.FlexChildSizeFixed,
+		FixedSize: 1,
 	})
 
-	red := dull.NewColor(0.7, 0.3, 0.3, 1.0)
 	flex.Add(widget.NewBox(red), widget.FlexChildOptions{
-		FixedSize:  false,
+		Size:       widget.FlexChildSizeProportion,
 		Proportion: 1,
 	})
 
@@ -44,8 +49,8 @@ func initialise(app *dull.Application, err error) {
 		Bg: dull.NewColor(0.0, 0.3, 0.0, 1.0),
 	}
 	flex.Add(widget.NewLabel("Two", opts), widget.FlexChildOptions{
-		FixedSize:  true,
-		Proportion: 0,
+		Size:      widget.FlexChildSizeFixed,
+		FixedSize: 1,
 	})
 
 	root.SetChild(flex)

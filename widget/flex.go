@@ -4,8 +4,17 @@ import (
 	"github.com/pekim/dull/geometry"
 )
 
+type FlexChildSize int
+
+const (
+	FlexChildSizeFixed FlexChildSize = iota
+	FlexChildSizeWidget
+	FlexChildSizeProportion
+)
+
 type FlexChildOptions struct {
-	FixedSize  bool
+	Size       FlexChildSize
+	FixedSize  int
 	Proportion int
 }
 
@@ -52,22 +61,14 @@ func (f *Flex) Constrain(constraint Constraint) geometry.Size {
 }
 
 func (f *Flex) layout(v *View) {
-	if f.direction == DirectionVertical {
-		f.layoutVertical(v)
-	} else {
-		f.layoutVertical(v)
-	}
-}
-
-func (f *Flex) layoutHorizontal(v *View) {
-}
-
-func (f *Flex) layoutVertical(v *View) {
 	// gather child preferences
 	var totalFixedSize int
 	var totalProportion int
 	for _, child := range f.children {
-		if child.options.FixedSize {
+		switch child.options.Size {
+		case FlexChildSizeFixed:
+			totalFixedSize += child.options.FixedSize
+		case FlexChildSizeWidget:
 			constraint := Constraint{
 				Min: geometry.Size{0, 0},
 				Max: v.Size,
@@ -78,7 +79,7 @@ func (f *Flex) layoutVertical(v *View) {
 			} else {
 				totalFixedSize += size.Width
 			}
-		} else {
+		case FlexChildSizeProportion:
 			totalProportion += child.options.Proportion
 		}
 	}
@@ -110,7 +111,20 @@ func (f *Flex) layoutVertical(v *View) {
 		}
 		size := child.widget.Constrain(constraint)
 
-		if child.options.FixedSize {
+		switch child.options.Size {
+		case FlexChildSizeFixed:
+			if f.direction == DirectionVertical {
+				size.Height = child.options.FixedSize
+				if size.Height > remaining {
+					size.Height = remaining
+				}
+			} else {
+				size.Width = child.options.FixedSize
+				if size.Width > remaining {
+					size.Width = remaining
+				}
+			}
+		case FlexChildSizeWidget:
 			if f.direction == DirectionVertical {
 				if size.Height > remaining {
 					size.Height = remaining
@@ -120,7 +134,7 @@ func (f *Flex) layoutVertical(v *View) {
 					size.Width = remaining
 				}
 			}
-		} else {
+		case FlexChildSizeProportion:
 			value := child.options.Proportion * spaceForDistribution / totalProportion
 			if f.direction == DirectionVertical {
 				size.Height = value

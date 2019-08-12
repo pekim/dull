@@ -5,10 +5,12 @@ import (
 	"github.com/pekim/dull/geometry"
 )
 
+// Box is a widget that fills a rectangle with a solid colour.
 type Box struct {
 	bg dull.Color
 }
 
+// NewBox creates a Box for a colour
 func NewBox(bg dull.Color) *Box {
 	return &Box{
 		bg: bg,
