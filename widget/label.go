@@ -6,6 +6,7 @@ import (
 )
 
 type Label struct {
+	Childless
 	IgnoreKeyboardEvents
 	text    string
 	options *dull.CellOptions

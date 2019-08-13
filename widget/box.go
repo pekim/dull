@@ -7,6 +7,7 @@ import (
 
 // Box is a widget that fills a rectangle with a solid colour.
 type Box struct {
+	Childless
 	IgnoreKeyboardEvents
 	bg dull.Color
 }

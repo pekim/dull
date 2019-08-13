@@ -36,6 +36,16 @@ func NewFlex(direction FlexDirection) *Flex {
 	}
 }
 
+func (f *Flex) Children() []Widget {
+	var children []Widget
+
+	for _, child := range f.children {
+		children = append(children, child.widget)
+	}
+
+	return children
+}
+
 func (f *Flex) Add(child Widget, options FlexChildOptions) {
 	f.children = append(f.children, &flexChild{
 		widget:  child,
