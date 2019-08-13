@@ -1,6 +1,7 @@
 package widget
 
 import (
+	"fmt"
 	"github.com/pekim/dull"
 	"github.com/pekim/dull/geometry"
 )
@@ -83,6 +84,17 @@ func (r *Root) keyHandler(key dull.Key, action dull.Action, mods dull.ModifierKe
 		return
 	}
 
+	if key == dull.KeyTab && action != dull.Release {
+		nextFocusableWidget := r.findNextFocusableWidget(r.child, false)
+		if nextFocusableWidget != nil {
+			r.focusedWidget = nextFocusableWidget
+		} else {
+			r.focusedWidget = nil
+			r.focusedWidget = r.findFocusableWidget(r.child)
+		}
+		fmt.Println(r.focusedWidget)
+	}
+
 	event := KeyEvent{
 		window: r.window,
 		Key:    key,
@@ -111,6 +123,30 @@ func (r *Root) findFocusableWidget(widget Widget) Widget {
 		focusable := r.findFocusableWidget(child)
 		if focusable != nil {
 			return focusable
+		}
+	}
+
+	return nil
+}
+
+func (r *Root) findNextFocusableWidget(widget Widget, pastCurrentFocusedWidget bool) Widget {
+	if widget == r.focusedWidget {
+		pastCurrentFocusedWidget = true
+	}
+
+	for _, child := range widget.Children() {
+		if child == r.focusedWidget {
+			pastCurrentFocusedWidget = true
+			continue
+		}
+
+		if pastCurrentFocusedWidget && child.AcceptFocus() {
+			return child
+		}
+
+		nextFocusableWidget := r.findNextFocusableWidget(child, pastCurrentFocusedWidget)
+		if nextFocusableWidget != nil {
+			return nextFocusableWidget
 		}
 	}
 
