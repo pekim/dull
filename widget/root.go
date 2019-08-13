@@ -27,6 +27,7 @@ func NewRoot(window *dull.Window, child Widget) *Root {
 
 	window.SetGridSizeCallback(r.sizeChange)
 	window.SetCharCallback(r.charHandler)
+	window.SetKeyCallback(r.keyHandler)
 
 	return r
 }
@@ -35,13 +36,11 @@ func (r *Root) sizeChange(columns int, rows int) {
 	r.view.Size.Width = columns
 	r.view.Size.Height = rows
 
-	r.Layout()
 	r.Paint()
 }
 
 func (r *Root) SetChild(child Widget) {
 	r.child = child
-	r.Layout()
 	r.Paint()
 }
 
@@ -53,19 +52,23 @@ func (r *Root) Paint() {
 	r.child.Paint(r.view)
 }
 
-func (r *Root) Layout() {
-	if r.child == nil {
-		return
-	}
-
-	//r.child.Constrain(r.view.Size)
-}
-
 func (r *Root) charHandler(char rune, mods dull.ModifierKey) {
 	if r.child == nil {
 		return
 	}
 
+	//fmt.Println(char, mods)
+	// TODO offer to children
+
+	r.child.Paint(r.view)
+}
+
+func (r *Root) keyHandler(key dull.Key, action dull.Action, mods dull.ModifierKey) {
+	if r.child == nil {
+		return
+	}
+
+	//fmt.Println(key, action, mods)
 	// TODO offer to children
 
 	r.child.Paint(r.view)
