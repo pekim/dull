@@ -57,8 +57,12 @@ func (r *Root) charHandler(char rune, mods dull.ModifierKey) {
 		return
 	}
 
-	//fmt.Println(char, mods)
-	// TODO offer to children
+	event := CharEvent{
+		window: r.window,
+		Char:   char,
+		Mods:   mods,
+	}
+	r.child.HandleCharEvent(event)
 
 	r.child.Paint(r.view)
 }
@@ -68,8 +72,13 @@ func (r *Root) keyHandler(key dull.Key, action dull.Action, mods dull.ModifierKe
 		return
 	}
 
-	//fmt.Println(key, action, mods)
-	// TODO offer to children
+	event := KeyEvent{
+		window: r.window,
+		Key:    key,
+		Action: action,
+		Mods:   mods,
+	}
+	r.child.HandleKeyEvent(event)
 
 	r.child.Paint(r.view)
 }

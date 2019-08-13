@@ -4,6 +4,7 @@ type Widget interface {
 	//Parent
 	Constrainer
 	Painter
+	KeyboardHandler
 }
 
 //type Parent interface {

@@ -25,6 +25,7 @@ type flexChild struct {
 }
 
 type Flex struct {
+	IgnoreKeyboardEvents
 	direction FlexDirection
 	children  []*flexChild
 }
