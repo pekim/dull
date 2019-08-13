@@ -36,15 +36,15 @@ func (r *Root) sizeChange(columns int, rows int) {
 	r.view.Size.Width = columns
 	r.view.Size.Height = rows
 
-	r.Paint()
+	r.paint()
 }
 
 func (r *Root) SetChild(child Widget) {
 	r.child = child
-	r.Paint()
+	r.paint()
 }
 
-func (r *Root) Paint() {
+func (r *Root) paint() {
 	if r.child == nil {
 		return
 	}
