@@ -6,9 +6,10 @@ import (
 )
 
 type Root struct {
-	window *dull.Window
-	child  Widget
-	view   *View
+	window        *dull.Window
+	child         Widget
+	focusedWidget Widget
+	view          *View
 }
 
 func NewRoot(window *dull.Window, child Widget) *Root {
@@ -57,12 +58,17 @@ func (r *Root) charHandler(char rune, mods dull.ModifierKey) {
 		return
 	}
 
+	r.assignFocus()
+	if r.focusedWidget == nil {
+		return
+	}
+
 	event := CharEvent{
 		window: r.window,
 		Char:   char,
 		Mods:   mods,
 	}
-	r.child.HandleCharEvent(event)
+	r.focusedWidget.HandleCharEvent(event)
 
 	r.child.Paint(r.view)
 }
@@ -72,13 +78,41 @@ func (r *Root) keyHandler(key dull.Key, action dull.Action, mods dull.ModifierKe
 		return
 	}
 
+	r.assignFocus()
+	if r.focusedWidget == nil {
+		return
+	}
+
 	event := KeyEvent{
 		window: r.window,
 		Key:    key,
 		Action: action,
 		Mods:   mods,
 	}
-	r.child.HandleKeyEvent(event)
+	r.focusedWidget.HandleKeyEvent(event)
 
 	r.child.Paint(r.view)
+}
+
+func (r *Root) assignFocus() {
+	r.focusedWidget = r.findFocusableWidget(r.child)
+}
+
+func (r *Root) findFocusableWidget(widget Widget) Widget {
+	if r.focusedWidget != nil {
+		return r.focusedWidget
+	}
+
+	for _, child := range widget.Children() {
+		if child.AcceptFocus() {
+			return child
+		}
+
+		focusable := r.findFocusableWidget(child)
+		if focusable != nil {
+			return focusable
+		}
+	}
+
+	return nil
 }

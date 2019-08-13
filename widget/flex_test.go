@@ -7,7 +7,12 @@ import (
 )
 
 type flexTestChild struct {
+	IgnoreKeyboardEvents
 	geometry.Size
+}
+
+func (c *flexTestChild) Children() []Widget {
+	return []Widget{}
 }
 
 func (c *flexTestChild) Paint(v *View) {

@@ -20,11 +20,13 @@ type KeyEvent struct {
 }
 
 type KeyboardHandler interface {
+	AcceptFocus() bool
 	HandleCharEvent(event CharEvent)
 	HandleKeyEvent(event KeyEvent)
 }
 
 type IgnoreKeyboardEvents struct{}
 
+func (i IgnoreKeyboardEvents) AcceptFocus() bool               { return false }
 func (i IgnoreKeyboardEvents) HandleCharEvent(event CharEvent) {}
 func (i IgnoreKeyboardEvents) HandleKeyEvent(event KeyEvent)   {}
