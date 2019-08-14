@@ -50,6 +50,11 @@ func (r *Root) paint() {
 		return
 	}
 
+	if r.focusedWidget == nil {
+		r.focusedWidget = r.findFocusableWidget(r.child)
+	}
+
+	r.window.Borders().RemoveAll()
 	r.child.Paint(r.view, r.focusedWidget)
 }
 
@@ -73,7 +78,7 @@ func (r *Root) charHandler(char rune, mods dull.ModifierKey) {
 	}
 	r.callCharHandler(r.child, event)
 
-	r.child.Paint(r.view, r.focusedWidget)
+	r.paint()
 }
 
 func (r *Root) callCharHandler(widget Widget, event CharEvent) {
@@ -115,7 +120,7 @@ func (r *Root) keyHandler(key dull.Key, action dull.Action, mods dull.ModifierKe
 	}
 	r.callKeyHandler(r.child, event)
 
-	r.child.Paint(r.view, r.focusedWidget)
+	r.paint()
 }
 
 func (r *Root) callKeyHandler(widget Widget, event KeyEvent) {

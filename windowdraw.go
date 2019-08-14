@@ -40,8 +40,6 @@ func (w *Window) draw() {
 
 	w.lastRenderDuration = time.Now().Sub(startTime)
 	//fmt.Printf("%.1fms\n", w.lastRenderDuration.Seconds()*1000)
-
-	w.borders.RemoveAll()
 }
 
 func (w *Window) addBordersToVertices() {
