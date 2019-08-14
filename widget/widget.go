@@ -18,5 +18,5 @@ func (c Childless) Children() []Widget {
 }
 
 type Painter interface {
-	Paint(view *View)
+	Paint(view *View, focusedWidget Widget)
 }

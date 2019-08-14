@@ -69,3 +69,15 @@ func (v *View) Fill(rect geometry.Rect, rune rune, options *dull.CellOptions) {
 		}
 	}
 }
+
+func (v *View) AddBorder(rect geometry.Rect, color dull.Color) {
+	newRect := rect.TranslateForPos(v.Rect.Position)
+	newRect = newRect.Clip(v.Rect)
+
+	border := dull.NewBorder(
+		newRect.Position.X, newRect.Right()-1,
+		newRect.Position.Y, newRect.Bottom()-1,
+		color,
+	)
+	v.window.Borders().Add(border)
+}

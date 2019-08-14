@@ -50,7 +50,7 @@ func (r *Root) paint() {
 		return
 	}
 
-	r.child.Paint(r.view)
+	r.child.Paint(r.view, r.focusedWidget)
 }
 
 func (r *Root) charHandler(char rune, mods dull.ModifierKey) {
@@ -73,7 +73,7 @@ func (r *Root) charHandler(char rune, mods dull.ModifierKey) {
 	}
 	r.callCharHandler(r.child, event)
 
-	r.child.Paint(r.view)
+	r.child.Paint(r.view, r.focusedWidget)
 }
 
 func (r *Root) callCharHandler(widget Widget, event CharEvent) {
@@ -115,7 +115,7 @@ func (r *Root) keyHandler(key dull.Key, action dull.Action, mods dull.ModifierKe
 	}
 	r.callKeyHandler(r.child, event)
 
-	r.child.Paint(r.view)
+	r.child.Paint(r.view, r.focusedWidget)
 }
 
 func (r *Root) callKeyHandler(widget Widget, event KeyEvent) {

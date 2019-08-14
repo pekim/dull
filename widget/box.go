@@ -23,7 +23,7 @@ func (c *Box) Constrain(constraint Constraint) geometry.Size {
 	return constraint.Max
 }
 
-func (b *Box) Paint(v *View) {
+func (b *Box) Paint(v *View, focusedWidget Widget) {
 	rect := geometry.Rect{
 		Position: geometry.Point{0, 0},
 		Size:     v.Size,

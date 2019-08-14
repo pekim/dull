@@ -1,7 +1,6 @@
 package widget
 
 import (
-	"fmt"
 	"github.com/pekim/dull"
 	"github.com/pekim/dull/geometry"
 )
@@ -19,33 +18,38 @@ func NewText(text string, options *dull.CellOptions) *Text {
 	}
 }
 
-func (l *Text) Constrain(constraint Constraint) geometry.Size {
+func (t *Text) Constrain(constraint Constraint) geometry.Size {
 	return constraint.Constrain(geometry.Size{
-		Width:  len(l.text),
+		Width:  len(t.text),
 		Height: 1,
 	})
 }
 
-func (l *Text) Paint(v *View) {
-	v.PrintAt(0, 0, l.text, l.options)
+func (t *Text) Paint(v *View, focusedWidget Widget) {
+	if t == focusedWidget {
+		borderRect := geometry.RectNewXYWH(0, 0, v.Size.Width, v.Size.Height)
+		v.AddBorder(borderRect, dull.NewColor(0.0, 0.0, 0.5, 0.5))
+	}
+
+	v.PrintAt(0, 0, t.text, t.options)
 }
 
-func (l *Text) AcceptFocus() bool {
+func (t *Text) AcceptFocus() bool {
 	return true
 }
 
-func (l *Text) HandleCharEvent(event CharEvent) {
-	if event.focusedWidget != l {
+func (t *Text) HandleCharEvent(event CharEvent) {
+	if event.focusedWidget != t {
 		return
 	}
 
-	fmt.Println("char", l.text, event)
+	//fmt.Println("char", t.text, event)
 }
 
-func (l *Text) HandleKeyEvent(event KeyEvent) {
-	if event.focusedWidget != l {
+func (t *Text) HandleKeyEvent(event KeyEvent) {
+	if event.focusedWidget != t {
 		return
 	}
 
-	fmt.Println("key", l.text, event)
+	//fmt.Println("key", t.text, event)
 }
