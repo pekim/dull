@@ -4,16 +4,19 @@ import (
 	"github.com/pekim/dull"
 )
 
-type CharEvent struct {
-	window *dull.Window
+type Event struct {
+	window        *dull.Window
+	focusedWidget Widget
+}
 
+type CharEvent struct {
+	Event
 	Char rune
 	Mods dull.ModifierKey
 }
 
 type KeyEvent struct {
-	window *dull.Window
-
+	Event
 	Key    dull.Key
 	Action dull.Action
 	Mods   dull.ModifierKey

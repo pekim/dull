@@ -1,7 +1,6 @@
 package widget
 
 import (
-	"fmt"
 	"github.com/pekim/dull"
 	"github.com/pekim/dull/geometry"
 )
@@ -65,13 +64,24 @@ func (r *Root) charHandler(char rune, mods dull.ModifierKey) {
 	}
 
 	event := CharEvent{
-		window: r.window,
-		Char:   char,
-		Mods:   mods,
+		Event: Event{
+			window:        r.window,
+			focusedWidget: r.focusedWidget,
+		},
+		Char: char,
+		Mods: mods,
 	}
-	r.focusedWidget.HandleCharEvent(event)
+	r.callCharHandler(r.child, event)
 
 	r.child.Paint(r.view)
+}
+
+func (r *Root) callCharHandler(widget Widget, event CharEvent) {
+	widget.HandleCharEvent(event)
+
+	for _, child := range widget.Children() {
+		r.callCharHandler(child, event)
+	}
 }
 
 func (r *Root) keyHandler(key dull.Key, action dull.Action, mods dull.ModifierKey) {
@@ -92,18 +102,28 @@ func (r *Root) keyHandler(key dull.Key, action dull.Action, mods dull.ModifierKe
 			r.focusedWidget = nil
 			r.focusedWidget = r.findFocusableWidget(r.child)
 		}
-		fmt.Println(r.focusedWidget)
 	}
 
 	event := KeyEvent{
-		window: r.window,
+		Event: Event{
+			window:        r.window,
+			focusedWidget: r.focusedWidget,
+		},
 		Key:    key,
 		Action: action,
 		Mods:   mods,
 	}
-	r.focusedWidget.HandleKeyEvent(event)
+	r.callKeyHandler(r.child, event)
 
 	r.child.Paint(r.view)
+}
+
+func (r *Root) callKeyHandler(widget Widget, event KeyEvent) {
+	widget.HandleKeyEvent(event)
+
+	for _, child := range widget.Children() {
+		r.callKeyHandler(child, event)
+	}
 }
 
 func (r *Root) assignFocus() {

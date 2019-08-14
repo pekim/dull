@@ -35,9 +35,17 @@ func (l *Label) AcceptFocus() bool {
 }
 
 func (l *Label) HandleCharEvent(event CharEvent) {
+	if event.focusedWidget != l {
+		return
+	}
+
 	fmt.Println("char", l.text, event)
 }
 
 func (l *Label) HandleKeyEvent(event KeyEvent) {
+	if event.focusedWidget != l {
+		return
+	}
+
 	fmt.Println("key", l.text, event)
 }
