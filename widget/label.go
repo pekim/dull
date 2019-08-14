@@ -1,13 +1,13 @@
 package widget
 
 import (
-	"fmt"
 	"github.com/pekim/dull"
 	"github.com/pekim/dull/geometry"
 )
 
 type Label struct {
 	Childless
+	IgnoreKeyboardEvents
 	text    string
 	options *dull.CellOptions
 }
@@ -28,24 +28,4 @@ func (l *Label) Constrain(constraint Constraint) geometry.Size {
 
 func (l *Label) Paint(v *View) {
 	v.PrintAt(0, 0, l.text, l.options)
-}
-
-func (l *Label) AcceptFocus() bool {
-	return true
-}
-
-func (l *Label) HandleCharEvent(event CharEvent) {
-	if event.focusedWidget != l {
-		return
-	}
-
-	fmt.Println("char", l.text, event)
-}
-
-func (l *Label) HandleKeyEvent(event KeyEvent) {
-	if event.focusedWidget != l {
-		return
-	}
-
-	fmt.Println("key", l.text, event)
 }
