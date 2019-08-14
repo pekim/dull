@@ -28,7 +28,7 @@ func (t *Text) Constrain(constraint Constraint) geometry.Size {
 func (t *Text) Paint(v *View, focusedWidget Widget) {
 	if t == focusedWidget {
 		borderRect := geometry.RectNewXYWH(0, 0, v.Size.Width, v.Size.Height)
-		v.AddBorder(borderRect, dull.NewColor(0.0, 0.0, 0.5, 0.5))
+		v.AddBorder(borderRect, dull.NewColor(0.0, 0.0, 1.0, 0.6))
 	}
 
 	v.PrintAt(0, 0, t.text, t.options)
