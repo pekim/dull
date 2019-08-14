@@ -95,7 +95,7 @@ func (r *Root) keyHandler(key dull.Key, action dull.Action, mods dull.ModifierKe
 	}
 
 	if key == dull.KeyTab && action != dull.Release {
-		nextFocusableWidget := r.findNextFocusableWidget(r.child, false)
+		nextFocusableWidget, _ := r.findNextFocusableWidget(r.child, false)
 		if nextFocusableWidget != nil {
 			r.focusedWidget = nextFocusableWidget
 		} else {
@@ -149,7 +149,11 @@ func (r *Root) findFocusableWidget(widget Widget) Widget {
 	return nil
 }
 
-func (r *Root) findNextFocusableWidget(widget Widget, pastCurrentFocusedWidget bool) Widget {
+func (r *Root) findNextFocusableWidget(widget Widget, pastCurrentFocusedWidget bool) (Widget, bool) {
+	if pastCurrentFocusedWidget && widget.AcceptFocus() {
+		return widget, pastCurrentFocusedWidget
+	}
+
 	if widget == r.focusedWidget {
 		pastCurrentFocusedWidget = true
 	}
@@ -161,14 +165,15 @@ func (r *Root) findNextFocusableWidget(widget Widget, pastCurrentFocusedWidget b
 		}
 
 		if pastCurrentFocusedWidget && child.AcceptFocus() {
-			return child
+			return child, pastCurrentFocusedWidget
 		}
 
-		nextFocusableWidget := r.findNextFocusableWidget(child, pastCurrentFocusedWidget)
+		nextFocusableWidget, pastCurrentFocusedWidget2 := r.findNextFocusableWidget(child, pastCurrentFocusedWidget)
 		if nextFocusableWidget != nil {
-			return nextFocusableWidget
+			return nextFocusableWidget, pastCurrentFocusedWidget
 		}
+		pastCurrentFocusedWidget = pastCurrentFocusedWidget2
 	}
 
-	return nil
+	return nil, pastCurrentFocusedWidget
 }
