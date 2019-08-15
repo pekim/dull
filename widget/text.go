@@ -21,7 +21,7 @@ func NewText(text string, options *dull.CellOptions) *Text {
 
 func (t *Text) Constrain(constraint Constraint) geometry.Size {
 	return constraint.Constrain(geometry.Size{
-		Width:  len(t.text),
+		Width:  constraint.Max.Width,
 		Height: 1,
 	})
 }
