@@ -53,6 +53,7 @@ func (r *Root) paint() {
 
 	r.context.ensureFocusedWidget(r.child)
 	r.context.window.Borders().RemoveAll()
+	r.context.window.Cursors().RemoveAll()
 	r.child.Paint(r.view, r.context)
 }
 

@@ -81,3 +81,13 @@ func (v *View) AddBorder(rect geometry.Rect, color dull.Color) {
 	)
 	v.window.Borders().Add(border)
 }
+
+func (v *View) AddCursor(position geometry.Point) {
+	position.Translate(v.Rect.Position.X, v.Position.Y)
+
+	cursorBlock := v.window.Cursors().New()
+	cursorBlock.SetPosition(position.X, position.Y)
+	cursorBlock.SetType(dull.CursorTypeBlock)
+	cursorBlock.SetVisible(true)
+	v.window.Cursors().Add(cursorBlock)
+}

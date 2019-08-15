@@ -29,6 +29,9 @@ func (t *Text) Paint(view *View, context *Context) {
 	if t == context.FocusedWidget() {
 		borderRect := geometry.RectNewXYWH(0, 0, view.Size.Width, view.Size.Height)
 		view.AddBorder(borderRect, dull.NewColor(0.0, 0.0, 1.0, 0.6))
+
+		cursorX := len(t.text) - 1
+		view.AddCursor(geometry.Point{cursorX, 0})
 	}
 
 	view.PrintAt(0, 0, t.text, t.options)
