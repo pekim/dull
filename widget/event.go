@@ -5,8 +5,7 @@ import (
 )
 
 type Event struct {
-	window        *dull.Window
-	focusedWidget Widget
+	Context *Context
 }
 
 type CharEvent struct {

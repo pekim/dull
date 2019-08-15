@@ -54,7 +54,7 @@ func (f *Flex) Add(child Widget, options FlexChildOptions) {
 	})
 }
 
-func (f *Flex) Paint(view *View, root *Root) {
+func (f *Flex) Paint(view *View, context *Context) {
 	f.layout(view)
 
 	for _, child := range f.children {
@@ -63,7 +63,7 @@ func (f *Flex) Paint(view *View, root *Root) {
 			Rect:   child.view,
 		}
 
-		child.widget.Paint(childView, root)
+		child.widget.Paint(childView, context)
 	}
 }
 

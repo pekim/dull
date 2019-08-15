@@ -18,5 +18,5 @@ func (c Childless) Children() []Widget {
 }
 
 type Painter interface {
-	Paint(view *View, root *Root)
+	Paint(view *View, context *Context)
 }

@@ -26,6 +26,6 @@ func (l *Label) Constrain(constraint Constraint) geometry.Size {
 	})
 }
 
-func (l *Label) Paint(view *View, root *Root) {
+func (l *Label) Paint(view *View, context *Context) {
 	view.PrintAt(0, 0, l.text, l.options)
 }

@@ -15,7 +15,7 @@ func (c *flexTestChild) Children() []Widget {
 	return []Widget{}
 }
 
-func (c *flexTestChild) Paint(view *View, root *Root) {
+func (c *flexTestChild) Paint(view *View, context *Context) {
 }
 
 func (c *flexTestChild) Constrain(constraint Constraint) geometry.Size {

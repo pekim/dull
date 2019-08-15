@@ -23,7 +23,7 @@ func (c *Box) Constrain(constraint Constraint) geometry.Size {
 	return constraint.Max
 }
 
-func (b *Box) Paint(view *View, root *Root) {
+func (b *Box) Paint(view *View, context *Context) {
 	rect := geometry.Rect{
 		Position: geometry.Point{0, 0},
 		Size:     view.Size,

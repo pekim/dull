@@ -6,10 +6,9 @@ import (
 )
 
 type Root struct {
-	window        *dull.Window
-	child         Widget
-	focusedWidget Widget
-	view          *View
+	context *Context
+	child   Widget
+	view    *View
 }
 
 func NewRoot(window *dull.Window, child Widget) *Root {
@@ -20,9 +19,11 @@ func NewRoot(window *dull.Window, child Widget) *Root {
 	}
 
 	r := &Root{
-		window: window,
-		child:  child,
-		view:   view,
+		context: &Context{
+			window: window,
+		},
+		child: child,
+		view:  view,
 	}
 	r.view.window = window
 
@@ -50,12 +51,9 @@ func (r *Root) paint() {
 		return
 	}
 
-	if r.focusedWidget == nil {
-		r.focusedWidget = r.findFocusableWidget(r.child)
-	}
-
-	r.window.Borders().RemoveAll()
-	r.child.Paint(r.view, r)
+	r.context.ensureFocusedWidget(r.child)
+	r.context.window.Borders().RemoveAll()
+	r.child.Paint(r.view, r.context)
 }
 
 func (r *Root) charHandler(char rune, mods dull.ModifierKey) {
@@ -63,15 +61,14 @@ func (r *Root) charHandler(char rune, mods dull.ModifierKey) {
 		return
 	}
 
-	r.assignFocus()
-	if r.focusedWidget == nil {
+	r.context.assignFocus(r.child)
+	if r.context.FocusedWidget() == nil {
 		return
 	}
 
 	event := CharEvent{
 		Event: Event{
-			window:        r.window,
-			focusedWidget: r.focusedWidget,
+			Context: r.context,
 		},
 		Char: char,
 		Mods: mods,
@@ -94,25 +91,18 @@ func (r *Root) keyHandler(key dull.Key, action dull.Action, mods dull.ModifierKe
 		return
 	}
 
-	r.assignFocus()
-	if r.focusedWidget == nil {
+	r.context.assignFocus(r.child)
+	if r.context.FocusedWidget() == nil {
 		return
 	}
 
 	if key == dull.KeyTab && action != dull.Release {
-		nextFocusableWidget, _ := r.findNextFocusableWidget(r.child, false)
-		if nextFocusableWidget != nil {
-			r.focusedWidget = nextFocusableWidget
-		} else {
-			r.focusedWidget = nil
-			r.focusedWidget = r.findFocusableWidget(r.child)
-		}
+		r.context.SetNextFocusableWidget(r.child)
 	}
 
 	event := KeyEvent{
 		Event: Event{
-			window:        r.window,
-			focusedWidget: r.focusedWidget,
+			Context: r.context,
 		},
 		Key:    key,
 		Action: action,
@@ -129,56 +119,4 @@ func (r *Root) callKeyHandler(widget Widget, event KeyEvent) {
 	for _, child := range widget.Children() {
 		r.callKeyHandler(child, event)
 	}
-}
-
-func (r *Root) assignFocus() {
-	r.focusedWidget = r.findFocusableWidget(r.child)
-}
-
-func (r *Root) findFocusableWidget(widget Widget) Widget {
-	if r.focusedWidget != nil {
-		return r.focusedWidget
-	}
-
-	for _, child := range widget.Children() {
-		if child.AcceptFocus() {
-			return child
-		}
-
-		focusable := r.findFocusableWidget(child)
-		if focusable != nil {
-			return focusable
-		}
-	}
-
-	return nil
-}
-
-func (r *Root) findNextFocusableWidget(widget Widget, pastCurrentFocusedWidget bool) (Widget, bool) {
-	if pastCurrentFocusedWidget && widget.AcceptFocus() {
-		return widget, pastCurrentFocusedWidget
-	}
-
-	if widget == r.focusedWidget {
-		pastCurrentFocusedWidget = true
-	}
-
-	for _, child := range widget.Children() {
-		if child == r.focusedWidget {
-			pastCurrentFocusedWidget = true
-			continue
-		}
-
-		if pastCurrentFocusedWidget && child.AcceptFocus() {
-			return child, pastCurrentFocusedWidget
-		}
-
-		nextFocusableWidget, pastCurrentFocusedWidget2 := r.findNextFocusableWidget(child, pastCurrentFocusedWidget)
-		if nextFocusableWidget != nil {
-			return nextFocusableWidget, pastCurrentFocusedWidget
-		}
-		pastCurrentFocusedWidget = pastCurrentFocusedWidget2
-	}
-
-	return nil, pastCurrentFocusedWidget
 }

@@ -25,8 +25,8 @@ func (t *Text) Constrain(constraint Constraint) geometry.Size {
 	})
 }
 
-func (t *Text) Paint(view *View, root *Root) {
-	if t == root.focusedWidget {
+func (t *Text) Paint(view *View, context *Context) {
+	if t == context.FocusedWidget() {
 		borderRect := geometry.RectNewXYWH(0, 0, view.Size.Width, view.Size.Height)
 		view.AddBorder(borderRect, dull.NewColor(0.0, 0.0, 1.0, 0.6))
 	}
@@ -39,7 +39,7 @@ func (t *Text) AcceptFocus() bool {
 }
 
 func (t *Text) HandleCharEvent(event CharEvent) {
-	if event.focusedWidget != t {
+	if event.Context.FocusedWidget() != t {
 		return
 	}
 
@@ -47,7 +47,7 @@ func (t *Text) HandleCharEvent(event CharEvent) {
 }
 
 func (t *Text) HandleKeyEvent(event KeyEvent) {
-	if event.focusedWidget != t {
+	if event.Context.FocusedWidget() != t {
 		return
 	}
 
