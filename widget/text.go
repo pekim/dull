@@ -7,8 +7,9 @@ import (
 
 type Text struct {
 	Childless
-	text    string
-	options *dull.CellOptions
+	text      string
+	cursorPos int
+	options   *dull.CellOptions
 }
 
 func NewText(text string, options *dull.CellOptions) *Text {
@@ -30,8 +31,7 @@ func (t *Text) Paint(view *View, context *Context) {
 		borderRect := geometry.RectNewXYWH(0, 0, view.Size.Width, view.Size.Height)
 		view.AddBorder(borderRect, dull.NewColor(0.0, 0.0, 1.0, 0.6))
 
-		cursorX := len(t.text) - 1
-		view.AddCursor(geometry.Point{cursorX, 0})
+		view.AddCursor(geometry.Point{t.cursorPos, 0})
 	}
 
 	view.PrintAt(0, 0, t.text, t.options)
@@ -54,5 +54,14 @@ func (t *Text) HandleKeyEvent(event KeyEvent) {
 		return
 	}
 
-	//fmt.Println("key", t.text, event)
+	if event.Action == dull.Release {
+		return
+	}
+
+	if event.Key == dull.KeyLeft {
+		t.cursorPos--
+	}
+	if event.Key == dull.KeyRight {
+		t.cursorPos++
+	}
 }
