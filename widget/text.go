@@ -8,8 +8,9 @@ import (
 type Text struct {
 	Childless
 	text      string
-	cursorPos int
 	options   *dull.CellOptions
+	cursorPos int
+	width     int
 }
 
 func NewText(text string, options *dull.CellOptions) *Text {
@@ -20,10 +21,15 @@ func NewText(text string, options *dull.CellOptions) *Text {
 }
 
 func (t *Text) Constrain(constraint Constraint) geometry.Size {
-	return constraint.Constrain(geometry.Size{
+	size := constraint.Constrain(geometry.Size{
 		Width:  constraint.Max.Width,
 		Height: 1,
 	})
+
+	t.width = size.Width
+	t.cursorPos = geometry.Min(t.cursorPos, t.width-1)
+
+	return size
 }
 
 func (t *Text) Paint(view *View, context *Context) {
@@ -59,9 +65,9 @@ func (t *Text) HandleKeyEvent(event KeyEvent) {
 	}
 
 	if event.Key == dull.KeyLeft {
-		t.cursorPos--
+		t.cursorPos = geometry.Max(t.cursorPos-1, 0)
 	}
 	if event.Key == dull.KeyRight {
-		t.cursorPos++
+		t.cursorPos = geometry.Min(t.cursorPos+1, t.width-1)
 	}
 }
