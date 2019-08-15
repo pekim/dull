@@ -55,7 +55,7 @@ func (r *Root) paint() {
 	}
 
 	r.window.Borders().RemoveAll()
-	r.child.Paint(r.view, r.focusedWidget)
+	r.child.Paint(r.view, r)
 }
 
 func (r *Root) charHandler(char rune, mods dull.ModifierKey) {

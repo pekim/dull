@@ -23,12 +23,12 @@ func (c *Box) Constrain(constraint Constraint) geometry.Size {
 	return constraint.Max
 }
 
-func (b *Box) Paint(v *View, focusedWidget Widget) {
+func (b *Box) Paint(view *View, root *Root) {
 	rect := geometry.Rect{
 		Position: geometry.Point{0, 0},
-		Size:     v.Size,
+		Size:     view.Size,
 	}
-	v.Fill(rect, ' ', &dull.CellOptions{
+	view.Fill(rect, ' ', &dull.CellOptions{
 		Bg: b.bg,
 	})
 }
