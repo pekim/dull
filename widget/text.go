@@ -52,7 +52,15 @@ func (t *Text) HandleCharEvent(event CharEvent) {
 		return
 	}
 
-	//fmt.Println("char", t.text, event)
+	// insert in text at cursor position
+	rr := []rune(t.text)
+	rr = append(rr, 0)
+	copy(rr[t.cursorPos+1:], rr[t.cursorPos:]) // shuffle chars after cursor 1 to the right
+	rr[t.cursorPos] = event.Char
+	t.text = string(rr)
+
+	// advance cursor
+	t.cursorPos++
 }
 
 func (t *Text) HandleKeyEvent(event KeyEvent) {
@@ -73,5 +81,15 @@ func (t *Text) HandleKeyEvent(event KeyEvent) {
 		t.cursorPos = 0
 	case dull.KeyEnd:
 		t.cursorPos = len(t.text)
+	case dull.KeyBackspace:
+		if t.cursorPos == 0 {
+			break
+		}
+
+		rr := []rune(t.text)
+		rr = append(rr[:t.cursorPos-1], rr[t.cursorPos:]...)
+		t.text = string(rr)
+
+		t.cursorPos--
 	}
 }
