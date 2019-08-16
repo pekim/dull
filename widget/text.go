@@ -3,6 +3,7 @@ package widget
 import (
 	"github.com/pekim/dull"
 	"github.com/pekim/dull/geometry"
+	"strings"
 )
 
 type Text struct {
@@ -40,7 +41,8 @@ func (t *Text) Paint(view *View, context *Context) {
 		view.AddCursor(geometry.Point{t.cursorPos, 0})
 	}
 
-	view.PrintAt(0, 0, t.text, t.options)
+	padding := strings.Repeat(" ", view.Size.Width-len(t.text))
+	view.PrintAt(0, 0, t.text+padding, t.options)
 }
 
 func (t *Text) AcceptFocus() bool {
