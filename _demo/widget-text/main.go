@@ -32,7 +32,7 @@ func initialise(app *dull.Application, err error) {
 	flex.Add(widget.NewBox(transparent), widget.FlexChildOptions{Size: widget.FlexChildSizeFixed, FixedSize: 1})
 	flex.Add(widget.NewText("two", nil), widget.FlexChildOptions{Size: widget.FlexChildSizeWidget})
 	flex.Add(widget.NewBox(transparent), widget.FlexChildOptions{Size: widget.FlexChildSizeFixed, FixedSize: 1})
-	flex.Add(widget.NewText("three", nil), widget.FlexChildOptions{Size: widget.FlexChildSizeWidget})
+	flex.Add(widget.NewText("three, four, five, and six", nil), widget.FlexChildOptions{Size: widget.FlexChildSizeWidget})
 
 	root.SetChild(flex)
 

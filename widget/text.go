@@ -64,10 +64,14 @@ func (t *Text) HandleKeyEvent(event KeyEvent) {
 		return
 	}
 
-	if event.Key == dull.KeyLeft {
+	switch event.Key {
+	case dull.KeyLeft:
 		t.cursorPos = geometry.Max(t.cursorPos-1, 0)
-	}
-	if event.Key == dull.KeyRight {
-		t.cursorPos = geometry.Min(t.cursorPos+1, t.width-1)
+	case dull.KeyRight:
+		t.cursorPos = geometry.Min(t.cursorPos+1, len(t.text))
+	case dull.KeyHome:
+		t.cursorPos = 0
+	case dull.KeyEnd:
+		t.cursorPos = len(t.text)
 	}
 }
