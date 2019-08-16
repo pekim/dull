@@ -1,6 +1,8 @@
 package widget
 
 import (
+	"fmt"
+	"github.com/atotto/clipboard"
 	"github.com/pekim/dull"
 	"github.com/pekim/dull/geometry"
 	"strings"
@@ -41,7 +43,7 @@ func (t *Text) Paint(view *View, context *Context) {
 		view.AddCursor(geometry.Point{t.cursorPos, 0})
 	}
 
-	padding := strings.Repeat(" ", view.Size.Width-len(t.text))
+	padding := strings.Repeat(" ", geometry.Max(view.Size.Width-len(t.text), 0))
 	view.PrintAt(0, 0, t.text+padding, t.options)
 }
 
@@ -49,20 +51,27 @@ func (t *Text) AcceptFocus() bool {
 	return true
 }
 
+func (t *Text) insertText(text string) {
+	// insert in text at cursor position
+	rr := []rune(t.text)
+	before := string(rr[:t.cursorPos])
+	after := string(rr[t.cursorPos:])
+	t.text = strings.Join([]string{
+		before,
+		text,
+		after,
+	}, "")
+
+	// advance cursor
+	t.cursorPos += len(text)
+}
+
 func (t *Text) HandleCharEvent(event CharEvent) {
 	if event.Context.FocusedWidget() != t {
 		return
 	}
 
-	// insert in text at cursor position
-	rr := []rune(t.text)
-	rr = append(rr, 0)
-	copy(rr[t.cursorPos+1:], rr[t.cursorPos:]) // shuffle chars after cursor 1 to the right
-	rr[t.cursorPos] = event.Char
-	t.text = string(rr)
-
-	// advance cursor
-	t.cursorPos++
+	t.insertText(string(event.Char))
 }
 
 func (t *Text) HandleKeyEvent(event KeyEvent) {
@@ -84,14 +93,36 @@ func (t *Text) HandleKeyEvent(event KeyEvent) {
 	case dull.KeyEnd:
 		t.cursorPos = len(t.text)
 	case dull.KeyBackspace:
-		if t.cursorPos == 0 {
-			break
+		t.deleteLeftOfCursor()
+	case dull.KeyV:
+		if event.Mods == dull.ModControl {
+			t.paste()
 		}
-
-		rr := []rune(t.text)
-		rr = append(rr[:t.cursorPos-1], rr[t.cursorPos:]...)
-		t.text = string(rr)
-
-		t.cursorPos--
 	}
+}
+
+// deleteLeftOfCursor deletes one character immediately
+// to the left of the cursor.
+func (t *Text) deleteLeftOfCursor() {
+	if t.cursorPos == 0 {
+		return
+	}
+
+	rr := []rune(t.text)
+	rr = append(rr[:t.cursorPos-1], rr[t.cursorPos:]...)
+	t.text = string(rr)
+
+	t.cursorPos--
+}
+
+// paste inserts text from the system clipboard at the current
+// cursor position.
+func (t *Text) paste() {
+	text, err := clipboard.ReadAll()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	t.insertText(text)
 }
