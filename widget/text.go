@@ -141,6 +141,5 @@ func (t *Text) paste(window *dull.Window) {
 		return
 	}
 
-	window.Bell()
 	t.insertText(text)
 }

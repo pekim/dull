@@ -2,6 +2,10 @@
 
 package dull
 
+// Bell is unsupported.
+func (w *Window) Bell() {
+}
+
 // setResizeIncrement does nothing on most platforms.
 // It is currently only implemented for linux/bsd with X.
 //
