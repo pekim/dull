@@ -84,9 +84,9 @@ func (t *Text) HandleKeyEvent(event KeyEvent) {
 
 	switch event.Key {
 	case dull.KeyLeft:
-		t.cursorPos = geometry.Max(t.cursorPos-1, 0)
+		t.moveCursorLeftOneChar(event.Context.window)
 	case dull.KeyRight:
-		t.cursorPos = geometry.Min(t.cursorPos+1, len(t.text))
+		t.moveCursorRightOneChar(event.Context.window)
 	case dull.KeyHome:
 		t.cursorPos = 0
 	case dull.KeyEnd:
@@ -97,6 +97,24 @@ func (t *Text) HandleKeyEvent(event KeyEvent) {
 		if event.Mods == dull.ModControl {
 			t.paste(event.Context.window)
 		}
+	}
+}
+
+func (t *Text) moveCursorLeftOneChar(window *dull.Window) {
+	t.cursorPos--
+
+	if t.cursorPos < 0 {
+		t.cursorPos = 0
+		window.Bell()
+	}
+}
+
+func (t *Text) moveCursorRightOneChar(window *dull.Window) {
+	t.cursorPos++
+
+	if t.cursorPos > len(t.text) {
+		t.cursorPos = len(t.text)
+		window.Bell()
 	}
 }
 
