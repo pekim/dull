@@ -1,7 +1,6 @@
 package widget
 
 import (
-	"fmt"
 	"github.com/atotto/clipboard"
 	"github.com/pekim/dull"
 	"github.com/pekim/dull/geometry"
@@ -96,7 +95,7 @@ func (t *Text) HandleKeyEvent(event KeyEvent) {
 		t.deleteLeftOfCursor()
 	case dull.KeyV:
 		if event.Mods == dull.ModControl {
-			t.paste()
+			t.paste(event.Context.window)
 		}
 	}
 }
@@ -117,12 +116,13 @@ func (t *Text) deleteLeftOfCursor() {
 
 // paste inserts text from the system clipboard at the current
 // cursor position.
-func (t *Text) paste() {
+func (t *Text) paste(window *dull.Window) {
 	text, err := clipboard.ReadAll()
 	if err != nil {
-		fmt.Println(err)
+		window.Bell()
 		return
 	}
 
+	window.Bell()
 	t.insertText(text)
 }
