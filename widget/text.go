@@ -4,12 +4,11 @@ import (
 	"github.com/atotto/clipboard"
 	"github.com/pekim/dull"
 	"github.com/pekim/dull/geometry"
-	"strings"
 )
 
 type Text struct {
 	Childless
-	text      string
+	text      []rune
 	options   *dull.CellOptions
 	cursorPos int
 	width     int
@@ -17,7 +16,7 @@ type Text struct {
 
 func NewText(text string, options *dull.CellOptions) *Text {
 	return &Text{
-		text:    text,
+		text:    []rune(text),
 		options: options,
 	}
 }
@@ -42,8 +41,10 @@ func (t *Text) Paint(view *View, context *Context) {
 		view.AddCursor(geometry.Point{t.cursorPos, 0})
 	}
 
-	padding := strings.Repeat(" ", geometry.Max(view.Size.Width-len(t.text), 0))
-	view.PrintAt(0, 0, t.text+padding, t.options)
+	view.PrintAt(0, 0, t.text, t.options)
+
+	remaining := geometry.Max(view.Size.Width-len(t.text), 0)
+	view.PrintAtRepeat(len(t.text), 0, remaining, ' ', t.options)
 }
 
 func (t *Text) AcceptFocus() bool {
@@ -52,14 +53,16 @@ func (t *Text) AcceptFocus() bool {
 
 func (t *Text) insertText(text string) {
 	// insert in text at cursor position
-	rr := []rune(t.text)
-	before := string(rr[:t.cursorPos])
-	after := string(rr[t.cursorPos:])
-	t.text = strings.Join([]string{
-		before,
-		text,
-		after,
-	}, "")
+	before := t.text[:t.cursorPos]
+	after := t.text[t.cursorPos:]
+	newText := append(before, []rune(text)...)
+	newText = append(newText, after...)
+	t.text = newText
+	// 	= strings.Join([]string{
+	//	before,
+	//	text,
+	//	after,
+	//}, "")
 
 	// advance cursor
 	t.cursorPos += len(text)
@@ -125,9 +128,8 @@ func (t *Text) deleteLeftOfCursor() {
 		return
 	}
 
-	rr := []rune(t.text)
-	rr = append(rr[:t.cursorPos-1], rr[t.cursorPos:]...)
-	t.text = string(rr)
+	rr := append(t.text[:t.cursorPos-1], t.text[t.cursorPos:]...)
+	t.text = rr
 
 	t.cursorPos--
 }

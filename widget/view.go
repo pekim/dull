@@ -28,12 +28,11 @@ func (v *View) Cell(x, y int) (*dull.Cell, error) {
 	return v.window.Grid().Cell(v.Position.X+x, v.Position.Y+y)
 }
 
-// PrintAt sets the runes for a sequence of cells from the runes
-// in a string.
+// PrintAt sets the runes for a sequence of cells from runes.
 //
 // It will be clipped to the View.
 // Only a single row will be printed; no wrapping is performed;
-func (v *View) PrintAt(x, y int, text string, options *dull.CellOptions) {
+func (v *View) PrintAt(x, y int, text []rune, options *dull.CellOptions) {
 	for _, r := range text {
 		cell, err := v.Cell(x, y)
 		if err != nil {
@@ -41,6 +40,26 @@ func (v *View) PrintAt(x, y int, text string, options *dull.CellOptions) {
 		}
 
 		cell.SetRune(r)
+		if options != nil {
+			cell.ApplyOptions(options)
+		}
+
+		x++
+	}
+}
+
+// PrintAtRepeat sets some cells in a row to a rune.
+//
+// It will be clipped to the View.
+// Only a single row will be printed; no wrapping is performed;
+func (v *View) PrintAtRepeat(x, y int, count int, rune rune, options *dull.CellOptions) {
+	for i := 0; i < count; i++ {
+		cell, err := v.Cell(x, y)
+		if err != nil {
+			break
+		}
+
+		cell.SetRune(rune)
 		if options != nil {
 			cell.ApplyOptions(options)
 		}

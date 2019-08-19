@@ -8,13 +8,13 @@ import (
 type Label struct {
 	Childless
 	IgnoreKeyboardEvents
-	text    string
+	text    []rune
 	options *dull.CellOptions
 }
 
 func NewLabel(text string, options *dull.CellOptions) *Label {
 	return &Label{
-		text:    text,
+		text:    []rune(text),
 		options: options,
 	}
 }
