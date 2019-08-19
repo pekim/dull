@@ -105,9 +105,10 @@ func (v *View) AddCursor(position geometry.Point) {
 	position.Translate(v.Rect.Position.X, v.Position.Y)
 	position.Constrain(v.Rect)
 
-	cursorBlock := v.window.Cursors().New()
-	cursorBlock.SetPosition(position.X, position.Y)
-	cursorBlock.SetType(dull.CursorTypeBlock)
-	cursorBlock.SetVisible(true)
-	v.window.Cursors().Add(cursorBlock)
+	cursor := v.window.Cursors().New()
+	cursor.SetPosition(position.X, position.Y)
+	cursor.SetType(dull.CursorTypeBar)
+	cursor.SetColor(dull.NewColor(1.0, 0.0, 0.0, 1.0))
+	cursor.SetVisible(true)
+	v.window.Cursors().Add(cursor)
 }

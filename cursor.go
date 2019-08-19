@@ -2,10 +2,14 @@ package dull
 
 const (
 	// Render the cursor as a line at the bottom of the cell.
-	CursorTypeUnder CursorType = 0 + iota
+	CursorTypeUnder CursorType = iota
+
 	// Render the cursor as a block,
 	// by inverting the cell's background and foreground colors.
-	CursorTypeBlock CursorType = iota
+	CursorTypeBlock
+
+	// Render the cursor as a vertical bar between two cells.
+	CursorTypeBar
 )
 
 type CursorType int

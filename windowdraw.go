@@ -100,12 +100,40 @@ func (w *Window) addCursorsToVertices() {
 }
 
 func (w *Window) addCursorToVertices(cursor *Cursor) {
-	if cursor.visible && cursor.typ == CursorTypeUnder {
+	if cursor.visible && cursor.typ == CursorTypeUnder || cursor.typ == CursorTypeBar {
 		cell, _ := w.grid.Cell(cursor.column, cursor.row)
 		if cell != nil {
-			w.addUnderCursorToCellVertices(cell, cursor)
+			if cursor.typ == CursorTypeBar {
+				w.addBarCursorToCellVertices(cell, cursor)
+			}
+			if cursor.typ == CursorTypeUnder {
+				w.addUnderCursorToCellVertices(cell, cursor)
+			}
 		}
 	}
+}
+
+func (w *Window) addBarCursorToCellVertices(cell *Cell, cursor *Cursor) {
+	cellWidth := w.viewportCellWidth
+	cellHeight := w.viewportCellHeight
+	width := 0.08 * cellHeight
+
+	left := float32(-1.0 + (float32(cursor.column) * cellWidth))
+	if cursor.column == 0 {
+		// make a little wider, for visibility
+		width *= 1.5
+	} else {
+		// span two cells; half the width in the previous cell
+		left -= width / 2
+	}
+	right := left + width
+
+	top := float32(-1.0 + (float32(cursor.row) * cellHeight))
+	bottom := float32(-1.0 + (float32(cursor.row+1) * cellHeight))
+
+	textureItem := w.fontFamily.Regular.GetGlyph(textureatlas.Solid)
+
+	w.addQuadToVertices(&w.vertices, left, top, right, bottom, textureItem, cursor.color)
 }
 
 func (w *Window) addUnderCursorToCellVertices(cell *Cell, cursor *Cursor) {
