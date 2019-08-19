@@ -6,19 +6,43 @@ import (
 	"github.com/pekim/dull/geometry"
 )
 
+type keyBindingKey struct {
+	key  dull.Key
+	mods dull.ModifierKey
+}
+
+type keyEventHandler func(event KeyEvent)
+
 type Text struct {
 	Childless
-	text      []rune
-	options   *dull.CellOptions
-	cursorPos int
-	width     int
+	text        []rune
+	options     *dull.CellOptions
+	cursorPos   int
+	width       int
+	keyBindings map[keyBindingKey]keyEventHandler
 }
 
 func NewText(text string, options *dull.CellOptions) *Text {
-	return &Text{
+	t := &Text{
 		text:    []rune(text),
 		options: options,
 	}
+
+	t.keyBindings = map[keyBindingKey]keyEventHandler{
+		keyBindingKey{dull.KeyLeft, 0}:                t.moveCursorLeftOneChar,
+		keyBindingKey{dull.KeyLeft, dull.ModControl}:  t.moveCursorLeftOneWord,
+		keyBindingKey{dull.KeyRight, 0}:               t.moveCursorRightOneChar,
+		keyBindingKey{dull.KeyRight, dull.ModControl}: t.moveCursorRightOneWord,
+
+		keyBindingKey{dull.KeyHome, 0}: t.moveCursorToStart,
+		keyBindingKey{dull.KeyEnd, 0}:  t.moveCursorToEnd,
+
+		keyBindingKey{dull.KeyBackspace, 0}: t.deleteLeftOfCursor,
+
+		keyBindingKey{dull.KeyV, dull.ModControl}: t.paste,
+	}
+
+	return t
 }
 
 func (t *Text) Constrain(constraint Constraint) geometry.Size {
@@ -85,46 +109,34 @@ func (t *Text) HandleKeyEvent(event KeyEvent) {
 		return
 	}
 
-	switch event.Key {
-	case dull.KeyLeft:
-		switch event.Mods {
-		case dull.ModControl:
-			t.moveCursorLeftOneWord(event.Context.window)
-		default:
-			t.moveCursorLeftOneChar(event.Context.window)
-		}
-	case dull.KeyRight:
-		switch event.Mods {
-		case dull.ModControl:
-			t.moveCursorRightOneWord(event.Context.window)
-		default:
-			t.moveCursorRightOneChar(event.Context.window)
-		}
-	case dull.KeyHome:
-		t.cursorPos = 0
-	case dull.KeyEnd:
-		t.cursorPos = len(t.text)
-	case dull.KeyBackspace:
-		t.deleteLeftOfCursor()
-	case dull.KeyV:
-		if event.Mods == dull.ModControl {
-			t.paste(event.Context.window)
+	for binding, handler := range t.keyBindings {
+		if binding.mods == event.Mods && binding.key == event.Key {
+			handler(event)
+			return
 		}
 	}
 }
 
-func (t *Text) moveCursorLeftOneChar(window *dull.Window) {
+func (t *Text) moveCursorToStart(event KeyEvent) {
+	t.cursorPos = 0
+}
+
+func (t *Text) moveCursorToEnd(event KeyEvent) {
+	t.cursorPos = len(t.text)
+}
+
+func (t *Text) moveCursorLeftOneChar(event KeyEvent) {
 	t.cursorPos--
 
 	if t.cursorPos < 0 {
 		t.cursorPos = 0
-		window.Bell()
+		event.Context.window.Bell()
 	}
 }
 
-func (t *Text) moveCursorLeftOneWord(window *dull.Window) {
+func (t *Text) moveCursorLeftOneWord(event KeyEvent) {
 	if t.cursorPos == 0 {
-		window.Bell()
+		event.Context.window.Bell()
 	}
 
 	for t.cursorPos > 0 && t.text[t.cursorPos-1] == ' ' {
@@ -136,18 +148,18 @@ func (t *Text) moveCursorLeftOneWord(window *dull.Window) {
 	}
 }
 
-func (t *Text) moveCursorRightOneChar(window *dull.Window) {
+func (t *Text) moveCursorRightOneChar(event KeyEvent) {
 	t.cursorPos++
 
 	if t.cursorPos > len(t.text) {
 		t.cursorPos = len(t.text)
-		window.Bell()
+		event.Context.window.Bell()
 	}
 }
 
-func (t *Text) moveCursorRightOneWord(window *dull.Window) {
+func (t *Text) moveCursorRightOneWord(event KeyEvent) {
 	if t.cursorPos == len(t.text) {
-		window.Bell()
+		event.Context.window.Bell()
 	}
 
 	for t.cursorPos < len(t.text) && t.text[t.cursorPos] == ' ' {
@@ -161,7 +173,7 @@ func (t *Text) moveCursorRightOneWord(window *dull.Window) {
 
 // deleteLeftOfCursor deletes one character immediately
 // to the left of the cursor.
-func (t *Text) deleteLeftOfCursor() {
+func (t *Text) deleteLeftOfCursor(event KeyEvent) {
 	if t.cursorPos == 0 {
 		return
 	}
@@ -174,10 +186,10 @@ func (t *Text) deleteLeftOfCursor() {
 
 // paste inserts text from the system clipboard at the current
 // cursor position.
-func (t *Text) paste(window *dull.Window) {
+func (t *Text) paste(event KeyEvent) {
 	text, err := clipboard.ReadAll()
 	if err != nil {
-		window.Bell()
+		event.Context.window.Bell()
 		return
 	}
 
