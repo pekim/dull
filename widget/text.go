@@ -87,9 +87,19 @@ func (t *Text) HandleKeyEvent(event KeyEvent) {
 
 	switch event.Key {
 	case dull.KeyLeft:
-		t.moveCursorLeftOneChar(event.Context.window)
+		switch event.Mods {
+		case dull.ModControl:
+			t.moveCursorLeftOneWord(event.Context.window)
+		default:
+			t.moveCursorLeftOneChar(event.Context.window)
+		}
 	case dull.KeyRight:
-		t.moveCursorRightOneChar(event.Context.window)
+		switch event.Mods {
+		case dull.ModControl:
+			t.moveCursorRightOneWord(event.Context.window)
+		default:
+			t.moveCursorRightOneChar(event.Context.window)
+		}
 	case dull.KeyHome:
 		t.cursorPos = 0
 	case dull.KeyEnd:
@@ -112,12 +122,40 @@ func (t *Text) moveCursorLeftOneChar(window *dull.Window) {
 	}
 }
 
+func (t *Text) moveCursorLeftOneWord(window *dull.Window) {
+	if t.cursorPos == 0 {
+		window.Bell()
+	}
+
+	for t.cursorPos > 0 && t.text[t.cursorPos-1] == ' ' {
+		t.cursorPos--
+	}
+
+	for t.cursorPos > 0 && t.text[t.cursorPos-1] != ' ' {
+		t.cursorPos--
+	}
+}
+
 func (t *Text) moveCursorRightOneChar(window *dull.Window) {
 	t.cursorPos++
 
 	if t.cursorPos > len(t.text) {
 		t.cursorPos = len(t.text)
 		window.Bell()
+	}
+}
+
+func (t *Text) moveCursorRightOneWord(window *dull.Window) {
+	if t.cursorPos == len(t.text) {
+		window.Bell()
+	}
+
+	for t.cursorPos < len(t.text) && t.text[t.cursorPos] == ' ' {
+		t.cursorPos++
+	}
+
+	for t.cursorPos < len(t.text) && t.text[t.cursorPos] != ' ' {
+		t.cursorPos++
 	}
 }
 
