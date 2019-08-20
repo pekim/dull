@@ -116,6 +116,8 @@ func (t *Text) AcceptFocus() bool {
 }
 
 func (t *Text) insertText(newText []rune) {
+	t.deleteSelected()
+
 	// split text at cursor
 	before := t.text[:t.cursorPos]
 	after := t.text[t.cursorPos:]
@@ -211,6 +213,22 @@ func (t *Text) moveCursorRightOneWord(event KeyEvent) {
 	for t.cursorPos < len(t.text) && t.text[t.cursorPos] != ' ' {
 		t.cursorPos++
 	}
+}
+
+// deleteSelected deletes any selected text.
+// If no text is currently selected, it does nothing.
+func (t *Text) deleteSelected() {
+	if t.selectionPos == t.cursorPos {
+		return
+	}
+
+	selectionStart := geometry.Min(t.cursorPos, t.selectionPos)
+	selectionEnd := geometry.Max(t.cursorPos, t.selectionPos)
+
+	rr := append(t.text[:selectionStart], t.text[selectionEnd:]...)
+	t.text = rr
+
+	t.cursorPos = selectionStart
 }
 
 // deleteLeftOfCursor deletes one character immediately
