@@ -28,6 +28,18 @@ func (v *View) Cell(x, y int) (*dull.Cell, error) {
 	return v.window.Grid().Cell(v.Position.X+x, v.Position.Y+y)
 }
 
+func (v *View) PrintRune(x, y int, rune rune, options *dull.CellOptions) {
+	cell, err := v.Cell(x, y)
+	if err != nil {
+		return
+	}
+
+	cell.SetRune(rune)
+	if options != nil {
+		cell.ApplyOptions(options)
+	}
+}
+
 // PrintAt sets the runes for a sequence of cells from runes.
 //
 // It will be clipped to the View.
