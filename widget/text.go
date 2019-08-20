@@ -115,16 +115,20 @@ func (t *Text) AcceptFocus() bool {
 	return true
 }
 
-func (t *Text) insertText(text string) {
-	// insert in text at cursor position
+func (t *Text) insertText(newText []rune) {
+	// split text at cursor
 	before := t.text[:t.cursorPos]
 	after := t.text[t.cursorPos:]
-	newText := append(before, []rune(text)...)
-	newText = append(newText, after...)
-	t.text = newText
+
+	// create new text from 3 parts
+	t.text = make([]rune, 0, len(before)+len(newText)+len(after))
+	t.text = append(t.text, before...)
+	t.text = append(t.text, newText...)
+	t.text = append(t.text, after...)
 
 	// advance cursor
-	t.cursorPos += len(text)
+	t.cursorPos += len(newText)
+	t.selectionPos = t.cursorPos
 }
 
 func (t *Text) HandleCharEvent(event CharEvent) {
@@ -132,7 +136,7 @@ func (t *Text) HandleCharEvent(event CharEvent) {
 		return
 	}
 
-	t.insertText(string(event.Char))
+	t.insertText([]rune{event.Char})
 }
 
 func (t *Text) HandleKeyEvent(event KeyEvent) {
@@ -226,13 +230,11 @@ func (t *Text) deleteLeftOfCursor(event KeyEvent) {
 func (t *Text) copy(event KeyEvent) {
 	selectionStart := geometry.Min(t.cursorPos, t.selectionPos)
 	selectionEnd := geometry.Max(t.cursorPos, t.selectionPos)
-	fmt.Println(selectionStart, selectionEnd)
 	if selectionStart == selectionEnd {
 		return
 	}
 
 	selected := t.text[selectionStart:selectionEnd]
-	fmt.Println(string(selected))
 
 	err := clipboard.WriteAll(string(selected))
 	if err != nil {
@@ -249,5 +251,5 @@ func (t *Text) paste(event KeyEvent) {
 		return
 	}
 
-	t.insertText(text)
+	t.insertText([]rune(text))
 }
