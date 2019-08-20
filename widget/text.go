@@ -1,6 +1,7 @@
 package widget
 
 import (
+	"fmt"
 	"github.com/atotto/clipboard"
 	"github.com/pekim/dull"
 	"github.com/pekim/dull/geometry"
@@ -11,7 +12,10 @@ type keyBindingKey struct {
 	mods dull.ModifierKey
 }
 
-type keyEventHandler func(event KeyEvent)
+type keyEventHandler struct {
+	fn            func(event KeyEvent)
+	keepSelection bool
+}
 
 type Text struct {
 	Childless
@@ -40,24 +44,25 @@ func NewText(text string, options *dull.CellOptions) *Text {
 	}
 
 	t.keyBindings = map[keyBindingKey]keyEventHandler{
-		keyBindingKey{dull.KeyLeft, 0}:                               t.moveCursorLeftOneChar,
-		keyBindingKey{dull.KeyLeft, dull.ModShift}:                   t.moveCursorLeftOneChar,
-		keyBindingKey{dull.KeyLeft, dull.ModControl}:                 t.moveCursorLeftOneWord,
-		keyBindingKey{dull.KeyLeft, dull.ModControl | dull.ModShift}: t.moveCursorLeftOneWord,
+		keyBindingKey{dull.KeyLeft, 0}:                               keyEventHandler{t.moveCursorLeftOneChar, false},
+		keyBindingKey{dull.KeyLeft, dull.ModShift}:                   keyEventHandler{t.moveCursorLeftOneChar, true},
+		keyBindingKey{dull.KeyLeft, dull.ModControl}:                 keyEventHandler{t.moveCursorLeftOneWord, false},
+		keyBindingKey{dull.KeyLeft, dull.ModControl | dull.ModShift}: keyEventHandler{t.moveCursorLeftOneWord, true},
 
-		keyBindingKey{dull.KeyRight, 0}:                               t.moveCursorRightOneChar,
-		keyBindingKey{dull.KeyRight, dull.ModShift}:                   t.moveCursorRightOneChar,
-		keyBindingKey{dull.KeyRight, dull.ModControl}:                 t.moveCursorRightOneWord,
-		keyBindingKey{dull.KeyRight, dull.ModControl | dull.ModShift}: t.moveCursorRightOneWord,
+		keyBindingKey{dull.KeyRight, 0}:                               keyEventHandler{t.moveCursorRightOneChar, false},
+		keyBindingKey{dull.KeyRight, dull.ModShift}:                   keyEventHandler{t.moveCursorRightOneChar, true},
+		keyBindingKey{dull.KeyRight, dull.ModControl}:                 keyEventHandler{t.moveCursorRightOneWord, false},
+		keyBindingKey{dull.KeyRight, dull.ModControl | dull.ModShift}: keyEventHandler{t.moveCursorRightOneWord, true},
 
-		keyBindingKey{dull.KeyHome, 0}:             t.moveCursorToStart,
-		keyBindingKey{dull.KeyHome, dull.ModShift}: t.moveCursorToStart,
-		keyBindingKey{dull.KeyEnd, 0}:              t.moveCursorToEnd,
-		keyBindingKey{dull.KeyEnd, dull.ModShift}:  t.moveCursorToEnd,
+		keyBindingKey{dull.KeyHome, 0}:             keyEventHandler{t.moveCursorToStart, false},
+		keyBindingKey{dull.KeyHome, dull.ModShift}: keyEventHandler{t.moveCursorToStart, true},
+		keyBindingKey{dull.KeyEnd, 0}:              keyEventHandler{t.moveCursorToEnd, false},
+		keyBindingKey{dull.KeyEnd, dull.ModShift}:  keyEventHandler{t.moveCursorToEnd, true},
 
-		keyBindingKey{dull.KeyBackspace, 0}: t.deleteLeftOfCursor,
+		keyBindingKey{dull.KeyBackspace, 0}: keyEventHandler{t.deleteLeftOfCursor, false},
 
-		keyBindingKey{dull.KeyV, dull.ModControl}: t.paste,
+		keyBindingKey{dull.KeyC, dull.ModControl}: keyEventHandler{t.copy, true},
+		keyBindingKey{dull.KeyV, dull.ModControl}: keyEventHandler{t.paste, false},
 	}
 
 	return t
@@ -141,12 +146,12 @@ func (t *Text) HandleKeyEvent(event KeyEvent) {
 
 	for binding, handler := range t.keyBindings {
 		if binding.mods == event.Mods && binding.key == event.Key {
-			handler(event)
-		}
-	}
+			handler.fn(event)
 
-	if event.Mods&dull.ModShift == 0 {
-		t.selectionPos = t.cursorPos
+			if !handler.keepSelection {
+				t.selectionPos = t.cursorPos
+			}
+		}
 	}
 }
 
@@ -215,6 +220,24 @@ func (t *Text) deleteLeftOfCursor(event KeyEvent) {
 	t.text = rr
 
 	t.cursorPos--
+}
+
+// copy copies any selected text to the system clipboard.
+func (t *Text) copy(event KeyEvent) {
+	selectionStart := geometry.Min(t.cursorPos, t.selectionPos)
+	selectionEnd := geometry.Max(t.cursorPos, t.selectionPos)
+	fmt.Println(selectionStart, selectionEnd)
+	if selectionStart == selectionEnd {
+		return
+	}
+
+	selected := t.text[selectionStart:selectionEnd]
+	fmt.Println(string(selected))
+
+	err := clipboard.WriteAll(string(selected))
+	if err != nil {
+		fmt.Println(err)
+	}
 }
 
 // paste inserts text from the system clipboard at the current
