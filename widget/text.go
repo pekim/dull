@@ -63,6 +63,7 @@ func NewText(text string, options *dull.CellOptions) *Text {
 
 		keyBindingKey{dull.KeyC, dull.ModControl}: keyEventHandler{t.copy, true},
 		keyBindingKey{dull.KeyV, dull.ModControl}: keyEventHandler{t.paste, false},
+		keyBindingKey{dull.KeyX, dull.ModControl}: keyEventHandler{t.cut, false},
 	}
 
 	return t
@@ -258,6 +259,12 @@ func (t *Text) copy(event KeyEvent) {
 	if err != nil {
 		fmt.Println(err)
 	}
+}
+
+// cut copies any selected text to the system clipboard, and deletes it.
+func (t *Text) cut(event KeyEvent) {
+	t.copy(event)
+	t.deleteSelected()
 }
 
 // paste inserts text from the system clipboard at the current
