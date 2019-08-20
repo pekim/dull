@@ -59,7 +59,7 @@ func NewText(text string, options *dull.CellOptions) *Text {
 		keyBindingKey{dull.KeyEnd, 0}:              keyEventHandler{t.moveCursorToEnd, false},
 		keyBindingKey{dull.KeyEnd, dull.ModShift}:  keyEventHandler{t.moveCursorToEnd, true},
 
-		keyBindingKey{dull.KeyBackspace, 0}: keyEventHandler{t.deleteLeftOfCursor, false},
+		keyBindingKey{dull.KeyBackspace, 0}: keyEventHandler{t.delete, false},
 
 		keyBindingKey{dull.KeyC, dull.ModControl}: keyEventHandler{t.copy, true},
 		keyBindingKey{dull.KeyV, dull.ModControl}: keyEventHandler{t.paste, false},
@@ -232,9 +232,19 @@ func (t *Text) deleteSelected() {
 	t.cursorPos = selectionStart
 }
 
+// delete deletes selected text, or if noe the one character immediately
+// to the left of the cursor.
+func (t *Text) delete(event KeyEvent) {
+	if t.selectionPos != t.cursorPos {
+		t.deleteSelected()
+	} else {
+		t.deleteLeftOfCursor()
+	}
+}
+
 // deleteLeftOfCursor deletes one character immediately
 // to the left of the cursor.
-func (t *Text) deleteLeftOfCursor(event KeyEvent) {
+func (t *Text) deleteLeftOfCursor() {
 	if t.cursorPos == 0 {
 		return
 	}
