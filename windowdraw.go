@@ -52,7 +52,7 @@ func (w *Window) addBorderToVertices(border *Border) {
 	cellWidth := w.viewportCellWidth
 	cellHeight := w.viewportCellHeight
 
-	thicknessVertical := 0.12 * cellHeight
+	thicknessVertical := 0.08 * cellHeight
 	thicknessVerticalPixels := float32(w.height) * (thicknessVertical / 2.0)
 	thicknessHorizontal := (thicknessVerticalPixels * 2.0) / float32(w.width)
 
@@ -121,7 +121,7 @@ func (w *Window) addBarCursorToCellVertices(cell *Cell, cursor *Cursor) {
 	left := float32(-1.0 + (float32(cursor.column) * cellWidth))
 	if cursor.column == 0 {
 		// make a little wider, for visibility
-		width *= 1.5
+		width *= 1.2
 	} else {
 		// span two cells; half the width in the previous cell
 		left -= width / 2
