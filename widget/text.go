@@ -5,6 +5,7 @@ import (
 	"github.com/atotto/clipboard"
 	"github.com/pekim/dull"
 	"github.com/pekim/dull/geometry"
+	"unicode"
 )
 
 type keyBindingKey struct {
@@ -184,11 +185,16 @@ func (t *Text) moveCursorLeftOneWord(event KeyEvent) {
 		event.Context.window.Bell()
 	}
 
-	for t.cursorPos > 0 && t.text[t.cursorPos-1] == ' ' {
+	for t.cursorPos > 0 && unicode.IsSpace(t.text[t.cursorPos-1]) {
 		t.cursorPos--
 	}
 
-	for t.cursorPos > 0 && t.text[t.cursorPos-1] != ' ' {
+	if !(unicode.IsLetter(t.text[t.cursorPos-1]) || unicode.IsNumber(t.text[t.cursorPos-1])) {
+		t.cursorPos--
+		return
+	}
+
+	for t.cursorPos > 0 && (unicode.IsLetter(t.text[t.cursorPos-1]) || unicode.IsNumber(t.text[t.cursorPos-1])) {
 		t.cursorPos--
 	}
 }
@@ -207,11 +213,16 @@ func (t *Text) moveCursorRightOneWord(event KeyEvent) {
 		event.Context.window.Bell()
 	}
 
-	for t.cursorPos < len(t.text) && t.text[t.cursorPos] == ' ' {
+	for t.cursorPos < len(t.text) && unicode.IsSpace(t.text[t.cursorPos]) {
 		t.cursorPos++
 	}
 
-	for t.cursorPos < len(t.text) && t.text[t.cursorPos] != ' ' {
+	if !(unicode.IsLetter(t.text[t.cursorPos]) || unicode.IsNumber(t.text[t.cursorPos])) {
+		t.cursorPos++
+		return
+	}
+
+	for t.cursorPos < len(t.text) && (unicode.IsLetter(t.text[t.cursorPos]) || unicode.IsNumber(t.text[t.cursorPos])) {
 		t.cursorPos++
 	}
 }
