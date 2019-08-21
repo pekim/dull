@@ -18,8 +18,8 @@ func (w *Window) draw() {
 	w.vertices = w.vertices[:0]
 
 	w.addCellsToVertices()
-	w.addCursorsToVertices()
 	w.addBordersToVertices()
+	w.addCursorsToVertices()
 
 	if len(w.vertices) == 0 {
 		return
@@ -120,8 +120,10 @@ func (w *Window) addBarCursorToCellVertices(cell *Cell, cursor *Cursor) {
 
 	left := float32(-1.0 + (float32(cursor.column) * cellWidth))
 	if cursor.column == 0 {
-		// make a little wider, for visibility
-		width *= 1.2
+		// no need to adjust position
+	} else if cursor.column == w.grid.width {
+		// move so that cursor is within the window
+		left -= width
 	} else {
 		// span two cells; half the width in the previous cell
 		left -= width / 2

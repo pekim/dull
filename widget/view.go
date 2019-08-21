@@ -115,7 +115,7 @@ func (v *View) AddBorder(rect geometry.Rect, color dull.Color) {
 
 func (v *View) AddCursor(position geometry.Point) {
 	position.Translate(v.Rect.Position.X, v.Position.Y)
-	position.Constrain(v.Rect)
+	//position.Constrain(v.Rect)
 
 	cursor := v.window.Cursors().New()
 	cursor.SetPosition(position.X, position.Y)

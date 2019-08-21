@@ -76,7 +76,7 @@ func (t *Text) Constrain(constraint Constraint) geometry.Size {
 	})
 
 	t.width = size.Width
-	t.cursorPos = geometry.Min(t.cursorPos, t.width-1)
+	t.cursorPos = geometry.Min(t.cursorPos, t.width)
 
 	return size
 }
