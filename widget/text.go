@@ -180,6 +180,19 @@ func (t *Text) moveCursorLeftOneChar(event KeyEvent) {
 	}
 }
 
+func (t *Text) moveCursorRightOneChar(event KeyEvent) {
+	t.cursorPos++
+
+	if t.cursorPos > len(t.text) {
+		t.cursorPos = len(t.text)
+		event.Context.window.Bell()
+	}
+}
+
+func (t *Text) isWordChar(rune rune) bool {
+	return unicode.IsLetter(rune) || unicode.IsNumber(rune)
+}
+
 func (t *Text) moveCursorLeftOneWord(event KeyEvent) {
 	if t.cursorPos == 0 {
 		event.Context.window.Bell()
@@ -189,22 +202,13 @@ func (t *Text) moveCursorLeftOneWord(event KeyEvent) {
 		t.cursorPos--
 	}
 
-	if t.cursorPos > 0 && !(unicode.IsLetter(t.text[t.cursorPos-1]) || unicode.IsNumber(t.text[t.cursorPos-1])) {
+	if t.cursorPos > 0 && !t.isWordChar(t.text[t.cursorPos-1]) {
 		t.cursorPos--
 		return
 	}
 
-	for t.cursorPos > 0 && (unicode.IsLetter(t.text[t.cursorPos-1]) || unicode.IsNumber(t.text[t.cursorPos-1])) {
+	for t.cursorPos > 0 && t.isWordChar(t.text[t.cursorPos-1]) {
 		t.cursorPos--
-	}
-}
-
-func (t *Text) moveCursorRightOneChar(event KeyEvent) {
-	t.cursorPos++
-
-	if t.cursorPos > len(t.text) {
-		t.cursorPos = len(t.text)
-		event.Context.window.Bell()
 	}
 }
 
@@ -217,12 +221,12 @@ func (t *Text) moveCursorRightOneWord(event KeyEvent) {
 		t.cursorPos++
 	}
 
-	if t.cursorPos < len(t.text) && !(unicode.IsLetter(t.text[t.cursorPos]) || unicode.IsNumber(t.text[t.cursorPos])) {
+	if t.cursorPos < len(t.text) && !t.isWordChar(t.text[t.cursorPos]) {
 		t.cursorPos++
 		return
 	}
 
-	for t.cursorPos < len(t.text) && (unicode.IsLetter(t.text[t.cursorPos]) || unicode.IsNumber(t.text[t.cursorPos])) {
+	for t.cursorPos < len(t.text) && t.isWordChar(t.text[t.cursorPos]) {
 		t.cursorPos++
 	}
 }
