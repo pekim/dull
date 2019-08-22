@@ -189,7 +189,7 @@ func (t *Text) moveCursorLeftOneWord(event KeyEvent) {
 		t.cursorPos--
 	}
 
-	if !(unicode.IsLetter(t.text[t.cursorPos-1]) || unicode.IsNumber(t.text[t.cursorPos-1])) {
+	if t.cursorPos > 0 && !(unicode.IsLetter(t.text[t.cursorPos-1]) || unicode.IsNumber(t.text[t.cursorPos-1])) {
 		t.cursorPos--
 		return
 	}
@@ -217,7 +217,7 @@ func (t *Text) moveCursorRightOneWord(event KeyEvent) {
 		t.cursorPos++
 	}
 
-	if !(unicode.IsLetter(t.text[t.cursorPos]) || unicode.IsNumber(t.text[t.cursorPos])) {
+	if t.cursorPos < len(t.text) && !(unicode.IsLetter(t.text[t.cursorPos]) || unicode.IsNumber(t.text[t.cursorPos])) {
 		t.cursorPos++
 		return
 	}
