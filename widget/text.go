@@ -5,6 +5,7 @@ import (
 	"github.com/atotto/clipboard"
 	"github.com/pekim/dull"
 	"github.com/pekim/dull/geometry"
+	"golang.org/x/text/unicode/norm"
 	"unicode"
 )
 
@@ -117,7 +118,7 @@ func (t *Text) AcceptFocus() bool {
 	return true
 }
 
-func (t *Text) insertText(newText []rune) {
+func (t *Text) insertText(insert []rune) {
 	t.deleteSelected()
 
 	// split text at cursor
@@ -125,14 +126,17 @@ func (t *Text) insertText(newText []rune) {
 	after := t.text[t.cursorPos:]
 
 	// create new text from 3 parts
-	t.text = make([]rune, 0, len(before)+len(newText)+len(after))
-	t.text = append(t.text, before...)
-	t.text = append(t.text, newText...)
-	t.text = append(t.text, after...)
+	newText := make([]rune, 0, len(before)+len(insert)+len(after))
+	newText = append(newText, before...)
+	newText = append(newText, insert...)
+	newText = append(newText, after...)
+	newText = []rune(norm.NFC.String(string(newText)))
 
 	// advance cursor
-	t.cursorPos += len(newText)
+	t.cursorPos += (len(newText) - len(t.text))
 	t.selectionPos = t.cursorPos
+
+	t.text = newText
 }
 
 func (t *Text) HandleCharEvent(event CharEvent) {
