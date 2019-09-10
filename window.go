@@ -36,6 +36,18 @@ type Window struct {
 	windowedBounds     geometry.Rect
 	keybindings        []keybinding
 
+	// When true char event callbacks will not be called.
+	// Used to prevent char events associated with window key binding from
+	// being emitted.
+	//
+	// For example consider CTRL+0 (to reset zoom)
+	//		key down  :  CTRL
+	//      key down  :  0			// zoom reset processed
+	//      char      :  "0"		// do not want "0" handled; block it
+	//      key up    :  0
+	//      key up    :  CTRL
+	blockCharEvents bool
+
 	bg      Color
 	fg      Color
 	bgDirty bool

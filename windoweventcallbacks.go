@@ -58,10 +58,14 @@ func (w *Window) callKeyCallback(_ *glfw.Window,
 }
 
 func (w *Window) handleKeyEvent(key Key, action Action, mods ModifierKey) {
-	if action == Press || action == Repeat {
-		for _, binding := range w.keybindings {
-			if key == binding.key && mods == binding.mods {
+	for _, binding := range w.keybindings {
+		if key == binding.key && mods == binding.mods {
+			if action == Press || action == Repeat {
+				w.blockCharEvents = true
 				binding.fn()
+			} else {
+				// On release unblock char events.
+				w.blockCharEvents = false
 			}
 		}
 	}
@@ -124,7 +128,7 @@ func (w *Window) SetCharCallback(fn CharCallback) {
 }
 
 func (w *Window) callCharCallback(_ *glfw.Window, char rune, mods glfw.ModifierKey) {
-	if w.charCallback != nil {
+	if w.charCallback != nil && !w.blockCharEvents {
 		w.charCallback(char, ModifierKey(mods))
 		w.draw()
 	}
