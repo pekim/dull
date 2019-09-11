@@ -5,8 +5,7 @@ package freetype
 // #include <ft2build.h>
 // #include FT_FREETYPE_H
 //
-// #cgo CFLAGS: -I ${SRCDIR}/include
-// #cgo LDFLAGS: ${SRCDIR}/libfreetype.a
+// #cgo pkg-config: freetype2
 import "C"
 import (
 	"fmt"
@@ -43,7 +42,6 @@ func NewFreeType(dpi int) *FreeType {
 	}
 
 	runtime.SetFinalizer(ft, ftFinalizer)
-	ft.assertLibraryVersion()
 
 	return ft
 }
@@ -53,23 +51,6 @@ func ftFinalizer(ft *FreeType) {
 	if error != C.FT_Err_Ok {
 		os.Stderr.WriteString(fmt.Sprintf("Failed to destroy FreeType library, %d\n", error))
 	}
-}
-
-func (ft *FreeType) assertLibraryVersion() {
-	expectedVersion := "2.8.0"
-
-	var major, minor, patch C.FT_Int
-	C.FT_Library_Version(ft.library, &major, &minor, &patch)
-	version := fmt.Sprintf("%d.%d.%d", major, minor, patch)
-
-	if version != expectedVersion {
-		message := fmt.Sprintf(
-			"expected FreeType %s, but is %s; something probably went wrong when linking\n",
-			expectedVersion, version,
-		)
-		os.Stderr.WriteString(message)
-	}
-
 }
 
 func (ft *FreeType) NewRenderer(name string, fontData []byte, pixelHeight float64) (font.Renderer, error) {
