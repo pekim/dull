@@ -1,6 +1,6 @@
 // +build linux
 
-package freetype
+package native
 
 // #include <ft2build.h>
 // #include FT_FREETYPE_H

@@ -11,7 +11,7 @@ func initialise(app *dull.Application, err error) {
 		panic(err)
 	}
 
-	app.SetFontRenderer(dull.FontRendererFreetype)
+	app.SetFontRenderer(dull.FontRendererNative)
 
 	// green := dull.NewColor(0.4, 1.0, 0.0, 1.0)
 	white := dull.NewColor(1.0, 1.0, 1.0, 1.0)

@@ -1,6 +1,6 @@
 // +build !linux
 
-package freetype
+package native
 
 import (
 	"errors"
@@ -8,5 +8,5 @@ import (
 )
 
 func NewRenderer(name string, fontData []byte, dpi int, height float64) (font.Renderer, error) {
-	return nil, errors.New("freetype renderer not (yet) supported on this platform")
+	return nil, errors.New("native renderer not (yet) supported on this platform")
 }

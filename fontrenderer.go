@@ -3,7 +3,7 @@ package dull
 import (
 	"fmt"
 	"github.com/pekim/dull/internal/font"
-	"github.com/pekim/dull/internal/font/freetype"
+	"github.com/pekim/dull/internal/font/native"
 	"github.com/pekim/dull/internal/font/stbtruetype"
 )
 
@@ -13,8 +13,8 @@ func (r FontRenderer) new() font.NewRenderer {
 	switch r {
 	case FontRendererStbtruetype:
 		return stbtruetype.NewRenderer
-	case FontRendererFreetype:
-		return freetype.NewRenderer
+	case FontRendererNative:
+		return native.NewRenderer
 	}
 
 	panic(fmt.Sprintf("unknow font renderer %d", r))
@@ -22,10 +22,10 @@ func (r FontRenderer) new() font.NewRenderer {
 
 const (
 	// A simple bundled font renderer that should compile on all platforms.
-	// Not quite as good quality as freetype.
+	// Not quite as good quality as native.
 	FontRendererStbtruetype = iota
 
-	// A well respected font rendererer.
-	// Although supported on many platforms, dull currently only supports it on linux.
-	FontRendererFreetype
+	// Font rendering native to the platform.
+	// Not yet supported on all platforms.
+	FontRendererNative
 )
