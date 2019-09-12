@@ -52,7 +52,7 @@ func ftFinalizer(ft *FreeType) {
 }
 
 func (ft *FreeType) assertLibraryVersion() {
-	expectedVersion := "2.9.0"
+	expectedVersion := "2.10.1"
 
 	var major, minor, patch C.FT_Int
 	C.FT_Library_Version(ft.library, &major, &minor, &patch)
@@ -60,7 +60,7 @@ func (ft *FreeType) assertLibraryVersion() {
 
 	if version != expectedVersion {
 		message := fmt.Sprintf(
-			"expected FreeType %s, but is %s; something probably went wrong when linking\n",
+			"expected FreeType %s, but is %s\n",
 			expectedVersion, version,
 		)
 		os.Stderr.WriteString(message)
