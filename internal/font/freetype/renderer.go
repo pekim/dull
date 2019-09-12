@@ -4,10 +4,8 @@ package freetype
 
 // #include <ft2build.h>
 // #include FT_FREETYPE_H
-//
-// #cgo CFLAGS: -I ${SRCDIR}/include
-// #cgo LDFLAGS: ${SRCDIR}/libfreetype.a
 import "C"
+
 import (
 	"fmt"
 	"os"
@@ -56,7 +54,7 @@ func ftFinalizer(ft *FreeType) {
 }
 
 func (ft *FreeType) assertLibraryVersion() {
-	expectedVersion := "2.8.0"
+	expectedVersion := "2.9.0"
 
 	var major, minor, patch C.FT_Int
 	C.FT_Library_Version(ft.library, &major, &minor, &patch)
