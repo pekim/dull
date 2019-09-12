@@ -18,7 +18,7 @@ type Application struct {
 }
 
 // SetFontRenderer allows the font renderering library to be specified.
-// The default is FontRendererStbtruetype, as it should build on all platforms.
+// The default is FontRendererFreetype.
 //
 // This function affects all subsequently created windows.
 // A reasonable place to call it would be early in the dull.Initialised function

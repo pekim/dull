@@ -21,11 +21,14 @@ func (r FontRenderer) new() font.NewRenderer {
 }
 
 const (
-	// A simple bundled font renderer that should compile on all platforms.
-	// Not quite as good quality as freetype.
-	FontRendererStbtruetype = iota
+	// FontRendererFreetype is a well respected font rendererer.
+	// It should compile on most platforms.
+	//
+	// This is the default FontRenderer.
+	FontRendererFreetype FontRenderer = iota
 
-	// A well respected font rendererer.
-	// Although supported on many platforms, dull currently only supports it on linux.
-	FontRendererFreetype
+	// FontRendererStbtruetype is a simple bundled font renderer that should
+	// compile on all platforms.
+	// Not quite as good quality as freetype.
+	FontRendererStbtruetype
 )

@@ -74,7 +74,9 @@ func DoNoWait(fn func()) {
 }
 
 func run(initialised InitialisedFn) {
-	app := &Application{}
+	app := &Application{
+		fontRenderer: FontRendererFreetype,
+	}
 
 	mainthread.Call(func() {
 		err := glfw.Init()
