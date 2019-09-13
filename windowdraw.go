@@ -1,7 +1,9 @@
 package dull
 
 import (
+	"image"
 	"time"
+	"unsafe"
 
 	"github.com/go-gl/gl/v3.3-core/gl"
 	"github.com/pekim/dull/internal/textureatlas"
@@ -319,4 +321,39 @@ func (w *Window) configureVertexAttribute(
 		vertexAttribStride, gl.PtrOffset(*attributeOffset))
 
 	*attributeOffset += sizeofGlFloat * attributeCount
+}
+
+// Capture captures the Window's pixels in an Image.
+func (w *Window) Capture() image.Image {
+	width, height := w.glfwWindow.GetSize()
+	buffer := make([]byte, width*height*4)
+	stride := 4 * width
+
+	gl.ReadPixels(
+		0, 0, int32(width), int32(height),
+		gl.RGBA, gl.UNSIGNED_BYTE,
+		unsafe.Pointer(&buffer[0]),
+	)
+
+	// Flip image vertically,
+	// as gl.ReadPixels starts reading from the bottom left.
+	flippedBuffer := make([]byte, len(buffer))
+	for row := 0; row < height; row++ {
+		flippedRowStart := row * stride
+		flippedRowEnd := flippedRowStart + stride
+
+		originalRowStart := (height - row - 1) * stride
+		originalRowEnd := originalRowStart + stride
+
+		copy(
+			flippedBuffer[flippedRowStart:flippedRowEnd],
+			buffer[originalRowStart:originalRowEnd],
+		)
+	}
+
+	img := image.NewRGBA(image.Rect(0, 0, width, height))
+	img.Pix = flippedBuffer
+	img.Stride = stride
+
+	return img
 }
