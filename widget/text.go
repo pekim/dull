@@ -61,6 +61,8 @@ func NewText(text string, options *dull.CellOptions) *Text {
 		keyBindingKey{dull.KeyEnd, 0}:              keyEventHandler{t.moveCursorToEnd, false},
 		keyBindingKey{dull.KeyEnd, dull.ModShift}:  keyEventHandler{t.moveCursorToEnd, true},
 
+		keyBindingKey{dull.KeyA, dull.ModControl}: keyEventHandler{t.selectAll, true},
+
 		keyBindingKey{dull.KeyBackspace, 0}: keyEventHandler{t.backspace, false},
 		keyBindingKey{dull.KeyDelete, 0}:    keyEventHandler{t.delete, false},
 
@@ -166,6 +168,11 @@ func (t *Text) HandleKeyEvent(event KeyEvent) {
 			}
 		}
 	}
+}
+
+func (t *Text) selectAll(event KeyEvent) {
+	t.selectionPos = 0
+	t.cursorPos = len(t.text)
 }
 
 func (t *Text) moveCursorToStart(event KeyEvent) {
