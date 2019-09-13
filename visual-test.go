@@ -42,8 +42,8 @@ func testCaptureAndCompareImage(
 	name string,
 	width int,
 	height int,
+	scale float64,
 	setupWindow func(*Window),
-	assertPixels func(*testing.T, []byte),
 ) {
 	Run(func(app *Application, err error) {
 		if err != nil {
@@ -61,7 +61,7 @@ func testCaptureAndCompareImage(
 		}
 
 		// Use a fixed scale, to ensure reproducibility on all systems.
-		w.scale = 1.0
+		w.scale = scale
 		w.setFontSize(0)
 
 		// allow the test to prepare the window contents
@@ -70,25 +70,19 @@ func testCaptureAndCompareImage(
 		w.drawAll()
 
 		go w.Do(func() {
-			asserttTestImage(t, name, w, assertPixels)
+			asserttTestImage(t, name, w)
 			w.Destroy()
 		})
 	})
 }
 
-func asserttTestImage(t *testing.T, name string, w *Window, assertPixels func(*testing.T, []byte)) {
+func asserttTestImage(t *testing.T, name string, w *Window) {
 	// capture
 	generatedImage := w.Capture()
 	normaliseImageIfRequired(generatedImage)
-	rgbaImage := generatedImage.(*image.RGBA)
 
 	// write generated image; will no be committed
 	writeTestImageFile(name, "generated", generatedImage)
-
-	// assert pixels, if required
-	if assertPixels != nil {
-		assertPixels(t, rgbaImage.Pix)
-	}
 
 	referenceImage, err := readTestImageFile(name, "reference")
 	// write reference image if it doesn't exist
