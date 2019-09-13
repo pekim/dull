@@ -60,6 +60,10 @@ func testCaptureAndCompareImage(
 			t.Fatal(err)
 		}
 
+		// Use a fixed scale, to ensure reproducibility on all systems.
+		w.scale = 1.0
+		w.setFontSize(0)
+
 		// allow the test to prepare the window contents
 		setupWindow(w)
 
