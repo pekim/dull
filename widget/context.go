@@ -1,6 +1,8 @@
 package widget
 
-import "github.com/pekim/dull"
+import (
+	"github.com/pekim/dull"
+)
 
 type Context struct {
 	window        *dull.Window
@@ -80,5 +82,58 @@ func (c *Context) SetNextFocusableWidget() {
 		c.focusedWidget = nil
 		c.focusedWidget = c.findFocusableWidget(c.root.child)
 	}
+}
 
+func (c *Context) findLastFocusableWidget(parent Widget, priorFocusable Widget) Widget {
+	if parent.AcceptFocus() {
+		priorFocusable = parent
+	}
+
+	for _, child := range parent.Children() {
+		if child.AcceptFocus() {
+			priorFocusable = child
+		}
+
+		focusable := c.findLastFocusableWidget(child, priorFocusable)
+		if focusable != nil {
+			priorFocusable = focusable
+		}
+	}
+
+	return priorFocusable
+}
+
+func (c *Context) findPreviousFocusableWidget(parent Widget, priorFocusable Widget) (Widget, bool) {
+	if parent.AcceptFocus() {
+		priorFocusable = parent
+	}
+
+	for _, child := range parent.Children() {
+		if child == c.focusedWidget {
+			return priorFocusable, true
+		}
+
+		if child.AcceptFocus() {
+			priorFocusable = child
+		}
+
+		widget, found := c.findPreviousFocusableWidget(child, priorFocusable)
+		if found {
+			priorFocusable = widget
+		}
+	}
+
+	return priorFocusable, false
+}
+
+func (c *Context) SetPreviousFocusableWidget() {
+	prevFocusableWidget, _ := c.findPreviousFocusableWidget(c.root.child, nil)
+	if prevFocusableWidget != nil {
+		c.focusedWidget = prevFocusableWidget
+	} else {
+		// There's no focusable widget before the currently focused widget.
+		// So give focus to the last focusable widget.
+		c.focusedWidget = nil
+		c.focusedWidget = c.findLastFocusableWidget(c.root.child, nil)
+	}
 }

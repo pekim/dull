@@ -99,7 +99,11 @@ func (r *Root) keyHandler(key dull.Key, action dull.Action, mods dull.ModifierKe
 	}
 
 	if key == dull.KeyTab && action != dull.Release {
-		r.context.SetNextFocusableWidget()
+		if mods == 0 {
+			r.context.SetNextFocusableWidget()
+		} else if mods == dull.ModShift {
+			r.context.SetPreviousFocusableWidget()
+		}
 	}
 
 	event := KeyEvent{
