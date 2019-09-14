@@ -323,3 +323,7 @@ func (t *Text) paste(event KeyEvent) {
 
 	t.insertText([]rune(text))
 }
+
+func (t *Text) Text() string {
+	return string(t.text)
+}

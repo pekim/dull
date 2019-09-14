@@ -6,8 +6,8 @@ import (
 )
 
 func TestContext_SetNextFocusableWidget(t *testing.T) {
-	child1 := NewText("1", nil)
-	child2 := NewText("1", nil)
+	child1 := NewText("child 1", nil)
+	child2 := NewText("child 2", nil)
 
 	root := NewFlex(DirectionHorizontal)
 	root.Add(child1, FlexChildOptions{})
@@ -22,11 +22,11 @@ func TestContext_SetNextFocusableWidget(t *testing.T) {
 	context.ensureFocusedWidget()
 
 	context.ensureFocusedWidget()
-	assert.Equal(t, child1, context.focusedWidget)
+	assert.Equal(t, child1.Text(), context.focusedWidget.(*Text).Text())
 
 	context.SetNextFocusableWidget()
-	assert.Equal(t, child2, context.focusedWidget)
+	assert.Equal(t, child2.Text(), context.focusedWidget.(*Text).Text())
 
 	context.SetNextFocusableWidget()
-	assert.Equal(t, child1, context.focusedWidget)
+	assert.Equal(t, child1.Text(), context.focusedWidget.(*Text).Text())
 }
