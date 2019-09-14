@@ -25,6 +25,7 @@ func NewRoot(window *dull.Window, child Widget) *Root {
 		child: child,
 		view:  view,
 	}
+	r.context.root = r
 	r.view.window = window
 
 	window.SetGridSizeCallback(r.sizeChange)
@@ -51,7 +52,7 @@ func (r *Root) paint() {
 		return
 	}
 
-	r.context.ensureFocusedWidget(r.child)
+	r.context.ensureFocusedWidget()
 	r.context.window.Borders().RemoveAll()
 	r.context.window.Cursors().RemoveAll()
 	r.child.Paint(r.view, r.context)
@@ -62,7 +63,7 @@ func (r *Root) charHandler(char rune, mods dull.ModifierKey) {
 		return
 	}
 
-	r.context.assignFocus(r.child)
+	r.context.assignFocus()
 	if r.context.FocusedWidget() == nil {
 		return
 	}
@@ -92,13 +93,13 @@ func (r *Root) keyHandler(key dull.Key, action dull.Action, mods dull.ModifierKe
 		return
 	}
 
-	r.context.assignFocus(r.child)
+	r.context.assignFocus()
 	if r.context.FocusedWidget() == nil {
 		return
 	}
 
 	if key == dull.KeyTab && action != dull.Release {
-		r.context.SetNextFocusableWidget(r.child)
+		r.context.SetNextFocusableWidget()
 	}
 
 	event := KeyEvent{
