@@ -34,7 +34,7 @@ func (v *View) PrintRune(x, y int, rune rune, options *dull.CellOptions) {
 		return
 	}
 
-	cell.SetRune(rune)
+	cell.Rune = rune
 	if options != nil {
 		cell.ApplyOptions(options)
 	}
@@ -51,7 +51,7 @@ func (v *View) PrintAt(x, y int, text []rune, options *dull.CellOptions) {
 			break
 		}
 
-		cell.SetRune(r)
+		cell.Rune = r
 		if options != nil {
 			cell.ApplyOptions(options)
 		}
@@ -71,7 +71,7 @@ func (v *View) PrintAtRepeat(x, y int, count int, rune rune, options *dull.CellO
 			break
 		}
 
-		cell.SetRune(rune)
+		cell.Rune = rune
 		if options != nil {
 			cell.ApplyOptions(options)
 		}
@@ -93,7 +93,7 @@ func (v *View) Fill(rect geometry.Rect, rune rune, options *dull.CellOptions) {
 				continue
 			}
 
-			cell.SetRune(rune)
+			cell.Rune = rune
 			if options != nil {
 				cell.ApplyOptions(options)
 			}

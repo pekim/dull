@@ -14,7 +14,7 @@ type GridSizeCallback func(columns, rows int)
 // size changes.
 //
 // When the callback is called, all cells in the new grid will be
-// set to a blank rune, with default background and foreground colors.
+// set to a blank Rune, with default background and foreground colors.
 //
 // To remove a previously set callback, pass nil for the callback.
 //

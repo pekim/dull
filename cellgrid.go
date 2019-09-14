@@ -29,9 +29,9 @@ func newCellGrid(width, height int, bg, fg Color) *CellGrid {
 	for index := 0; index < width*height; index++ {
 		g.cells[index] = &Cell{
 			grid: g,
-			bg:   bg,
-			fg:   fg,
-			rune: ' ',
+			Bg:   bg,
+			Fg:   fg,
+			Rune: ' ',
 		}
 	}
 
@@ -56,15 +56,15 @@ func (g *CellGrid) Cell(column, row int) (*Cell, error) {
 	return g.cells[index], nil
 }
 
-// Clear sets the rune for all cells to the space character \u0020.
+// Clear sets the Rune for all cells to the space character \u0020.
 func (g *CellGrid) Clear() {
 	g.SetAllCellsRune(' ')
 }
 
-// SetAllCellsRune sets the rune for all cells to the provided value.
+// SetAllCellsRune sets the Rune for all cells to the provided value.
 func (g *CellGrid) SetAllCellsRune(rune rune) {
 	for _, c := range g.cells {
-		c.rune = rune
+		c.Rune = rune
 	}
 }
 
@@ -95,7 +95,7 @@ func (g *CellGrid) PrintAt(column, row int, text string) {
 			return
 		}
 
-		g.cells[index].rune = r
+		g.cells[index].Rune = r
 
 		index++
 	}

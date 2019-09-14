@@ -17,70 +17,38 @@ type CellOptions struct {
 //
 // If any fields are modified, then the containing window's MarkDirty must be called.
 type Cell struct {
-	// rune is the rune to be rendered.
-	rune rune
-	// fg is the foreground colour, used to render the rune.
-	fg Color
-	// bg is the background colour, used to fill the cell's background.
-	bg Color
+	// Rune is the Rune to be rendered.
+	Rune rune
+	// Fg is the foreground colour, used to render the Rune.
+	Fg Color
+	// Bg is the background colour, used to fill the cell's background.
+	Bg Color
 
-	// bold denotes whether the rune is rendered in bold.
-	// May be combined with italic.
-	bold bool
-	// italic denotes whether the rune is rendered italicised.
-	// May be combined with bold.
-	italic bool
+	// Bold denotes whether the Rune is rendered in Bold.
+	// May be combined with Italic.
+	Bold bool
+	// Italic denotes whether the Rune is rendered italicised.
+	// May be combined with Bold.
+	Italic bool
 
-	// underline denotes whether the rune should be underlined (underscored).
-	underline bool
-	// strikethrough denotes whether the rune should be struckthrough.
-	strikethrough bool
+	// Underline denotes whether the Rune should be underlined (underscored).
+	Underline bool
+	// Strikethrough denotes whether the Rune should be struckthrough.
+	Strikethrough bool
 
-	// invert denotes whether the foreground and background colours should be reversed.
-	invert bool
+	// Invert denotes whether the foreground and background colours should be reversed.
+	Invert bool
 
 	grid     *CellGrid
 	vertices []float32
 }
 
-func (c *Cell) SetRune(rune rune) {
-	c.rune = rune
-}
-
-func (c *Cell) SetBold(bold bool) {
-	c.bold = bold
-}
-
-func (c *Cell) SetItalic(italic bool) {
-	c.italic = italic
-}
-
-func (c *Cell) SetFg(fg Color) {
-	c.fg = fg
-}
-
-func (c *Cell) SetBg(bg Color) {
-	c.bg = bg
-}
-
-func (c *Cell) SetUnderline(underline bool) {
-	c.underline = underline
-}
-
-func (c *Cell) SetStrikethrough(strikethrough bool) {
-	c.strikethrough = strikethrough
-}
-
-func (c *Cell) SetInvert(invert bool) {
-	c.invert = invert
-}
-
 func (c *Cell) ApplyOptions(options *CellOptions) {
-	c.fg = options.Fg
-	c.bg = options.Bg
-	c.bold = options.Bold
-	c.invert = options.Invert
-	c.italic = options.Italic
-	c.strikethrough = options.Strikethrough
-	c.underline = options.Underline
+	c.Fg = options.Fg
+	c.Bg = options.Bg
+	c.Bold = options.Bold
+	c.Invert = options.Invert
+	c.Italic = options.Italic
+	c.Strikethrough = options.Strikethrough
+	c.Underline = options.Underline
 }

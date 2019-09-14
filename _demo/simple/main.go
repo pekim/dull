@@ -64,31 +64,31 @@ func initialise(app *dull.Application, err error) {
 		if cell == nil {
 			return
 		}
-		cell.SetRune('F')
+		cell.Rune = 'F'
 
 		cell, _ = window.Grid().Cell(3, 4)
 		if cell == nil {
 			return
 		}
-		cell.SetRune('F')
-		cell.SetBold(true)
-		cell.SetFg(dull.NewColor(0.7, 0.0, 0.2, 1.0))
-		cell.SetBg(dull.NewColor(0.7, 0.7, 0.9, 1.0))
+		cell.Rune = 'F'
+		cell.Bold = true
+		cell.Fg = dull.NewColor(0.7, 0.0, 0.2, 1.0)
+		cell.Bg = dull.NewColor(0.7, 0.7, 0.9, 1.0)
 
 		cell, _ = window.Grid().Cell(4, 4)
 		if cell == nil {
 			return
 		}
-		cell.SetRune('F')
-		cell.SetItalic(true)
+		cell.Rune = 'F'
+		cell.Italic = true
 
 		cell, _ = window.Grid().Cell(5, 4)
 		if cell == nil {
 			return
 		}
-		cell.SetRune('F')
-		cell.SetBold(true)
-		cell.SetItalic(true)
+		cell.Rune = 'F'
+		cell.Bold = true
+		cell.Italic = true
 	}
 
 	renderAdditionalVariations := func() {
@@ -98,8 +98,8 @@ func initialise(app *dull.Application, err error) {
 				return
 			}
 
-			cell.SetRune(rune)
-			cell.SetUnderline(true)
+			cell.Rune = rune
+			cell.Underline = true
 		}
 
 		for r, rune := range "Mighty Oaks." {
@@ -108,8 +108,8 @@ func initialise(app *dull.Application, err error) {
 				return
 			}
 
-			cell.SetRune(rune)
-			cell.SetStrikethrough(true)
+			cell.Rune = rune
+			cell.Strikethrough = true
 		}
 	}
 
@@ -127,8 +127,8 @@ func initialise(app *dull.Application, err error) {
 		renderAdditionalVariations()
 
 		//cell, _ := window.Grid().Cell(1, 1)
-		//cell.SetRune('\u2295')
-		//cell.SetInvert(true)
+		//cell.Rune ='\u2295'
+		//cell.Invert = true
 	}
 
 	window.SetTitle("dull - simple")

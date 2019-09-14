@@ -196,23 +196,23 @@ func (w *Window) generateCellVertices(cell *Cell, columnInt int, rowInt int, tex
 	cell.vertices = cell.vertices[:0]
 
 	font := w.fontFamily.Regular
-	if cell.bold && cell.italic {
+	if cell.Bold && cell.Italic {
 		font = w.fontFamily.BoldItalic
-	} else if cell.bold {
+	} else if cell.Bold {
 		font = w.fontFamily.Bold
-	} else if cell.italic {
+	} else if cell.Italic {
 		font = w.fontFamily.Italic
 	}
-	textureItem := font.GetGlyph(cell.rune)
+	textureItem := font.GetGlyph(cell.Rune)
 
 	column := float32(columnInt)
 	row := float32(rowInt)
 
-	bg := cell.bg
-	fg := cell.fg
-	if cell.invert {
-		bg = cell.fg
-		fg = cell.bg
+	bg := cell.Bg
+	fg := cell.Fg
+	if cell.Invert {
+		bg = cell.Fg
+		fg = cell.Bg
 	}
 
 	if w.haveBlockCursorForCell(columnInt, rowInt) {
@@ -224,11 +224,11 @@ func (w *Window) generateCellVertices(cell *Cell, columnInt int, rowInt int, tex
 	w.addCellVertices(cell, column, row, textureItemSolid, bg, true)
 	w.addCellVertices(cell, column, row, textureItem, fg, false)
 
-	if cell.strikethrough {
+	if cell.Strikethrough {
 		// COMBINING LONG STROKE OVERLAY
 		w.addCellVertices(cell, column, row, font.GetGlyph('\u0336'), fg, false)
 	}
-	if cell.underline {
+	if cell.Underline {
 		// COMBINING LOW LINE
 		w.addCellVertices(cell, column, row, font.GetGlyph('\u0332'), fg, false)
 	}
