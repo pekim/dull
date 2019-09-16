@@ -56,6 +56,18 @@ func (g *CellGrid) Cell(column, row int) (*Cell, error) {
 	return g.cells[index], nil
 }
 
+// SetCell sets a cell's contents.
+func (g *CellGrid) SetCell(column, row int, cell *Cell) error {
+	index := (row * g.width) + column
+	if index >= len(g.cells) {
+		return fmt.Errorf("Cell at %d,%d exceeds grid bounds of 0,0 to %d,%d",
+			column, row, g.width-1, g.height-1)
+	}
+
+	g.cells[index] = cell
+	return nil
+}
+
 // Clear sets the Rune for all cells to the space character \u0020.
 func (g *CellGrid) Clear() {
 	g.SetAllCellsRune(' ')

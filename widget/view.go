@@ -28,6 +28,15 @@ func (v *View) Cell(x, y int) (*dull.Cell, error) {
 	return v.window.Grid().Cell(v.Position.X+x, v.Position.Y+y)
 }
 
+func (v *View) PrintCell(x, y int, cell dull.Cell) {
+	if x < 0 || x >= v.Size.Width ||
+		y < 0 || y >= v.Size.Height {
+		return
+	}
+
+	v.window.Grid().SetCell(x, y, &cell)
+}
+
 func (v *View) PrintRune(x, y int, rune rune, options *dull.CellOptions) {
 	cell, err := v.Cell(x, y)
 	if err != nil {
