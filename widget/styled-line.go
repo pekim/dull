@@ -4,6 +4,7 @@ import (
 	"github.com/pekim/dull"
 	"github.com/pekim/dull/geometry"
 	"golang.org/x/text/unicode/norm"
+	"unicode"
 )
 
 type StyledLine struct {
@@ -72,6 +73,8 @@ func (sl *StyledLine) insertText(text []rune, pos int) {
 		cell.Rune = text[i]
 		cell.Bg = sl.bg
 		cell.Fg = sl.fg
+
+		insert[i] = cell
 	}
 
 	// split text at insertion point
@@ -112,4 +115,31 @@ func (sl *StyledLine) Paint(view *View, context *Context) {
 		Bg: sl.bg,
 	}
 	view.PrintAtRepeat(len(sl.cells), 0, remaining, ' ', &options)
+}
+
+func (sl *StyledLine) Len() int {
+	return len(sl.cells)
+}
+
+func (sl *StyledLine) IsSpace(pos int) bool {
+	return unicode.IsSpace(sl.cells[pos].Rune)
+}
+
+func (sl *StyledLine) IsWordChar(pos int) bool {
+	r := sl.cells[pos].Rune
+	return unicode.IsLetter(r) || unicode.IsNumber(r)
+}
+
+func (sl *StyledLine) Text() string {
+	return sl.TextRange(0, len(sl.cells))
+}
+
+func (sl *StyledLine) TextRange(start int, end int) string {
+	runes := make([]rune, end-start, end-start)
+
+	for i, cell := range sl.cells[start:end] {
+		runes[i] = cell.Rune
+	}
+
+	return string(runes)
 }

@@ -5,8 +5,6 @@ import (
 	"github.com/atotto/clipboard"
 	"github.com/pekim/dull"
 	"github.com/pekim/dull/geometry"
-	"golang.org/x/text/unicode/norm"
-	"unicode"
 )
 
 type keyBindingKey struct {
@@ -21,8 +19,9 @@ type keyEventHandler struct {
 
 type Text struct {
 	Childless
-	text         []rune
-	options      dull.CellOptions
+	//text         []rune
+	//options      dull.CellOptions
+	styledLine   *StyledLine
 	borderColor  dull.Color
 	cursorPos    int
 	selectionPos int
@@ -30,19 +29,10 @@ type Text struct {
 	keyBindings  map[keyBindingKey]keyEventHandler
 }
 
-func NewText(text string, options *dull.CellOptions) *Text {
+func NewText(text string, bg dull.Color, fg dull.Color) *Text {
 	t := &Text{
-		text:        []rune(text),
+		styledLine:  NewStyledLine(text, bg, fg),
 		borderColor: dull.NewColor(0.0, 0.0, 1.0, 0.5),
-	}
-
-	if options != nil {
-		t.options = *options
-	} else {
-		t.options = dull.CellOptions{
-			Bg: dull.NewColor(1.0, 1.0, 1.0, 1.0),
-			Fg: dull.NewColor(0.0, 0.0, 0.0, 1.0),
-		}
 	}
 
 	t.keyBindings = map[keyBindingKey]keyEventHandler{
@@ -94,27 +84,7 @@ func (t *Text) Paint(view *View, context *Context) {
 		view.AddCursor(geometry.Point{t.cursorPos, 0})
 	}
 
-	selected := false
-	selectionStart := geometry.Min(t.cursorPos, t.selectionPos)
-	selectionEnd := geometry.Max(t.cursorPos, t.selectionPos)
-	if selectionStart != selectionEnd {
-		selected = true
-	}
-
-	x := 0
-	for i, r := range t.text {
-		options := t.options
-		if selected && i >= selectionStart && i < selectionEnd {
-			options.Invert = true
-		}
-
-		view.PrintRune(x, 0, r, &options)
-
-		x++
-	}
-
-	remaining := geometry.Max(view.Size.Width-len(t.text), 0)
-	view.PrintAtRepeat(len(t.text), 0, remaining, ' ', &t.options)
+	t.styledLine.Paint(view, context)
 }
 
 func (t *Text) AcceptFocus() bool {
@@ -123,23 +93,11 @@ func (t *Text) AcceptFocus() bool {
 
 func (t *Text) insertText(insert []rune) {
 	t.deleteSelected()
-
-	// split text at cursor
-	before := t.text[:t.cursorPos]
-	after := t.text[t.cursorPos:]
-
-	// create new text from 3 parts
-	newText := make([]rune, 0, len(before)+len(insert)+len(after))
-	newText = append(newText, before...)
-	newText = append(newText, insert...)
-	newText = append(newText, after...)
-	newText = []rune(norm.NFC.String(string(newText)))
+	t.styledLine.insertText(insert, t.cursorPos)
 
 	// advance cursor
-	t.cursorPos += (len(newText) - len(t.text))
+	t.cursorPos += (len(insert))
 	t.selectionPos = t.cursorPos
-
-	t.text = newText
 }
 
 func (t *Text) HandleCharEvent(event CharEvent) {
@@ -166,13 +124,18 @@ func (t *Text) HandleKeyEvent(event KeyEvent) {
 			if !handler.keepSelection {
 				t.selectionPos = t.cursorPos
 			}
+
+			// update selection in styled line
+			selectionStart := geometry.Min(t.cursorPos, t.selectionPos)
+			selectionEnd := geometry.Max(t.cursorPos, t.selectionPos)
+			t.styledLine.setSelection(selectionStart, selectionEnd)
 		}
 	}
 }
 
 func (t *Text) selectAll(event KeyEvent) {
 	t.selectionPos = 0
-	t.cursorPos = len(t.text)
+	t.cursorPos = t.styledLine.Len()
 }
 
 func (t *Text) moveCursorToStart(event KeyEvent) {
@@ -180,7 +143,7 @@ func (t *Text) moveCursorToStart(event KeyEvent) {
 }
 
 func (t *Text) moveCursorToEnd(event KeyEvent) {
-	t.cursorPos = len(t.text)
+	t.cursorPos = t.styledLine.Len()
 }
 
 func (t *Text) moveCursorLeftOneChar(event KeyEvent) {
@@ -195,14 +158,10 @@ func (t *Text) moveCursorLeftOneChar(event KeyEvent) {
 func (t *Text) moveCursorRightOneChar(event KeyEvent) {
 	t.cursorPos++
 
-	if t.cursorPos > len(t.text) {
-		t.cursorPos = len(t.text)
+	if t.cursorPos > t.styledLine.Len() {
+		t.cursorPos = t.styledLine.Len()
 		event.Context.window.Bell()
 	}
-}
-
-func (t *Text) isWordChar(rune rune) bool {
-	return unicode.IsLetter(rune) || unicode.IsNumber(rune)
 }
 
 func (t *Text) moveCursorLeftOneWord(event KeyEvent) {
@@ -210,35 +169,35 @@ func (t *Text) moveCursorLeftOneWord(event KeyEvent) {
 		event.Context.window.Bell()
 	}
 
-	for t.cursorPos > 0 && unicode.IsSpace(t.text[t.cursorPos-1]) {
+	for t.cursorPos > 0 && t.styledLine.IsSpace(t.cursorPos-1) {
 		t.cursorPos--
 	}
 
-	if t.cursorPos > 0 && !t.isWordChar(t.text[t.cursorPos-1]) {
+	if t.cursorPos > 0 && !t.styledLine.IsWordChar(t.cursorPos-1) {
 		t.cursorPos--
 		return
 	}
 
-	for t.cursorPos > 0 && t.isWordChar(t.text[t.cursorPos-1]) {
+	for t.cursorPos > 0 && t.styledLine.IsWordChar(t.cursorPos-1) {
 		t.cursorPos--
 	}
 }
 
 func (t *Text) moveCursorRightOneWord(event KeyEvent) {
-	if t.cursorPos == len(t.text) {
+	if t.cursorPos == t.styledLine.Len() {
 		event.Context.window.Bell()
 	}
 
-	for t.cursorPos < len(t.text) && unicode.IsSpace(t.text[t.cursorPos]) {
+	for t.cursorPos < t.styledLine.Len() && t.styledLine.IsSpace(t.cursorPos) {
 		t.cursorPos++
 	}
 
-	if t.cursorPos < len(t.text) && !t.isWordChar(t.text[t.cursorPos]) {
+	if t.cursorPos < t.styledLine.Len() && !t.styledLine.IsWordChar(t.cursorPos) {
 		t.cursorPos++
 		return
 	}
 
-	for t.cursorPos < len(t.text) && t.isWordChar(t.text[t.cursorPos]) {
+	for t.cursorPos < t.styledLine.Len() && t.styledLine.IsWordChar(t.cursorPos) {
 		t.cursorPos++
 	}
 }
@@ -253,8 +212,7 @@ func (t *Text) deleteSelected() {
 	selectionStart := geometry.Min(t.cursorPos, t.selectionPos)
 	selectionEnd := geometry.Max(t.cursorPos, t.selectionPos)
 
-	rr := append(t.text[:selectionStart], t.text[selectionEnd:]...)
-	t.text = rr
+	t.styledLine.deleteRange(selectionStart, selectionEnd)
 
 	t.cursorPos = selectionStart
 }
@@ -279,13 +237,12 @@ func (t *Text) deleteAtPos(event KeyEvent, delta int) {
 	}
 
 	pos := t.cursorPos + delta
-	if pos < 0 || pos >= len(t.text) {
+	if pos < 0 || pos >= t.styledLine.Len() {
 		event.Context.window.Bell()
 		return
 	}
 
-	rr := append(t.text[:pos], t.text[pos+1:]...)
-	t.text = rr
+	t.styledLine.deleteAt(pos)
 
 	t.cursorPos += delta
 }
@@ -298,7 +255,7 @@ func (t *Text) copy(event KeyEvent) {
 		return
 	}
 
-	selected := t.text[selectionStart:selectionEnd]
+	selected := t.styledLine.TextRange(selectionStart, selectionEnd)
 
 	err := clipboard.WriteAll(string(selected))
 	if err != nil {
@@ -325,5 +282,5 @@ func (t *Text) paste(event KeyEvent) {
 }
 
 func (t *Text) Text() string {
-	return string(t.text)
+	return t.styledLine.Text()
 }

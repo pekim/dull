@@ -26,11 +26,11 @@ func initialise(app *dull.Application, err error) {
 
 	flex := widget.NewFlex(widget.DirectionVertical)
 
-	flex.Add(widget.NewText("one", nil), widget.FlexChildOptions{Size: widget.FlexChildSizeWidget})
+	flex.Add(widget.NewText("one", dull.White, dull.Black), widget.FlexChildOptions{Size: widget.FlexChildSizeWidget})
 	flex.Add(widget.NewBox(transparent), widget.FlexChildOptions{Size: widget.FlexChildSizeFixed, FixedSize: 1})
-	flex.Add(widget.NewText("two", nil), widget.FlexChildOptions{Size: widget.FlexChildSizeWidget})
+	flex.Add(widget.NewText("two", dull.White, dull.Black), widget.FlexChildOptions{Size: widget.FlexChildSizeWidget})
 	flex.Add(widget.NewBox(transparent), widget.FlexChildOptions{Size: widget.FlexChildSizeFixed, FixedSize: 1})
-	flex.Add(widget.NewText("three, four, five, and six", nil), widget.FlexChildOptions{Size: widget.FlexChildSizeWidget})
+	flex.Add(widget.NewText("three, four, five, and six", dull.White, dull.Black), widget.FlexChildOptions{Size: widget.FlexChildSizeWidget})
 
 	root.SetChild(flex)
 

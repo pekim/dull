@@ -1,6 +1,7 @@
 package widget
 
 import (
+	"github.com/pekim/dull"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -16,13 +17,13 @@ import (
 			child 32		Text	focusable
 */
 func TestContext_SetNextFocusableWidget(t *testing.T) {
-	child1 := NewText("child 1", nil)
+	child1 := NewText("child 1", dull.Black, dull.White)
 
 	child2 := NewLabel("child 2", nil)
 
 	child3 := NewFlex(DirectionHorizontal)
-	child31 := NewText("child 3-1", nil)
-	child32 := NewText("child 3-2", nil)
+	child31 := NewText("child 3-1", dull.Black, dull.White)
+	child32 := NewText("child 3-2", dull.Black, dull.White)
 	child3.Add(child31, FlexChildOptions{})
 	child3.Add(child32, FlexChildOptions{})
 
@@ -63,13 +64,13 @@ func TestContext_SetNextFocusableWidget(t *testing.T) {
 			child 32		Text	focusable
 */
 func TestContext_SetPreviousFocusableWidget(t *testing.T) {
-	child1 := NewText("child 1", nil)
+	child1 := NewText("child 1", dull.Black, dull.White)
 
 	child2 := NewLabel("child 2", nil)
 
 	child3 := NewFlex(DirectionHorizontal)
-	child31 := NewText("child 3-1", nil)
-	child32 := NewText("child 3-2", nil)
+	child31 := NewText("child 3-1", dull.Black, dull.White)
+	child32 := NewText("child 3-2", dull.Black, dull.White)
 	child3.Add(child31, FlexChildOptions{})
 	child3.Add(child32, FlexChildOptions{})
 

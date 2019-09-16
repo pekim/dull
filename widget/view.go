@@ -34,7 +34,7 @@ func (v *View) PrintCell(x, y int, cell dull.Cell) {
 		return
 	}
 
-	v.window.Grid().SetCell(x, y, &cell)
+	_ = v.window.Grid().SetCell(v.Position.X+x, v.Position.Y+y, &cell)
 }
 
 func (v *View) PrintRune(x, y int, rune rune, options *dull.CellOptions) {
