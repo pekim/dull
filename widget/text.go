@@ -94,6 +94,10 @@ func (t *Text) AcceptFocus() bool {
 func (t *Text) insertText(insert []rune) {
 	t.deleteSelected()
 	t.styledLine.insertText(insert, t.cursorPos)
+
+	// advance cursor
+	t.cursorPos += (len(insert))
+	t.selectionPos = t.cursorPos
 }
 
 func (t *Text) HandleCharEvent(event CharEvent) {

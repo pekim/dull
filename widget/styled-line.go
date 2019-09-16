@@ -73,6 +73,8 @@ func (sl *StyledLine) insertText(text []rune, pos int) {
 		cell.Rune = text[i]
 		cell.Bg = sl.bg
 		cell.Fg = sl.fg
+
+		insert[i] = cell
 	}
 
 	// split text at insertion point
