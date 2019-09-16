@@ -55,8 +55,6 @@ func (sl *StyledLine) StyleRange(start int, end int, options *dull.CellOptions) 
 
 func (sl *StyledLine) deleteAt(pos int) {
 	sl.deleteRange(pos, pos+1)
-	sl.cells = append(sl.cells[:pos], sl.cells[pos+1:]...)
-
 }
 
 func (sl *StyledLine) deleteRange(start int, end int) {
