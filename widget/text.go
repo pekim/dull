@@ -124,6 +124,11 @@ func (t *Text) HandleKeyEvent(event KeyEvent) {
 			if !handler.keepSelection {
 				t.selectionPos = t.cursorPos
 			}
+
+			// update selection in styled line
+			selectionStart := geometry.Min(t.cursorPos, t.selectionPos)
+			selectionEnd := geometry.Max(t.cursorPos, t.selectionPos)
+			t.styledLine.setSelection(selectionStart, selectionEnd)
 		}
 	}
 }
