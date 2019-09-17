@@ -31,3 +31,30 @@ func TestStyledLine_StyleRange(t *testing.T) {
 		}
 	}
 }
+
+func TestStyledLine_Insert(t *testing.T) {
+	sl := NewStyledLine("124", dull.White, dull.Black)
+	sl.insertText([]rune("3"), 2)
+
+	assert.Equal(t, "1234", sl.Text())
+}
+
+func TestStyledLine_TextRange(t *testing.T) {
+	sl := NewStyledLine("12345", dull.White, dull.Black)
+
+	assert.Equal(t, "34", sl.TextRange(2, 4))
+}
+
+func TestStyledLine_DeleteAt(t *testing.T) {
+	sl := NewStyledLine("1234", dull.White, dull.Black)
+	sl.deleteAt(1)
+
+	assert.Equal(t, "134", sl.Text())
+}
+
+func TestStyledLine_DeleteRange(t *testing.T) {
+	sl := NewStyledLine("12345", dull.White, dull.Black)
+	sl.deleteRange(2, 4)
+
+	assert.Equal(t, "125", sl.Text())
+}
