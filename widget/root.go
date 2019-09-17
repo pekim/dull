@@ -68,7 +68,7 @@ func (r *Root) charHandler(char rune, mods dull.ModifierKey) {
 		return
 	}
 
-	event := CharEvent{
+	event := &CharEvent{
 		Event: Event{
 			Context: r.context,
 		},
@@ -80,7 +80,7 @@ func (r *Root) charHandler(char rune, mods dull.ModifierKey) {
 	r.paint()
 }
 
-func (r *Root) callCharHandler(widget Widget, event CharEvent) {
+func (r *Root) callCharHandler(widget Widget, event *CharEvent) {
 	widget.HandleCharEvent(event)
 
 	for _, child := range widget.Children() {
@@ -98,15 +98,7 @@ func (r *Root) keyHandler(key dull.Key, action dull.Action, mods dull.ModifierKe
 		return
 	}
 
-	if key == dull.KeyTab && action != dull.Release {
-		if mods == 0 {
-			r.context.SetNextFocusableWidget()
-		} else if mods == dull.ModShift {
-			r.context.SetPreviousFocusableWidget()
-		}
-	}
-
-	event := KeyEvent{
+	event := &KeyEvent{
 		Event: Event{
 			Context: r.context,
 		},
@@ -116,10 +108,20 @@ func (r *Root) keyHandler(key dull.Key, action dull.Action, mods dull.ModifierKe
 	}
 	r.callKeyHandler(r.child, event)
 
+	if !event.PreventDefault {
+		if key == dull.KeyTab && action != dull.Release {
+			if mods == 0 {
+				r.context.SetNextFocusableWidget()
+			} else if mods == dull.ModShift {
+				r.context.SetPreviousFocusableWidget()
+			}
+		}
+	}
+
 	r.paint()
 }
 
-func (r *Root) callKeyHandler(widget Widget, event KeyEvent) {
+func (r *Root) callKeyHandler(widget Widget, event *KeyEvent) {
 	widget.HandleKeyEvent(event)
 
 	for _, child := range widget.Children() {

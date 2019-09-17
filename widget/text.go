@@ -13,7 +13,7 @@ type keyBindingKey struct {
 }
 
 type keyEventHandler struct {
-	fn            func(event KeyEvent)
+	fn            func(event *KeyEvent)
 	keepSelection bool
 }
 
@@ -100,7 +100,7 @@ func (t *Text) insertText(insert []rune) {
 	t.selectionPos = t.cursorPos
 }
 
-func (t *Text) HandleCharEvent(event CharEvent) {
+func (t *Text) HandleCharEvent(event *CharEvent) {
 	if event.Context.FocusedWidget() != t {
 		return
 	}
@@ -108,7 +108,7 @@ func (t *Text) HandleCharEvent(event CharEvent) {
 	t.insertText([]rune{event.Char})
 }
 
-func (t *Text) HandleKeyEvent(event KeyEvent) {
+func (t *Text) HandleKeyEvent(event *KeyEvent) {
 	if event.Context.FocusedWidget() != t {
 		return
 	}
@@ -133,20 +133,20 @@ func (t *Text) HandleKeyEvent(event KeyEvent) {
 	}
 }
 
-func (t *Text) selectAll(event KeyEvent) {
+func (t *Text) selectAll(event *KeyEvent) {
 	t.selectionPos = 0
 	t.cursorPos = t.styledLine.Len()
 }
 
-func (t *Text) moveCursorToStart(event KeyEvent) {
+func (t *Text) moveCursorToStart(event *KeyEvent) {
 	t.cursorPos = 0
 }
 
-func (t *Text) moveCursorToEnd(event KeyEvent) {
+func (t *Text) moveCursorToEnd(event *KeyEvent) {
 	t.cursorPos = t.styledLine.Len()
 }
 
-func (t *Text) moveCursorLeftOneChar(event KeyEvent) {
+func (t *Text) moveCursorLeftOneChar(event *KeyEvent) {
 	t.cursorPos--
 
 	if t.cursorPos < 0 {
@@ -155,7 +155,7 @@ func (t *Text) moveCursorLeftOneChar(event KeyEvent) {
 	}
 }
 
-func (t *Text) moveCursorRightOneChar(event KeyEvent) {
+func (t *Text) moveCursorRightOneChar(event *KeyEvent) {
 	t.cursorPos++
 
 	if t.cursorPos > t.styledLine.Len() {
@@ -164,7 +164,7 @@ func (t *Text) moveCursorRightOneChar(event KeyEvent) {
 	}
 }
 
-func (t *Text) moveCursorLeftOneWord(event KeyEvent) {
+func (t *Text) moveCursorLeftOneWord(event *KeyEvent) {
 	if t.cursorPos == 0 {
 		event.Context.window.Bell()
 	}
@@ -183,7 +183,7 @@ func (t *Text) moveCursorLeftOneWord(event KeyEvent) {
 	}
 }
 
-func (t *Text) moveCursorRightOneWord(event KeyEvent) {
+func (t *Text) moveCursorRightOneWord(event *KeyEvent) {
 	if t.cursorPos == t.styledLine.Len() {
 		event.Context.window.Bell()
 	}
@@ -219,18 +219,18 @@ func (t *Text) deleteSelected() {
 
 // backspace deletes selected text, or if not the one character immediately
 // to the right of the cursor.
-func (t *Text) backspace(event KeyEvent) {
+func (t *Text) backspace(event *KeyEvent) {
 	t.deleteAtPos(event, -1)
 }
 
 // delete deletes selected text, or if not the one character immediately
 // to the left of the cursor.
-func (t *Text) delete(event KeyEvent) {
+func (t *Text) delete(event *KeyEvent) {
 	t.deleteAtPos(event, 0)
 }
 
 // deleteAtPos deletes selected text if any, or deletes one character at a position.
-func (t *Text) deleteAtPos(event KeyEvent, delta int) {
+func (t *Text) deleteAtPos(event *KeyEvent, delta int) {
 	if t.selectionPos != t.cursorPos {
 		t.deleteSelected()
 		return
@@ -248,7 +248,7 @@ func (t *Text) deleteAtPos(event KeyEvent, delta int) {
 }
 
 // copy copies any selected text to the system clipboard.
-func (t *Text) copy(event KeyEvent) {
+func (t *Text) copy(event *KeyEvent) {
 	selectionStart := geometry.Min(t.cursorPos, t.selectionPos)
 	selectionEnd := geometry.Max(t.cursorPos, t.selectionPos)
 	if selectionStart == selectionEnd {
@@ -264,14 +264,14 @@ func (t *Text) copy(event KeyEvent) {
 }
 
 // cut copies any selected text to the system clipboard, and deletes it.
-func (t *Text) cut(event KeyEvent) {
+func (t *Text) cut(event *KeyEvent) {
 	t.copy(event)
 	t.deleteSelected()
 }
 
 // paste inserts text from the system clipboard at the current
 // cursor position.
-func (t *Text) paste(event KeyEvent) {
+func (t *Text) paste(event *KeyEvent) {
 	text, err := clipboard.ReadAll()
 	if err != nil {
 		event.Context.window.Bell()
