@@ -93,9 +93,14 @@ func (sl *StyledLine) setSelection(start int, end int) {
 	sl.selectionEnd = end
 }
 
-func (sl *StyledLine) Paint(view *View, context *Context) {
+func (sl *StyledLine) Paint(view *View, context *Context, xOffset int) {
 	x := 0
 	for i, cell := range sl.cells {
+		if i < xOffset || i >= xOffset+view.Size.Width {
+			// not visible
+			continue
+		}
+
 		invert := cell.Invert
 		if i >= sl.selectionStart && i < sl.selectionEnd {
 			cell.Invert = !cell.Invert
@@ -107,12 +112,14 @@ func (sl *StyledLine) Paint(view *View, context *Context) {
 		x++
 	}
 
-	remaining := geometry.Max(view.Size.Width-len(sl.cells), 0)
+	// Fill remainder of line with spaces.
+	remainingStartPos := len(sl.cells) - xOffset
+	remaining := geometry.Max(view.Size.Width-remainingStartPos, 0)
 	options := dull.CellOptions{
 		Fg: sl.fg,
 		Bg: sl.bg,
 	}
-	view.PrintAtRepeat(len(sl.cells), 0, remaining, ' ', &options)
+	view.PrintAtRepeat(remainingStartPos, 0, remaining, ' ', &options)
 }
 
 func (sl *StyledLine) Len() int {

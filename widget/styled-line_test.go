@@ -58,3 +58,27 @@ func TestStyledLine_DeleteRange(t *testing.T) {
 
 	assert.Equal(t, "125", sl.Text())
 }
+
+//func TestStyledLine_PaintWithStyleRange(t *testing.T) {
+//	sl := NewStyledLine("12345", dull.White, dull.Black)
+//	sl.StyleRange(2, 4, &dull.CellOptions{
+//		Bold: true,
+//	})
+//
+//	window:=dull.Window{
+//		Application: nil,
+//	}
+//	//window.S
+//
+//	view := &View{
+//		Rect: geometry.RectNewXYWH(0, 0, 5, 2),
+//	}
+//
+//	context := &Context{
+//		window:        nil,
+//		root:          nil,
+//		focusedWidget: nil,
+//	}
+//
+//	sl.Paint(view, context)
+//}

@@ -26,6 +26,7 @@ type Text struct {
 	cursorPos    int
 	selectionPos int
 	width        int
+	offset       int
 	keyBindings  map[keyBindingKey]keyEventHandler
 }
 
@@ -71,7 +72,7 @@ func (t *Text) Constrain(constraint Constraint) geometry.Size {
 	})
 
 	t.width = size.Width
-	t.cursorPos = geometry.Min(t.cursorPos, t.width)
+	t.cursorPos = geometry.Min(t.cursorPos, t.styledLine.Len())
 
 	return size
 }
@@ -81,10 +82,10 @@ func (t *Text) Paint(view *View, context *Context) {
 		borderRect := geometry.RectNewXYWH(0, 0, view.Size.Width, view.Size.Height)
 		view.AddBorder(borderRect, t.borderColor)
 
-		view.AddCursor(geometry.Point{t.cursorPos, 0})
+		view.AddCursor(geometry.Point{t.cursorPos - t.offset, 0})
 	}
 
-	t.styledLine.Paint(view, context)
+	t.styledLine.Paint(view, context, t.offset)
 }
 
 func (t *Text) AcceptFocus() bool {
@@ -140,28 +141,48 @@ func (t *Text) selectAll(event *KeyEvent) {
 
 func (t *Text) moveCursorToStart(event *KeyEvent) {
 	t.cursorPos = 0
+	t.makeCursorVisible()
 }
 
 func (t *Text) moveCursorToEnd(event *KeyEvent) {
 	t.cursorPos = t.styledLine.Len()
+	t.makeCursorVisible()
 }
 
-func (t *Text) moveCursorLeftOneChar(event *KeyEvent) {
-	t.cursorPos--
+func (t *Text) moveCursor(event *KeyEvent, delta int) {
+	t.cursorPos += delta
+	t.constrainCursor(event)
+	t.makeCursorVisible()
+}
 
+func (t *Text) constrainCursor(event *KeyEvent) {
 	if t.cursorPos < 0 {
 		t.cursorPos = 0
 		event.Context.window.Bell()
 	}
-}
-
-func (t *Text) moveCursorRightOneChar(event *KeyEvent) {
-	t.cursorPos++
 
 	if t.cursorPos > t.styledLine.Len() {
 		t.cursorPos = t.styledLine.Len()
 		event.Context.window.Bell()
 	}
+}
+
+func (t *Text) makeCursorVisible() {
+	if t.cursorPos < t.offset {
+		t.offset = t.cursorPos
+	}
+
+	if t.cursorPos-t.offset > t.width {
+		t.offset = t.cursorPos - t.width
+	}
+}
+
+func (t *Text) moveCursorLeftOneChar(event *KeyEvent) {
+	t.moveCursor(event, -1)
+}
+
+func (t *Text) moveCursorRightOneChar(event *KeyEvent) {
+	t.moveCursor(event, 1)
 }
 
 func (t *Text) moveCursorLeftOneWord(event *KeyEvent) {
@@ -170,16 +191,16 @@ func (t *Text) moveCursorLeftOneWord(event *KeyEvent) {
 	}
 
 	for t.cursorPos > 0 && t.styledLine.IsSpace(t.cursorPos-1) {
-		t.cursorPos--
+		t.moveCursor(event, -1)
 	}
 
 	if t.cursorPos > 0 && !t.styledLine.IsWordChar(t.cursorPos-1) {
-		t.cursorPos--
+		t.moveCursor(event, -1)
 		return
 	}
 
 	for t.cursorPos > 0 && t.styledLine.IsWordChar(t.cursorPos-1) {
-		t.cursorPos--
+		t.moveCursor(event, -1)
 	}
 }
 
@@ -189,16 +210,16 @@ func (t *Text) moveCursorRightOneWord(event *KeyEvent) {
 	}
 
 	for t.cursorPos < t.styledLine.Len() && t.styledLine.IsSpace(t.cursorPos) {
-		t.cursorPos++
+		t.moveCursor(event, 1)
 	}
 
 	if t.cursorPos < t.styledLine.Len() && !t.styledLine.IsWordChar(t.cursorPos) {
-		t.cursorPos++
+		t.moveCursor(event, 1)
 		return
 	}
 
 	for t.cursorPos < t.styledLine.Len() && t.styledLine.IsWordChar(t.cursorPos) {
-		t.cursorPos++
+		t.moveCursor(event, 1)
 	}
 }
 
@@ -215,6 +236,7 @@ func (t *Text) deleteSelected() {
 	t.styledLine.deleteRange(selectionStart, selectionEnd)
 
 	t.cursorPos = selectionStart
+	t.makeCursorVisible()
 }
 
 // backspace deletes selected text, or if not the one character immediately
@@ -231,6 +253,8 @@ func (t *Text) delete(event *KeyEvent) {
 
 // deleteAtPos deletes selected text if any, or deletes one character at a position.
 func (t *Text) deleteAtPos(event *KeyEvent, delta int) {
+	defer t.makeCursorVisible()
+
 	if t.selectionPos != t.cursorPos {
 		t.deleteSelected()
 		return
