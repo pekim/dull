@@ -118,7 +118,7 @@ func (w *Window) addCursorToVertices(cursor *Cursor) {
 func (w *Window) addBarCursorToCellVertices(cell *Cell, cursor *Cursor) {
 	cellWidth := w.viewportCellWidth
 	cellHeight := w.viewportCellHeight
-	width := 0.08 * cellHeight
+	width := 0.15 * cellWidth
 
 	left := float32(-1.0 + (float32(cursor.column) * cellWidth))
 	if cursor.column == 0 {
