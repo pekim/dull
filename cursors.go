@@ -9,7 +9,7 @@ type Cursors struct {
 	cursors map[CursorId]*Cursor
 }
 
-func newCursors(window *Window) *Cursors {
+func NewCursors(window *Window) *Cursors {
 	return &Cursors{
 		nextId:  0,
 		window:  window,

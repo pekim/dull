@@ -111,9 +111,9 @@ func newWindow(application *Application, options *WindowOptions) (*Window, error
 		fontSize:    defaultFontSize,
 	}
 
-	w.borders = newBorders()
-	w.grid = newCellGrid(0, 0, w.bg, w.fg)
-	w.cursors = newCursors(w)
+	w.borders = NewBorders()
+	w.grid = NewCellGrid(0, 0, w.bg, w.fg)
+	w.cursors = NewCursors(w)
 	w.setKeybindings()
 
 	err := w.createWindow(options)
@@ -295,7 +295,7 @@ func (w *Window) resized() {
 
 	columns := w.width / w.viewportCellWidthPixel
 	rows := w.height / w.viewportCellHeightPixel
-	w.grid = newCellGrid(columns, rows, w.bg, w.fg)
+	w.grid = NewCellGrid(columns, rows, w.bg, w.fg)
 
 	w.callGridSizeCallback()
 	w.drawAll()

@@ -46,7 +46,7 @@ type Borders struct {
 	borders map[BorderId]Border
 }
 
-func newBorders() *Borders {
+func NewBorders() *Borders {
 	return &Borders{
 		nextId:  0,
 		borders: make(map[BorderId]Border),

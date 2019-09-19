@@ -2,6 +2,7 @@ package widget
 
 import (
 	"github.com/pekim/dull"
+	"github.com/pekim/dull/geometry"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -59,26 +60,33 @@ func TestStyledLine_DeleteRange(t *testing.T) {
 	assert.Equal(t, "125", sl.Text())
 }
 
-//func TestStyledLine_PaintWithStyleRange(t *testing.T) {
-//	sl := NewStyledLine("12345", dull.White, dull.Black)
-//	sl.StyleRange(2, 4, &dull.CellOptions{
-//		Bold: true,
-//	})
-//
-//	window:=dull.Window{
-//		Application: nil,
-//	}
-//	//window.S
-//
-//	view := &View{
-//		Rect: geometry.RectNewXYWH(0, 0, 5, 2),
-//	}
-//
-//	context := &Context{
-//		window:        nil,
-//		root:          nil,
-//		focusedWidget: nil,
-//	}
-//
-//	sl.Paint(view, context)
-//}
+func TestStyledLine_PaintWithStyleRange(t *testing.T) {
+	bg := dull.White
+	fg := dull.Black
+	text := "12345"
+
+	sl := NewStyledLine(text, bg, fg)
+	sl.StyleRange(2, 4, &dull.CellOptions{
+		Bold: true,
+	})
+
+	view := &View{
+		grid:    dull.NewCellGrid(10, 4, bg, fg),
+		borders: dull.NewBorders(),
+		//cursors: dull.NewCursors(nil),
+		Rect: geometry.RectNewXYWH(0, 0, 5, 2),
+	}
+
+	context := &Context{
+		window:        nil,
+		root:          nil,
+		focusedWidget: nil,
+	}
+
+	sl.Paint(view, context, 0)
+
+	for i, r := range []rune(text) {
+		cell, _ := view.grid.Cell(i, 0)
+		assert.Equal(t, r, cell.Rune)
+	}
+}

@@ -19,7 +19,7 @@ type CellGrid struct {
 	cells  []*Cell
 }
 
-func newCellGrid(width, height int, bg, fg Color) *CellGrid {
+func NewCellGrid(width, height int, bg, fg Color) *CellGrid {
 	g := &CellGrid{
 		width:  width,
 		height: height,
