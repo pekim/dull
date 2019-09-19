@@ -1,7 +1,6 @@
 package widget
 
 import (
-	"fmt"
 	"github.com/pekim/dull"
 	"github.com/pekim/dull/geometry"
 )
@@ -18,14 +17,14 @@ type View struct {
 }
 
 // Cell gets a Cell at a particular position within the View.
-func (v *View) Cell(x, y int) (*dull.Cell, error) {
+func (v *View) Cell(x, y int) *dull.Cell {
 	if x < 0 || x >= v.Size.Width ||
 		y < 0 || y >= v.Size.Height {
-		return nil, fmt.Errorf("Cell at %d,%d exceeds view size of %d,%d",
-			x, y, v.Size.Width, v.Size.Height)
+		return nil
 	}
 
-	return v.window.Grid().Cell(v.Position.X+x, v.Position.Y+y)
+	cell, _ := v.window.Grid().Cell(v.Position.X+x, v.Position.Y+y)
+	return cell
 }
 
 func (v *View) PrintCell(x, y int, cell dull.Cell) {
@@ -38,8 +37,8 @@ func (v *View) PrintCell(x, y int, cell dull.Cell) {
 }
 
 func (v *View) PrintRune(x, y int, rune rune, options *dull.CellOptions) {
-	cell, err := v.Cell(x, y)
-	if err != nil {
+	cell := v.Cell(x, y)
+	if cell == nil {
 		return
 	}
 
@@ -55,8 +54,8 @@ func (v *View) PrintRune(x, y int, rune rune, options *dull.CellOptions) {
 // Only a single row will be printed; no wrapping is performed;
 func (v *View) PrintAt(x, y int, text []rune, options *dull.CellOptions) {
 	for _, r := range text {
-		cell, err := v.Cell(x, y)
-		if err != nil {
+		cell := v.Cell(x, y)
+		if cell == nil {
 			break
 		}
 
@@ -75,8 +74,8 @@ func (v *View) PrintAt(x, y int, text []rune, options *dull.CellOptions) {
 // Only a single row will be printed; no wrapping is performed;
 func (v *View) PrintAtRepeat(x, y int, count int, rune rune, options *dull.CellOptions) {
 	for i := 0; i < count; i++ {
-		cell, err := v.Cell(x, y)
-		if err != nil {
+		cell := v.Cell(x, y)
+		if cell == nil {
 			break
 		}
 
