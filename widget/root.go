@@ -6,6 +6,7 @@ import (
 )
 
 type Root struct {
+	window  *dull.Window
 	context *Context
 	child   Widget
 	view    *View
@@ -19,6 +20,7 @@ func NewRoot(window *dull.Window, child Widget) *Root {
 	}
 
 	r := &Root{
+		window: window,
 		context: &Context{
 			window: window,
 		},
@@ -26,7 +28,7 @@ func NewRoot(window *dull.Window, child Widget) *Root {
 		view:  view,
 	}
 	r.context.root = r
-	r.view.window = window
+	r.sizeChange(window.Grid().Size())
 
 	window.SetGridSizeCallback(r.sizeChange)
 	window.SetCharCallback(r.charHandler)
@@ -38,6 +40,10 @@ func NewRoot(window *dull.Window, child Widget) *Root {
 func (r *Root) sizeChange(columns int, rows int) {
 	r.view.Size.Width = columns
 	r.view.Size.Height = rows
+
+	r.view.grid = r.window.Grid()
+	r.view.borders = r.window.Borders()
+	r.view.cursors = r.window.Cursors()
 
 	r.paint()
 }

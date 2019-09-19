@@ -59,8 +59,10 @@ func (f *Flex) Paint(view *View, context *Context) {
 
 	for _, child := range f.children {
 		childView := &View{
-			window: view.window,
-			Rect:   child.view,
+			grid:    view.grid,
+			borders: view.borders,
+			cursors: view.cursors,
+			Rect:    child.view,
 		}
 
 		child.widget.Paint(childView, context)

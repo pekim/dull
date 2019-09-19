@@ -12,7 +12,10 @@ It will restrict access to a Window's cells, providing
 only those within the view.
 */
 type View struct {
-	window *dull.Window
+	//window  *dull.Window
+	grid    *dull.CellGrid
+	borders *dull.Borders
+	cursors *dull.Cursors
 	geometry.Rect
 }
 
@@ -23,7 +26,7 @@ func (v *View) Cell(x, y int) *dull.Cell {
 		return nil
 	}
 
-	cell, _ := v.window.Grid().Cell(v.Position.X+x, v.Position.Y+y)
+	cell, _ := v.grid.Cell(v.Position.X+x, v.Position.Y+y)
 	return cell
 }
 
@@ -33,7 +36,7 @@ func (v *View) PrintCell(x, y int, cell dull.Cell) {
 		return
 	}
 
-	_ = v.window.Grid().SetCell(v.Position.X+x, v.Position.Y+y, &cell)
+	_ = v.grid.SetCell(v.Position.X+x, v.Position.Y+y, &cell)
 }
 
 func (v *View) PrintRune(x, y int, rune rune, options *dull.CellOptions) {
@@ -96,7 +99,7 @@ func (v *View) Fill(rect geometry.Rect, rune rune, options *dull.CellOptions) {
 
 	for y := newRect.Position.Y; y < newRect.Bottom(); y++ {
 		for x := newRect.Position.X; x < newRect.Right(); x++ {
-			cell, err := v.window.Grid().Cell(x, y)
+			cell, err := v.grid.Cell(x, y)
 			if err != nil {
 				continue
 			}
@@ -118,17 +121,17 @@ func (v *View) AddBorder(rect geometry.Rect, color dull.Color) {
 		newRect.Position.Y, newRect.Bottom()-1,
 		color,
 	)
-	v.window.Borders().Add(border)
+	v.borders.Add(border)
 }
 
 func (v *View) AddCursor(position geometry.Point) {
 	position.Translate(v.Rect.Position.X, v.Position.Y)
 	//position.Constrain(v.Rect)
 
-	cursor := v.window.Cursors().New()
+	cursor := v.cursors.New()
 	cursor.SetPosition(position.X, position.Y)
 	cursor.SetType(dull.CursorTypeBar)
 	cursor.SetColor(dull.NewColor(1.0, 0.0, 0.0, 1.0))
 	cursor.SetVisible(true)
-	v.window.Cursors().Add(cursor)
+	v.cursors.Add(cursor)
 }
