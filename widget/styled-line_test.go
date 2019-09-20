@@ -4,7 +4,6 @@ import (
 	"github.com/pekim/dull"
 	"github.com/pekim/dull/geometry"
 	"github.com/stretchr/testify/assert"
-	"strconv"
 	"testing"
 )
 
@@ -63,25 +62,67 @@ func TestStyledLine_DeleteRange(t *testing.T) {
 
 func TestStyledLine_PaintWithStyleRange(t *testing.T) {
 	tests := []struct {
+		name      string
+		viewWidth int
+		offset    int
+
 		text         string
 		expectedText string
 		boldStart    int
 		boldEnd      int
 		expectedBold []bool
-		offset       int
 	}{
 		{
-			text:         "12345",
+			name:      "no offset",
+			viewWidth: 5,
+			offset:    0,
+
+			text:         "12345678",
 			expectedText: "12345",
 			boldStart:    2,
 			boldEnd:      4,
 			expectedBold: []bool{false, false, true, true, false},
-			offset:       0,
+		},
+		{
+			name:      "small offset",
+			viewWidth: 5,
+			offset:    1,
+
+			text:         "12345678",
+			expectedText: "23456",
+			boldStart:    2,
+			boldEnd:      4,
+			expectedBold: []bool{false, true, true, false, false},
+		},
+		{
+			name:      "full offset",
+			viewWidth: 5,
+			offset:    3,
+
+			text:         "12345678",
+			expectedText: "45678",
+			boldStart:    2,
+			boldEnd:      4,
+			expectedBold: []bool{true, false, false, false, false},
+		},
+		{
+			name:      "pad to the right",
+			viewWidth: 5,
+			offset:    1,
+
+			text:         "123",
+			expectedText: "23   ",
+			boldStart:    2,
+			boldEnd:      3,
+			expectedBold: []bool{false, true, false, false, false},
 		},
 	}
 
-	for i, test := range tests {
-		t.Run(strconv.Itoa(i), func(t *testing.T) {
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			assert.Equal(t, test.viewWidth, len(test.expectedText), "test's expected text length")
+			assert.Equal(t, test.viewWidth, len(test.expectedBold), "test's expected bold length")
+
 			bg := dull.White
 			fg := dull.Black
 
@@ -91,7 +132,7 @@ func TestStyledLine_PaintWithStyleRange(t *testing.T) {
 			})
 
 			view := &View{
-				grid: dull.NewCellGrid(10, 4, bg, fg),
+				grid: dull.NewCellGrid(test.viewWidth, 1, bg, fg),
 				Rect: geometry.RectNewXYWH(0, 0, 5, 2),
 			}
 
