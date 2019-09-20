@@ -85,8 +85,10 @@ func TestStyledLine_PaintWithStyleRange(t *testing.T) {
 
 	sl.Paint(view, context, 0)
 
+	bold := []bool{false, false, true, true, false}
 	for i, r := range []rune(text) {
 		cell, _ := view.grid.Cell(i, 0)
 		assert.Equal(t, r, cell.Rune)
+		assert.Equal(t, bold[i], cell.Bold, i)
 	}
 }
