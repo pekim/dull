@@ -4,6 +4,7 @@ import (
 	"github.com/pekim/dull"
 	"github.com/pekim/dull/geometry"
 	"github.com/stretchr/testify/assert"
+	"strconv"
 	"testing"
 )
 
@@ -61,34 +62,52 @@ func TestStyledLine_DeleteRange(t *testing.T) {
 }
 
 func TestStyledLine_PaintWithStyleRange(t *testing.T) {
-	bg := dull.White
-	fg := dull.Black
-	text := "12345"
-
-	sl := NewStyledLine(text, bg, fg)
-	sl.StyleRange(2, 4, &dull.CellOptions{
-		Bold: true,
-	})
-
-	view := &View{
-		grid:    dull.NewCellGrid(10, 4, bg, fg),
-		borders: dull.NewBorders(),
-		//cursors: dull.NewCursors(nil),
-		Rect: geometry.RectNewXYWH(0, 0, 5, 2),
+	tests := []struct {
+		text         string
+		expectedText string
+		boldStart    int
+		boldEnd      int
+		expectedBold []bool
+		offset       int
+	}{
+		{
+			text:         "12345",
+			expectedText: "12345",
+			boldStart:    2,
+			boldEnd:      4,
+			expectedBold: []bool{false, false, true, true, false},
+			offset:       0,
+		},
 	}
 
-	context := &Context{
-		window:        nil,
-		root:          nil,
-		focusedWidget: nil,
-	}
+	for i, test := range tests {
+		t.Run(strconv.Itoa(i), func(t *testing.T) {
+			bg := dull.White
+			fg := dull.Black
 
-	sl.Paint(view, context, 0)
+			sl := NewStyledLine(test.text, bg, fg)
+			sl.StyleRange(test.boldStart, test.boldEnd, &dull.CellOptions{
+				Bold: true,
+			})
 
-	bold := []bool{false, false, true, true, false}
-	for i, r := range []rune(text) {
-		cell, _ := view.grid.Cell(i, 0)
-		assert.Equal(t, r, cell.Rune)
-		assert.Equal(t, bold[i], cell.Bold, i)
+			view := &View{
+				grid: dull.NewCellGrid(10, 4, bg, fg),
+				Rect: geometry.RectNewXYWH(0, 0, 5, 2),
+			}
+
+			context := &Context{
+				window:        nil,
+				root:          nil,
+				focusedWidget: nil,
+			}
+
+			sl.Paint(view, context, test.offset)
+
+			for i, r := range []rune(test.expectedText) {
+				cell, _ := view.grid.Cell(i, 0)
+				assert.Equal(t, r, cell.Rune)
+				assert.Equal(t, test.expectedBold[i], cell.Bold, i)
+			}
+		})
 	}
 }
