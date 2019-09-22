@@ -1,3 +1,5 @@
+// +build !headless
+
 package dull
 
 import "testing"
