@@ -28,6 +28,7 @@ type Text struct {
 	width        int
 	offset       int
 	keyBindings  map[keyBindingKey]keyEventHandler
+	actions      []textEditAction
 }
 
 func NewText(text string, bg dull.Color, fg dull.Color) *Text {
@@ -93,12 +94,18 @@ func (t *Text) AcceptFocus() bool {
 }
 
 func (t *Text) insertText(insert []rune) {
-	t.deleteSelected()
-	t.styledLine.insertText(insert, t.cursorPos)
+	t.captureAction(func() ([]rune, []rune) {
+		deleted := t.selected()
+		t.deleteSelected()
 
-	// advance cursor
-	t.cursorPos += (len(insert))
-	t.selectionPos = t.cursorPos
+		t.styledLine.insertText(insert, t.cursorPos)
+
+		// advance cursor
+		t.cursorPos += (len(insert))
+		t.selectionPos = t.cursorPos
+
+		return deleted, insert
+	})
 }
 
 func (t *Text) HandleCharEvent(event *CharEvent) {
@@ -135,23 +142,31 @@ func (t *Text) HandleKeyEvent(event *KeyEvent) {
 }
 
 func (t *Text) selectAll(event *KeyEvent) {
-	t.selectionPos = 0
-	t.cursorPos = t.styledLine.Len()
+	t.capturePositionAction(func() {
+		t.selectionPos = 0
+		t.cursorPos = t.styledLine.Len()
+	})
 }
 
 func (t *Text) moveCursorToStart(event *KeyEvent) {
-	t.cursorPos = 0
+	t.capturePositionAction(func() {
+		t.cursorPos = 0
+	})
 	t.makeCursorVisible()
 }
 
 func (t *Text) moveCursorToEnd(event *KeyEvent) {
-	t.cursorPos = t.styledLine.Len()
+	t.capturePositionAction(func() {
+		t.cursorPos = t.styledLine.Len()
+	})
 	t.makeCursorVisible()
 }
 
 func (t *Text) moveCursor(event *KeyEvent, delta int) {
-	t.cursorPos += delta
-	t.constrainCursor(event)
+	t.capturePositionAction(func() {
+		t.cursorPos += delta
+		t.constrainCursor(event)
+	})
 	t.makeCursorVisible()
 }
 
@@ -225,18 +240,29 @@ func (t *Text) moveCursorRightOneWord(event *KeyEvent) {
 
 // deleteSelected deletes any selected text.
 // If no text is currently selected, it does nothing.
-func (t *Text) deleteSelected() {
-	if t.selectionPos == t.cursorPos {
+func (t *Text) deleteRange(pos1, pos2 int, capture bool) {
+	defer t.makeCursorVisible()
+
+	start := geometry.Min(pos1, pos2)
+	end := geometry.Max(pos1, pos2)
+
+	if start == end {
 		return
 	}
 
-	selectionStart := geometry.Min(t.cursorPos, t.selectionPos)
-	selectionEnd := geometry.Max(t.cursorPos, t.selectionPos)
+	if capture {
+		t.captureAction(func() ([]rune, []rune) {
+			deleted := []rune(t.styledLine.TextRange(start, end))
 
-	t.styledLine.deleteRange(selectionStart, selectionEnd)
+			t.styledLine.deleteRange(start, end)
+			t.cursorPos = start
 
-	t.cursorPos = selectionStart
-	t.makeCursorVisible()
+			return deleted, []rune{}
+		})
+	} else {
+		t.styledLine.deleteRange(start, end)
+		t.cursorPos = start
+	}
 }
 
 // backspace deletes selected text, or if not the one character immediately
@@ -248,27 +274,23 @@ func (t *Text) backspace(event *KeyEvent) {
 // delete deletes selected text, or if not the one character immediately
 // to the left of the cursor.
 func (t *Text) delete(event *KeyEvent) {
-	t.deleteAtPos(event, 0)
+	t.deleteAtPos(event, 1)
 }
 
 // deleteAtPos deletes selected text if any, or deletes one character at a position.
 func (t *Text) deleteAtPos(event *KeyEvent, delta int) {
-	defer t.makeCursorVisible()
-
 	if t.selectionPos != t.cursorPos {
-		t.deleteSelected()
+		t.deleteRange(t.selectionPos, t.cursorPos, true)
 		return
 	}
 
 	pos := t.cursorPos + delta
-	if pos < 0 || pos >= t.styledLine.Len() {
+	if pos < 0 || pos > t.styledLine.Len() {
 		event.Context.window.Bell()
 		return
 	}
 
-	t.styledLine.deleteAt(pos)
-
-	t.cursorPos += delta
+	t.deleteRange(t.cursorPos, pos, true)
 }
 
 // copy copies any selected text to the system clipboard.
@@ -285,6 +307,16 @@ func (t *Text) copy(event *KeyEvent) {
 	if err != nil {
 		fmt.Println(err)
 	}
+}
+
+func (t *Text) selected() []rune {
+	selectionStart := geometry.Min(t.cursorPos, t.selectionPos)
+	selectionEnd := geometry.Max(t.cursorPos, t.selectionPos)
+	return []rune(t.styledLine.TextRange(selectionStart, selectionEnd))
+}
+
+func (t *Text) deleteSelected() {
+	t.deleteRange(t.cursorPos, t.selectionPos, false)
 }
 
 // cut copies any selected text to the system clipboard, and deletes it.
@@ -307,4 +339,30 @@ func (t *Text) paste(event *KeyEvent) {
 
 func (t *Text) Text() string {
 	return t.styledLine.Text()
+}
+
+func (t *Text) captureAction(performAction func() ([]rune, []rune)) {
+	action := textEditAction{
+		beforePos: editActionPos{
+			cursor:    t.cursorPos,
+			selection: t.selectionPos,
+		},
+	}
+
+	action.deleteText, action.insertText = performAction()
+
+	action.afterPos = editActionPos{
+		cursor:    t.cursorPos,
+		selection: t.selectionPos,
+	}
+
+	t.actions = append(t.actions, action)
+	fmt.Println(len(t.actions), action)
+}
+
+func (t *Text) capturePositionAction(performAction func()) {
+	t.captureAction(func() ([]rune, []rune) {
+		performAction()
+		return []rune{}, []rune{}
+	})
 }
