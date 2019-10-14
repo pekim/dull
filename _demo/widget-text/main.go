@@ -10,6 +10,8 @@ func initialise(app *dull.Application, err error) {
 		panic(err)
 	}
 
+	app.SetFontRenderer(dull.FontRendererGolang)
+
 	white := dull.NewColor(1.0, 1.0, 1.0, 1.0)
 	black := dull.NewColor(0.0, 0.0, 0.0, 1.0)
 	transparent := dull.NewColor(0.0, 0.0, 0.0, 0.0)

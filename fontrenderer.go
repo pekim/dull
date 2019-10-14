@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/pekim/dull/internal/font"
 	"github.com/pekim/dull/internal/font/freetype"
+	"github.com/pekim/dull/internal/font/golang"
 	"github.com/pekim/dull/internal/font/stbtruetype"
 )
 
@@ -15,6 +16,8 @@ func (r FontRenderer) new() font.NewRenderer {
 		return stbtruetype.NewRenderer
 	case FontRendererFreetype:
 		return freetype.NewRenderer
+	case FontRendererGolang:
+		return golang.NewRenderer
 	}
 
 	panic(fmt.Sprintf("unknow font renderer %d", r))
@@ -31,4 +34,6 @@ const (
 	// compile on all platforms.
 	// Not quite as good quality as freetype.
 	FontRendererStbtruetype
+
+	FontRendererGolang
 )
