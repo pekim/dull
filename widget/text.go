@@ -2,7 +2,6 @@ package widget
 
 import (
 	"fmt"
-	"github.com/atotto/clipboard"
 	"github.com/pekim/dull"
 	"github.com/pekim/dull/geometry"
 )
@@ -303,10 +302,7 @@ func (t *Text) copy(event *KeyEvent) {
 
 	selected := t.styledLine.TextRange(selectionStart, selectionEnd)
 
-	err := clipboard.WriteAll(selected)
-	if err != nil {
-		fmt.Println(err)
-	}
+	event.Context.window.SetClipboard(selected)
 }
 
 func (t *Text) selected() []rune {
@@ -328,7 +324,7 @@ func (t *Text) cut(event *KeyEvent) {
 // paste inserts text from the system clipboard at the current
 // cursor position.
 func (t *Text) paste(event *KeyEvent) {
-	text, err := clipboard.ReadAll()
+	text, err := event.Context.window.GetClipboard()
 	if err != nil {
 		event.Context.window.Bell()
 		return

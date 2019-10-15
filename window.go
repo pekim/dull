@@ -348,3 +348,11 @@ func (w *Window) setKeybindings() {
 		{key: KeyF11, mods: 0, fn: w.ToggleFullscreen},
 	}
 }
+
+func (w *Window) GetClipboard() (string, error) {
+	return w.glfwWindow.GetClipboardString()
+}
+
+func (w *Window) SetClipboard(text string) {
+	w.glfwWindow.SetClipboardString(text)
+}
