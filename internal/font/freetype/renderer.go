@@ -33,9 +33,9 @@ func NewRenderer(name string, fontData []byte, dpi int, height float64) (font.Re
 func NewFreeType(dpi int) *FreeType {
 	ft := &FreeType{dpi: C.FT_UInt(dpi)}
 
-	error := C.FT_Init_FreeType(&ft.library)
-	if error != C.FT_Err_Ok {
-		panic(fmt.Sprintf("Failed to initialise FreeType library, %d", error))
+	ftError := C.FT_Init_FreeType(&ft.library)
+	if ftError != C.FT_Err_Ok {
+		panic(fmt.Sprintf("Failed to initialise FreeType library, %d", ftError))
 	}
 
 	runtime.SetFinalizer(ft, ftFinalizer)
@@ -45,9 +45,9 @@ func NewFreeType(dpi int) *FreeType {
 }
 
 func ftFinalizer(ft *FreeType) {
-	error := C.FT_Done_FreeType(ft.library)
-	if error != C.FT_Err_Ok {
-		os.Stderr.WriteString(fmt.Sprintf("Failed to destroy FreeType library, %d\n", error))
+	ftError := C.FT_Done_FreeType(ft.library)
+	if ftError != C.FT_Err_Ok {
+		os.Stderr.WriteString(fmt.Sprintf("Failed to destroy FreeType library, %d\n", ftError))
 	}
 }
 
@@ -75,23 +75,23 @@ func (ft *FreeType) NewRenderer(name string, fontData []byte, pixelHeight float6
 		fontData: C.CBytes(fontData),
 	}
 
-	error := C.FT_New_Memory_Face(
+	ftError := C.FT_New_Memory_Face(
 		ft.library,
 		(*C.FT_Byte)(renderer.fontData),
 		C.FT_Long(len(fontData)),
 		0, &renderer.face)
-	if error != C.FT_Err_Ok {
-		return nil, fmt.Errorf("Failed to create new memory face, %d", error)
+	if ftError != C.FT_Err_Ok {
+		return nil, fmt.Errorf("Failed to create new memory face, %d", ftError)
 	}
 
 	point64ths := C.FT_F26Dot6(pixelHeight / float64(ft.dpi) * 72 * 64)
 
-	error = C.FT_Set_Char_Size(
+	ftError = C.FT_Set_Char_Size(
 		renderer.face,
 		0, point64ths,
 		ft.dpi, ft.dpi)
-	if error != C.FT_Err_Ok {
-		return nil, fmt.Errorf("Failed to set char size, %d", error)
+	if ftError != C.FT_Err_Ok {
+		return nil, fmt.Errorf("Failed to set char size, %d", ftError)
 	}
 
 	runtime.SetFinalizer(renderer, rendererFinalizer)
@@ -111,15 +111,15 @@ func (r *RendererFreeType) GetGlyph(char rune) (*font.Glyph, error) {
 	face := (*C.FT_FaceRec)(r.face)
 	glyphIndex := C.FT_Get_Char_Index(r.face, C.FT_ULong(char))
 
-	error := C.FT_Load_Glyph(r.face, glyphIndex, C.FT_LOAD_DEFAULT)
-	if error != C.FT_Err_Ok {
-		return nil, fmt.Errorf("Failed to load glyph, %s, %d", string(char), error)
+	ftError := C.FT_Load_Glyph(r.face, glyphIndex, C.FT_LOAD_DEFAULT)
+	if ftError != C.FT_Err_Ok {
+		return nil, fmt.Errorf("Failed to load glyph, %s, %d", string(char), ftError)
 	}
 
 	fGlyph := face.glyph
-	error = C.FT_Render_Glyph(fGlyph, C.FT_RENDER_MODE_NORMAL)
-	if error != C.FT_Err_Ok {
-		return nil, fmt.Errorf("Failed to render glyph, %s, %d", string(char), error)
+	ftError = C.FT_Render_Glyph(fGlyph, C.FT_RENDER_MODE_NORMAL)
+	if ftError != C.FT_Err_Ok {
+		return nil, fmt.Errorf("Failed to render glyph, %s, %d", string(char), ftError)
 	}
 
 	bitmap := fGlyph.bitmap
