@@ -142,6 +142,7 @@ type ModifierKey int
 // Modifier keys.
 // Use bitwise OR to create a combination of them.
 const (
+	ModNone    ModifierKey = 0
 	ModShift   ModifierKey = ModifierKey(glfw.ModShift)
 	ModControl ModifierKey = ModifierKey(glfw.ModControl)
 	ModAlt     ModifierKey = ModifierKey(glfw.ModAlt)

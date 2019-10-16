@@ -37,25 +37,25 @@ func NewText(text string, bg dull.Color, fg dull.Color) *Text {
 	}
 
 	t.keyBindings = map[keyBindingKey]keyEventHandler{
-		{dull.KeyLeft, 0}:                               {t.moveCursorLeftOneChar, false},
+		{dull.KeyLeft, dull.ModNone}:                    {t.moveCursorLeftOneChar, false},
 		{dull.KeyLeft, dull.ModShift}:                   {t.moveCursorLeftOneChar, true},
 		{dull.KeyLeft, dull.ModControl}:                 {t.moveCursorLeftOneWord, false},
 		{dull.KeyLeft, dull.ModControl | dull.ModShift}: {t.moveCursorLeftOneWord, true},
 
-		{dull.KeyRight, 0}:                               {t.moveCursorRightOneChar, false},
+		{dull.KeyRight, dull.ModNone}:                    {t.moveCursorRightOneChar, false},
 		{dull.KeyRight, dull.ModShift}:                   {t.moveCursorRightOneChar, true},
 		{dull.KeyRight, dull.ModControl}:                 {t.moveCursorRightOneWord, false},
 		{dull.KeyRight, dull.ModControl | dull.ModShift}: {t.moveCursorRightOneWord, true},
 
-		{dull.KeyHome, 0}:             {t.moveCursorToStart, false},
+		{dull.KeyHome, dull.ModNone}:  {t.moveCursorToStart, false},
 		{dull.KeyHome, dull.ModShift}: {t.moveCursorToStart, true},
-		{dull.KeyEnd, 0}:              {t.moveCursorToEnd, false},
+		{dull.KeyEnd, dull.ModNone}:   {t.moveCursorToEnd, false},
 		{dull.KeyEnd, dull.ModShift}:  {t.moveCursorToEnd, true},
 
 		{dull.KeyA, dull.ModControl}: {t.selectAll, true},
 
-		{dull.KeyBackspace, 0}: {t.backspace, false},
-		{dull.KeyDelete, 0}:    {t.delete, false},
+		{dull.KeyBackspace, dull.ModNone}: {t.backspace, false},
+		{dull.KeyDelete, dull.ModNone}:    {t.delete, false},
 
 		{dull.KeyC, dull.ModControl}: {t.copy, true},
 		{dull.KeyV, dull.ModControl}: {t.paste, false},
