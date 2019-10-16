@@ -3,9 +3,11 @@ package dull
 import "github.com/go-gl/glfw/v3.2/glfw"
 
 // The types and constants in this file are based on the corresponding
-// definitions in ./vendor/github.com/go-gl/glfw/v3.2/glfw/input.go .
+// definitions in github.com/go-gl/glfw/v3.2/glfw/input.go .
+//
+// They are here to avoid exposing the glfw API to dependents of dull.
 
-//Key corresponds to a keyboard key.
+// Key corresponds to a keyboard key.
 type Key glfw.Key
 
 // Key codes.
