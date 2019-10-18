@@ -33,6 +33,7 @@ func (w *Window) draw() {
 	gl.ClearColor(w.bg.R, w.bg.G, w.bg.B, 1.0)
 	gl.Clear(gl.COLOR_BUFFER_BIT)
 
+	fmt.Println(len(w.vertices))
 	w.drawCells()
 
 	w.glfwWindow.SwapBuffers()
@@ -192,6 +193,7 @@ func (w *Window) generateCellVertices(cell *Cell, columnInt int, rowInt int, tex
 		// COMBINING LOW LINE
 		w.addCellVertices(cell, column, row, font.GetGlyph('\u0332'), fg, false)
 	}
+	fmt.Println("cv", len(cell.vertices))
 }
 
 func (w *Window) drawCells() {
@@ -218,6 +220,46 @@ func (w *Window) drawCells() {
 
 	gl.DeleteBuffers(1, &vbo)
 	gl.DeleteVertexArrays(1, &vao)
+}
+
+func (w *Window) DrawCell(cell *Cell,
+	column, row int,
+	colour Color,
+	fillCell bool,
+) {
+	windowWidth := float32(w.width)
+	windowHeight := float32(w.height)
+
+	cellWidth := w.viewportCellWidth
+	cellHeight := w.viewportCellHeight
+
+	textureItem := w.fontFamily.Regular.GetGlyph(cell.Rune)
+
+	var width, height float32
+	//if fillCell {
+	//	width = cellWidth
+	//	height = cellHeight
+	//} else {
+	//	width = float32(textureItem.PixelWidth()) / windowWidth * 2
+	//	height = float32(textureItem.PixelHeight()) / windowHeight * 2
+	//}
+	width = float32(textureItem.PixelWidth()) / windowWidth * 2
+	height = float32(textureItem.PixelHeight()) / windowHeight * 2
+
+	leftBearing := textureItem.LeftBearing / windowWidth * 2
+	topBearing := (textureItem.TopBearing) / windowHeight * 2
+
+	left := float32(-1.0 + (float32(column) * cellWidth) + leftBearing)
+	top := float32(-1.0 + (float32(row) * cellHeight) + topBearing)
+	right := left + width
+	bottom := top + height
+
+	textureItemSolid := w.fontFamily.Regular.GetGlyph(textureatlas.Solid)
+
+	w.generateCellVertices(cell, column, row, textureItemSolid)
+	w.vertices = append(w.vertices, cell.vertices...)
+	w.addQuadToVertices(&w.vertices, left, top, right, bottom, textureItem, colour)
+	fmt.Println(123, len(w.vertices))
 }
 
 func (w *Window) addCellVertices(cell *Cell,
