@@ -1,6 +1,7 @@
 package dull
 
 import (
+	"fmt"
 	"image"
 	"time"
 	"unsafe"
@@ -19,12 +20,8 @@ func (w *Window) draw() {
 	// empty vertices
 	w.vertices = w.vertices[:0]
 
-	w.addCellsToVertices()
-	w.addBordersToVertices()
-	w.addCursorsToVertices()
-
-	if len(w.vertices) == 0 {
-		return
+	if w.drawCallback != nil {
+		w.drawCallback(w.columns, w.rows)
 	}
 
 	startTime := time.Now()
@@ -41,13 +38,7 @@ func (w *Window) draw() {
 	w.glfwWindow.SwapBuffers()
 
 	w.lastRenderDuration = time.Now().Sub(startTime)
-	//fmt.Printf("%.1fms\n", w.lastRenderDuration.Seconds()*1000)
-}
-
-func (w *Window) addBordersToVertices() {
-	for _, border := range w.borders.borders {
-		w.addBorderToVertices(&border)
-	}
+	fmt.Printf("%.1fms\n", w.lastRenderDuration.Seconds()*1000)
 }
 
 func (w *Window) addBorderToVertices(border *Border) {
@@ -82,62 +73,43 @@ func (w *Window) addBorderToVertices(border *Border) {
 	w.addQuadToVertices(&w.vertices, rightLeft, topBottom, rightRight, bottomTop, textureItem, border.color)
 }
 
-func (w *Window) haveBlockCursorForCell(column, row int) bool {
-	for _, cursor := range w.cursors.cursors {
-		if cursor.column == column && cursor.row == row &&
-			cursor.typ == CursorTypeBlock &&
-			cursor.visible {
-
-			return true
-		}
-	}
-
-	return false
-}
-
-func (w *Window) addCursorsToVertices() {
-	for _, cursor := range w.cursors.cursors {
-		w.addCursorToVertices(cursor)
-	}
-}
-
 func (w *Window) addCursorToVertices(cursor *Cursor) {
-	if cursor.visible && cursor.typ == CursorTypeUnder || cursor.typ == CursorTypeBar {
-		cell, _ := w.grid.Cell(cursor.column, cursor.row)
-		if cell != nil {
-			if cursor.typ == CursorTypeBar {
-				w.addBarCursorToCellVertices(cell, cursor)
-			}
-			if cursor.typ == CursorTypeUnder {
-				w.addUnderCursorToCellVertices(cell, cursor)
-			}
-		}
-	}
+	//if cursor.visible && cursor.typ == CursorTypeUnder || cursor.typ == CursorTypeBar {
+	//	cell, _ := w.grid.Cell(cursor.column, cursor.row)
+	//	if cell != nil {
+	//		if cursor.typ == CursorTypeBar {
+	//			w.addBarCursorToCellVertices(cell, cursor)
+	//		}
+	//		if cursor.typ == CursorTypeUnder {
+	//			w.addUnderCursorToCellVertices(cell, cursor)
+	//		}
+	//	}
+	//}
 }
 
 func (w *Window) addBarCursorToCellVertices(cell *Cell, cursor *Cursor) {
-	cellWidth := w.viewportCellWidth
-	cellHeight := w.viewportCellHeight
-	width := 0.15 * cellWidth
-
-	left := float32(-1.0 + (float32(cursor.column) * cellWidth))
-	if cursor.column == 0 {
-		// no need to adjust position
-	} else if cursor.column == w.grid.width {
-		// move so that cursor is within the window
-		left -= width
-	} else {
-		// span two cells; half the width in the previous cell
-		left -= width / 2
-	}
-	right := left + width
-
-	top := float32(-1.0 + (float32(cursor.row) * cellHeight))
-	bottom := float32(-1.0 + (float32(cursor.row+1) * cellHeight))
-
-	textureItem := w.fontFamily.Regular.GetGlyph(textureatlas.Solid)
-
-	w.addQuadToVertices(&w.vertices, left, top, right, bottom, textureItem, cursor.color)
+	//cellWidth := w.viewportCellWidth
+	//cellHeight := w.viewportCellHeight
+	//width := 0.15 * cellWidth
+	//
+	//left := float32(-1.0 + (float32(cursor.column) * cellWidth))
+	//if cursor.column == 0 {
+	//	// no need to adjust position
+	//} else if cursor.column == w.grid.width {
+	//	// move so that cursor is within the window
+	//	left -= width
+	//} else {
+	//	// span two cells; half the width in the previous cell
+	//	left -= width / 2
+	//}
+	//right := left + width
+	//
+	//top := float32(-1.0 + (float32(cursor.row) * cellHeight))
+	//bottom := float32(-1.0 + (float32(cursor.row+1) * cellHeight))
+	//
+	//textureItem := w.fontFamily.Regular.GetGlyph(textureatlas.Solid)
+	//
+	//w.addQuadToVertices(&w.vertices, left, top, right, bottom, textureItem, cursor.color)
 }
 
 func (w *Window) addUnderCursorToCellVertices(cell *Cell, cursor *Cursor) {
@@ -180,18 +152,6 @@ func (w *Window) addQuadToVertices(
 	)
 }
 
-func (w *Window) addCellsToVertices() {
-	textureItemSolid := w.fontFamily.Regular.GetGlyph(textureatlas.Solid)
-
-	for index, cell := range w.grid.cells {
-		columnInt := index % w.grid.width
-		rowInt := index / w.grid.width
-
-		w.generateCellVertices(cell, columnInt, rowInt, textureItemSolid)
-		w.vertices = append(w.vertices, cell.vertices...)
-	}
-}
-
 func (w *Window) generateCellVertices(cell *Cell, columnInt int, rowInt int, textureItemSolid *textureatlas.TextureItem) {
 	cell.vertices = cell.vertices[:0]
 
@@ -215,11 +175,11 @@ func (w *Window) generateCellVertices(cell *Cell, columnInt int, rowInt int, tex
 		fg = cell.Bg
 	}
 
-	if w.haveBlockCursorForCell(columnInt, rowInt) {
-		bgTemp := bg
-		bg = fg
-		fg = bgTemp
-	}
+	//if w.haveBlockCursorForCell(columnInt, rowInt) {
+	//	bgTemp := bg
+	//	bg = fg
+	//	fg = bgTemp
+	//}
 
 	w.addCellVertices(cell, column, row, textureItemSolid, bg, true)
 	w.addCellVertices(cell, column, row, textureItem, fg, false)

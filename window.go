@@ -52,19 +52,19 @@ type Window struct {
 	fg      Color
 	bgDirty bool
 
-	width  int
-	height int
+	width   int
+	height  int
+	columns int
+	rows    int
 
 	viewportCellHeightPixel int
 	viewportCellWidthPixel  int
 	viewportCellHeight      float32
 	viewportCellWidth       float32
 
-	borders  *Borders
-	cursors  *Cursors
-	grid     *CellGrid
 	vertices []float32
 
+	drawCallback     DrawCallback
 	gridSizeCallback GridSizeCallback
 	keyCallback      KeyCallback
 	charCallback     CharCallback
@@ -111,9 +111,6 @@ func newWindow(application *Application, options *WindowOptions) (*Window, error
 		fontSize:    defaultFontSize,
 	}
 
-	w.borders = NewBorders()
-	w.grid = NewCellGrid(0, 0, w.bg, w.fg)
-	w.cursors = NewCursors(w)
 	w.setKeybindings()
 
 	err := w.createWindow(options)
@@ -137,7 +134,7 @@ func newWindow(application *Application, options *WindowOptions) (*Window, error
 	})
 
 	w.glfwWindow.SetRefreshCallback(func(_ *glfw.Window) {
-		w.drawAll()
+		w.draw()
 	})
 
 	return w, nil
@@ -204,35 +201,13 @@ func (w *Window) setFontSize(delta float64) {
 	w.resized()
 }
 
-// Grid is the grid of Cells.
-//
-// The Cells in the grid may be manipulated in a callback.
-func (w *Window) Grid() *CellGrid {
-	return w.grid
-}
-
-// Borders are rectangular borders that may be displayed around
-// a rectangle of cells.
-//
-// The borders may be manipulated in a callback.
-func (w *Window) Borders() *Borders {
-	return w.borders
-}
-
-// Cursors are cursors that may be displayed in a cell.
-//
-// The cursors may be manipulated in a callback.
-func (w *Window) Cursors() *Cursors {
-	return w.cursors
-}
-
 // Show makes the window visible.
 // See also Hide.
 //
 // This function may only be called from the main thread.
 func (w *Window) Show() {
 	w.glfwWindow.Show()
-	w.drawAll()
+	w.draw()
 }
 
 // Hide hides the window.
@@ -293,17 +268,10 @@ func (w *Window) resized() {
 	w.viewportCellWidth = float32(w.fontFamily.CellWidth) / float32(w.width) * 2
 	w.viewportCellHeight = float32(w.fontFamily.CellHeight) / float32(w.height) * 2
 
-	columns := w.width / w.viewportCellWidthPixel
-	rows := w.height / w.viewportCellHeightPixel
-	w.grid = NewCellGrid(columns, rows, w.bg, w.fg)
+	w.columns = w.width / w.viewportCellWidthPixel
+	w.rows = w.height / w.viewportCellHeightPixel
 
 	w.callGridSizeCallback()
-	w.drawAll()
-}
-
-func (w *Window) drawAll() {
-	w.bgDirty = true
-	w.grid.markAllDirty()
 	w.draw()
 }
 

@@ -38,40 +38,40 @@ func NewBorder(leftColumn, rightColumn, topRow, bottomRow int, color Color) Bord
 // It may later be used to remove a border.
 type BorderId int
 
-// Borders represents a collection of borders that a window may render.
+//// Borders represents a collection of borders that a window may render.
+////
+//// An instance is provided by a Window.
+//type Borders struct {
+//	nextId  BorderId
+//	borders map[BorderId]Border
+//}
 //
-// An instance is provided by a Window.
-type Borders struct {
-	nextId  BorderId
-	borders map[BorderId]Border
-}
-
-func NewBorders() *Borders {
-	return &Borders{
-		nextId:  0,
-		borders: make(map[BorderId]Border),
-	}
-}
-
-// Add adds a border.
+//func NewBorders() *Borders {
+//	return &Borders{
+//		nextId:  0,
+//		borders: make(map[BorderId]Border),
+//	}
+//}
 //
-// The returned BorderId may be later used to remove the border.
-func (b *Borders) Add(border Border) BorderId {
-	b.nextId++
-	id := b.nextId
-	b.borders[id] = border
-
-	return id
-}
-
-// Removes a border.
+//// Add adds a border.
+////
+//// The returned BorderId may be later used to remove the border.
+//func (b *Borders) Add(border Border) BorderId {
+//	b.nextId++
+//	id := b.nextId
+//	b.borders[id] = border
 //
-// The border is identified by an id returned from the Add function.
-func (b *Borders) Remove(id BorderId) {
-	delete(b.borders, id)
-}
-
-// RemoveAll removes all borders.
-func (b *Borders) RemoveAll() {
-	b.borders = make(map[BorderId]Border)
-}
+//	return id
+//}
+//
+//// Removes a border.
+////
+//// The border is identified by an id returned from the Add function.
+//func (b *Borders) Remove(id BorderId) {
+//	delete(b.borders, id)
+//}
+//
+//// RemoveAll removes all borders.
+//func (b *Borders) RemoveAll() {
+//	b.borders = make(map[BorderId]Border)
+//}

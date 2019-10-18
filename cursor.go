@@ -36,32 +36,21 @@ type Cursor struct {
 // It may later be used to remove a cursor.
 type CursorId int
 
-func (c *Cursor) setCellDirty() {
-	cell, _ := c.window.grid.Cell(c.column, c.row)
-	if cell == nil {
-		return
-	}
-}
-
 func (c *Cursor) SetPosition(column int, row int) {
 	c.column = column
 	c.row = row
-	c.setCellDirty()
 }
 
 func (c *Cursor) SetColor(color Color) {
 	c.color = color
-	c.setCellDirty()
 }
 
 func (c *Cursor) SetType(typ CursorType) {
 	c.typ = typ
-	c.setCellDirty()
 }
 
 func (c *Cursor) SetVisible(visible bool) {
 	c.visible = visible
-	c.setCellDirty()
 }
 
 func (c *Cursor) Visible() bool {

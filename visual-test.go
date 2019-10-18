@@ -67,7 +67,7 @@ func testCaptureAndCompareImage(
 		// allow the test to prepare the window contents
 		setupWindow(w)
 
-		w.drawAll()
+		w.draw()
 
 		go w.Do(func() {
 			asserttTestImage(t, name, w)

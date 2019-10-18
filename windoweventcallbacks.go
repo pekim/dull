@@ -5,8 +5,19 @@ import (
 	"github.com/pekim/dull/geometry"
 )
 
+// DrawCallback is a function that is called when it is time to draw a window.
+// The application show call drawing functions, such as DrawCell, DrawCursor,
+// and DrawBorder.
+//
+// See SetDrawCallback.
+type DrawCallback func(columns, rows int)
+
 // GridSizeCallback is a function for use with SetGridSizeCallback.
 type GridSizeCallback func(columns, rows int)
+
+func (w *Window) SetDrawCallback(fn DrawCallback) {
+	w.drawCallback = fn
+}
 
 // SetGridSizeCallback sets or clears a function to call when the
 // window's grid size changes.
@@ -27,7 +38,7 @@ func (w *Window) SetGridSizeCallback(fn GridSizeCallback) {
 
 func (w *Window) callGridSizeCallback() {
 	if w.gridSizeCallback != nil {
-		w.gridSizeCallback(w.grid.width, w.grid.height)
+		w.gridSizeCallback(w.columns, w.rows)
 	}
 }
 
