@@ -38,8 +38,6 @@ type Cell struct {
 
 	// Invert denotes whether the foreground and background colours should be reversed.
 	Invert bool
-
-	vertices []float32
 }
 
 func (c *Cell) ApplyOptions(options *CellOptions) {

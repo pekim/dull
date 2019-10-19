@@ -33,7 +33,6 @@ func (w *Window) draw() {
 	gl.ClearColor(w.bg.R, w.bg.G, w.bg.B, 1.0)
 	gl.Clear(gl.COLOR_BUFFER_BIT)
 
-	fmt.Println(len(w.vertices))
 	w.drawCells()
 
 	w.glfwWindow.SwapBuffers()
@@ -154,46 +153,46 @@ func (w *Window) addQuadToVertices(
 }
 
 func (w *Window) generateCellVertices(cell *Cell, columnInt int, rowInt int, textureItemSolid *textureatlas.TextureItem) {
-	cell.vertices = cell.vertices[:0]
-
-	font := w.fontFamily.Regular
-	if cell.Bold && cell.Italic {
-		font = w.fontFamily.BoldItalic
-	} else if cell.Bold {
-		font = w.fontFamily.Bold
-	} else if cell.Italic {
-		font = w.fontFamily.Italic
-	}
-	textureItem := font.GetGlyph(cell.Rune)
-
-	column := float32(columnInt)
-	row := float32(rowInt)
-
-	bg := cell.Bg
-	fg := cell.Fg
-	if cell.Invert {
-		bg = cell.Fg
-		fg = cell.Bg
-	}
-
-	//if w.haveBlockCursorForCell(columnInt, rowInt) {
-	//	bgTemp := bg
-	//	bg = fg
-	//	fg = bgTemp
+	//cell.vertices = cell.vertices[:0]
+	//
+	//font := w.fontFamily.Regular
+	//if cell.Bold && cell.Italic {
+	//	font = w.fontFamily.BoldItalic
+	//} else if cell.Bold {
+	//	font = w.fontFamily.Bold
+	//} else if cell.Italic {
+	//	font = w.fontFamily.Italic
 	//}
-
-	w.addCellVertices(cell, column, row, textureItemSolid, bg, true)
-	w.addCellVertices(cell, column, row, textureItem, fg, false)
-
-	if cell.Strikethrough {
-		// COMBINING LONG STROKE OVERLAY
-		w.addCellVertices(cell, column, row, font.GetGlyph('\u0336'), fg, false)
-	}
-	if cell.Underline {
-		// COMBINING LOW LINE
-		w.addCellVertices(cell, column, row, font.GetGlyph('\u0332'), fg, false)
-	}
-	fmt.Println("cv", len(cell.vertices))
+	//textureItem := font.GetGlyph(cell.Rune)
+	//
+	//column := float32(columnInt)
+	//row := float32(rowInt)
+	//
+	//bg := cell.Bg
+	//fg := cell.Fg
+	//if cell.Invert {
+	//	bg = cell.Fg
+	//	fg = cell.Bg
+	//}
+	//
+	////if w.haveBlockCursorForCell(columnInt, rowInt) {
+	////	bgTemp := bg
+	////	bg = fg
+	////	fg = bgTemp
+	////}
+	//
+	//w.addCellVertices(cell, column, row, textureItemSolid, bg, true)
+	//w.addCellVertices(cell, column, row, textureItem, fg, false)
+	//
+	//if cell.Strikethrough {
+	//	// COMBINING LONG STROKE OVERLAY
+	//	w.addCellVertices(cell, column, row, font.GetGlyph('\u0336'), fg, false)
+	//}
+	//if cell.Underline {
+	//	// COMBINING LOW LINE
+	//	w.addCellVertices(cell, column, row, font.GetGlyph('\u0332'), fg, false)
+	//}
+	//fmt.Println("cv", len(cell.vertices))
 }
 
 func (w *Window) drawCells() {
@@ -254,12 +253,12 @@ func (w *Window) DrawCell(cell *Cell,
 	right := left + width
 	bottom := top + height
 
-	textureItemSolid := w.fontFamily.Regular.GetGlyph(textureatlas.Solid)
+	//textureItemSolid := w.fontFamily.Regular.GetGlyph(textureatlas.Solid)
 
-	w.generateCellVertices(cell, column, row, textureItemSolid)
-	w.vertices = append(w.vertices, cell.vertices...)
+	//w.generateCellVertices(cell, column, row, textureItemSolid)
+	//w.vertices = append(w.vertices, cell.vertices...)
 	w.addQuadToVertices(&w.vertices, left, top, right, bottom, textureItem, colour)
-	fmt.Println(123, len(w.vertices))
+	//fmt.Println(123, len(w.vertices))
 }
 
 func (w *Window) addCellVertices(cell *Cell,
@@ -268,30 +267,30 @@ func (w *Window) addCellVertices(cell *Cell,
 	colour Color,
 	fillCell bool,
 ) {
-	windowWidth := float32(w.width)
-	windowHeight := float32(w.height)
-
-	cellWidth := w.viewportCellWidth
-	cellHeight := w.viewportCellHeight
-
-	var width, height float32
-	if fillCell {
-		width = cellWidth
-		height = cellHeight
-	} else {
-		width = float32(textureItem.PixelWidth()) / windowWidth * 2
-		height = float32(textureItem.PixelHeight()) / windowHeight * 2
-	}
-
-	leftBearing := textureItem.LeftBearing / windowWidth * 2
-	topBearing := (textureItem.TopBearing) / windowHeight * 2
-
-	left := float32(-1.0 + (column * cellWidth) + leftBearing)
-	top := float32(-1.0 + (row * cellHeight) + topBearing)
-	right := left + width
-	bottom := top + height
-
-	w.addQuadToVertices(&cell.vertices, left, top, right, bottom, textureItem, colour)
+	//windowWidth := float32(w.width)
+	//windowHeight := float32(w.height)
+	//
+	//cellWidth := w.viewportCellWidth
+	//cellHeight := w.viewportCellHeight
+	//
+	//var width, height float32
+	//if fillCell {
+	//	width = cellWidth
+	//	height = cellHeight
+	//} else {
+	//	width = float32(textureItem.PixelWidth()) / windowWidth * 2
+	//	height = float32(textureItem.PixelHeight()) / windowHeight * 2
+	//}
+	//
+	//leftBearing := textureItem.LeftBearing / windowWidth * 2
+	//topBearing := (textureItem.TopBearing) / windowHeight * 2
+	//
+	//left := float32(-1.0 + (column * cellWidth) + leftBearing)
+	//top := float32(-1.0 + (row * cellHeight) + topBearing)
+	//right := left + width
+	//bottom := top + height
+	//
+	//w.addQuadToVertices(&cell.vertices, left, top, right, bottom, textureItem, colour)
 }
 
 func (w *Window) configureTextureUniform() {

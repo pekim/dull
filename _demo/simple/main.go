@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/pekim/dull"
 )
 
@@ -23,7 +22,7 @@ func initialise(app *dull.Application, err error) {
 	}
 
 	window.SetDrawCallback(func(columns, rows int) {
-		fmt.Println(columns, rows)
+		//fmt.Println(columns, rows)
 
 		window.DrawCell(&dull.Cell{
 			Rune:      'A',
@@ -34,7 +33,7 @@ func initialise(app *dull.Application, err error) {
 			Rune:      'A',
 			Underline: true,
 			Bg:        red,
-		}, 0, 0, white, true)
+		}, 0, 0, black, true)
 	})
 
 	//window.Borders().Add(dull.NewBorder(2, 2+3, 7, 7, dull.NewColor(1.0, 0.2, 0.2, 0.7)))
