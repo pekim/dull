@@ -1,30 +1,18 @@
 package textureatlas
 
+import "github.com/pekim/dull/internal/geometry"
+
 type TextureItem struct {
 	key    string
 	pixels *[]byte
 
-	// in pixels
-	PixelLeft   int
-	PixelRight  int
-	PixelTop    int
-	PixelBottom int
+	PixelHeight int
+	PixelWidth  int
 
 	// in pixels
 	TopBearing  float32
 	LeftBearing float32
 
 	// in texture co-ordinates
-	Left   float32
-	Top    float32
-	Right  float32
-	Bottom float32
-}
-
-func (ti *TextureItem) PixelWidth() int {
-	return ti.PixelRight - ti.PixelLeft
-}
-
-func (ti *TextureItem) PixelHeight() int {
-	return ti.PixelBottom - ti.PixelTop
+	Rect geometry.RectFloat
 }

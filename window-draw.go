@@ -2,6 +2,7 @@ package dull
 
 import (
 	"fmt"
+	"github.com/pekim/dull/internal/geometry"
 	"image"
 	"time"
 	"unsafe"
@@ -42,35 +43,35 @@ func (w *Window) draw() {
 }
 
 func (w *Window) addBorderToVertices(border *Border) {
-	cellWidth := w.viewportCellWidth
-	cellHeight := w.viewportCellHeight
-
-	thicknessVertical := 0.08 * cellHeight
-	thicknessVerticalPixels := float32(w.height) * (thicknessVertical / 2.0)
-	thicknessHorizontal := (thicknessVerticalPixels * 2.0) / float32(w.width)
-
-	topTop := float32(-1.0 + (float32(border.topRow) * cellHeight))
-	topBottom := topTop + thicknessVertical
-
-	bottomBottom := float32(-1.0 + (float32(border.bottomRow+1) * cellHeight))
-	bottomTop := bottomBottom - thicknessVertical
-
-	leftLeft := float32(-1.0 + (float32(border.leftColumn) * cellWidth))
-	leftRight := leftLeft + thicknessHorizontal
-
-	rightRight := float32(-1.0 + (float32(border.rightColumn+1) * cellWidth))
-	rightLeft := rightRight - thicknessHorizontal
-
-	textureItem := w.fontFamily.Regular.GetGlyph(textureatlas.Solid)
-
-	// top line
-	w.addQuadToVertices(&w.vertices, leftLeft, topTop, rightRight, topBottom, textureItem, border.color)
-	// bottom line
-	w.addQuadToVertices(&w.vertices, leftLeft, bottomTop, rightRight, bottomBottom, textureItem, border.color)
-	// left line
-	w.addQuadToVertices(&w.vertices, leftLeft, topBottom, leftRight, bottomTop, textureItem, border.color)
-	// right line
-	w.addQuadToVertices(&w.vertices, rightLeft, topBottom, rightRight, bottomTop, textureItem, border.color)
+	//cellWidth := w.viewportCellWidth
+	//cellHeight := w.viewportCellHeight
+	//
+	//thicknessVertical := 0.08 * cellHeight
+	//thicknessVerticalPixels := float32(w.height) * (thicknessVertical / 2.0)
+	//thicknessHorizontal := (thicknessVerticalPixels * 2.0) / float32(w.width)
+	//
+	//topTop := float32(-1.0 + (float32(border.topRow) * cellHeight))
+	//topBottom := topTop + thicknessVertical
+	//
+	//bottomBottom := float32(-1.0 + (float32(border.bottomRow+1) * cellHeight))
+	//bottomTop := bottomBottom - thicknessVertical
+	//
+	//leftLeft := float32(-1.0 + (float32(border.leftColumn) * cellWidth))
+	//leftRight := leftLeft + thicknessHorizontal
+	//
+	//rightRight := float32(-1.0 + (float32(border.rightColumn+1) * cellWidth))
+	//rightLeft := rightRight - thicknessHorizontal
+	//
+	//textureItem := w.fontFamily.Regular.GetGlyph(textureatlas.Solid)
+	//
+	//// top line
+	//w.drawTextureItemToQuad(leftLeft, topTop, rightRight, topBottom, textureItem, border.color)
+	//// bottom line
+	//w.drawTextureItemToQuad(leftLeft, bottomTop, rightRight, bottomBottom, textureItem, border.color)
+	//// left line
+	//w.drawTextureItemToQuad(leftLeft, topBottom, leftRight, bottomTop, textureItem, border.color)
+	//// right line
+	//w.drawTextureItemToQuad(rightLeft, topBottom, rightRight, bottomTop, textureItem, border.color)
 }
 
 func (w *Window) addCursorToVertices(cursor *Cursor) {
@@ -109,47 +110,24 @@ func (w *Window) addBarCursorToCellVertices(cell *Cell, cursor *Cursor) {
 	//
 	//textureItem := w.fontFamily.Regular.GetGlyph(textureatlas.Solid)
 	//
-	//w.addQuadToVertices(&w.vertices, left, top, right, bottom, textureItem, cursor.color)
+	//w.drawTextureItemToQuad(left, top, right, bottom, textureItem, cursor.color)
 }
 
 func (w *Window) addUnderCursorToCellVertices(cell *Cell, cursor *Cursor) {
-	cellWidth := w.viewportCellWidth
-	cellHeight := w.viewportCellHeight
-
-	thickness := 0.12 * cellHeight
-
-	left := float32(-1.0 + (float32(cursor.column) * cellWidth))
-	right := float32(-1.0 + (float32(cursor.column+1) * cellWidth))
-
-	bottom := float32(-1.0 + (float32(cursor.row+1) * cellHeight))
-	top := bottom - thickness
-
-	textureItem := w.fontFamily.Regular.GetGlyph(textureatlas.Solid)
-
-	w.addQuadToVertices(&w.vertices, left, top, right, bottom, textureItem, cursor.color)
-}
-
-func (w *Window) addQuadToVertices(
-	vertices *[]float32,
-	left, top, right, bottom float32,
-	textureItem *textureatlas.TextureItem, colour Color,
-) {
-	r := colour.R
-	g := colour.G
-	b := colour.B
-	a := colour.A
-
-	*vertices = append(*vertices,
-		// triangle 1
-		left, top, textureItem.Left, textureItem.Top, r, g, b, a,
-		left, bottom, textureItem.Left, textureItem.Bottom, r, g, b, a,
-		right, top, textureItem.Right, textureItem.Top, r, g, b, a,
-
-		// triangle 2
-		left, bottom, textureItem.Left, textureItem.Bottom, r, g, b, a,
-		right, bottom, textureItem.Right, textureItem.Bottom, r, g, b, a,
-		right, top, textureItem.Right, textureItem.Top, r, g, b, a,
-	)
+	//cellWidth := w.viewportCellWidth
+	//cellHeight := w.viewportCellHeight
+	//
+	//thickness := 0.12 * cellHeight
+	//
+	//left := float32(-1.0 + (float32(cursor.column) * cellWidth))
+	//right := float32(-1.0 + (float32(cursor.column+1) * cellWidth))
+	//
+	//bottom := float32(-1.0 + (float32(cursor.row+1) * cellHeight))
+	//top := bottom - thickness
+	//
+	//textureItem := w.fontFamily.Regular.GetGlyph(textureatlas.Solid)
+	//
+	//w.drawTextureItemToQuad(left, top, right, bottom, textureItem, cursor.color)
 }
 
 func (w *Window) generateCellVertices(cell *Cell, columnInt int, rowInt int, textureItemSolid *textureatlas.TextureItem) {
@@ -242,22 +220,26 @@ func (w *Window) DrawCell(cell *Cell,
 	//	width = float32(textureItem.PixelWidth()) / windowWidth * 2
 	//	height = float32(textureItem.PixelHeight()) / windowHeight * 2
 	//}
-	width = float32(textureItem.PixelWidth()) / windowWidth * 2
-	height = float32(textureItem.PixelHeight()) / windowHeight * 2
+	width = float32(textureItem.PixelWidth) / windowWidth * 2
+	height = float32(textureItem.PixelHeight) / windowHeight * 2
 
 	leftBearing := textureItem.LeftBearing / windowWidth * 2
 	topBearing := (textureItem.TopBearing) / windowHeight * 2
 
 	left := float32(-1.0 + (float32(column) * cellWidth) + leftBearing)
 	top := float32(-1.0 + (float32(row) * cellHeight) + topBearing)
-	right := left + width
-	bottom := top + height
+	destination := geometry.RectFloat{
+		Left:   left,
+		Top:    top,
+		Right:  left + width,
+		Bottom: top + height,
+	}
 
 	//textureItemSolid := w.fontFamily.Regular.GetGlyph(textureatlas.Solid)
 
 	//w.generateCellVertices(cell, column, row, textureItemSolid)
 	//w.vertices = append(w.vertices, cell.vertices...)
-	w.addQuadToVertices(&w.vertices, left, top, right, bottom, textureItem, colour)
+	w.drawTextureItemToQuad(destination, textureItem, colour)
 	//fmt.Println(123, len(w.vertices))
 }
 
@@ -290,7 +272,7 @@ func (w *Window) addCellVertices(cell *Cell,
 	//right := left + width
 	//bottom := top + height
 	//
-	//w.addQuadToVertices(&cell.vertices, left, top, right, bottom, textureItem, colour)
+	//w.drawTextureItemToQuad(&cell.vertices, left, top, right, bottom, textureItem, colour)
 }
 
 func (w *Window) configureTextureUniform() {

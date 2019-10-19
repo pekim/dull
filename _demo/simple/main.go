@@ -28,12 +28,18 @@ func initialise(app *dull.Application, err error) {
 			Rune:      'A',
 			Underline: true,
 			Bg:        red,
-		}, 1, 1, black, true)
+		}, 0, 0, black, true)
+
 		window.DrawCell(&dull.Cell{
 			Rune:      'A',
 			Underline: true,
 			Bg:        red,
-		}, 0, 0, black, true)
+		}, 1, 1, black, true)
+		window.DrawCell(&dull.Cell{
+			Rune:      'g',
+			Underline: true,
+			Bg:        red,
+		}, 2, 1, red, true)
 	})
 
 	//window.Borders().Add(dull.NewBorder(2, 2+3, 7, 7, dull.NewColor(1.0, 0.2, 0.2, 0.7)))
