@@ -13,6 +13,7 @@ func initialise(app *dull.Application, err error) {
 	white := dull.NewColor(1.0, 1.0, 1.0, 1.0)
 	black := dull.NewColor(0.0, 0.0, 0.0, 1.0)
 	red := dull.NewColor(1.0, 0.0, 0.0, 1.0)
+	green := dull.NewColor(0.0, 1.0, 0.0, 1.0)
 	window, err := app.NewWindow(&dull.WindowOptions{
 		Bg: &white,
 		Fg: &black,
@@ -27,19 +28,31 @@ func initialise(app *dull.Application, err error) {
 		window.DrawCell(&dull.Cell{
 			Rune:      'A',
 			Underline: true,
-			Bg:        red,
-		}, 0, 0, black, true)
+			Fg:        black,
+			Bg:        green,
+		}, 0, 0)
 
 		window.DrawCell(&dull.Cell{
 			Rune:      'A',
 			Underline: true,
+			Fg:        white,
 			Bg:        red,
-		}, 1, 1, black, true)
+		}, 1, 1)
 		window.DrawCell(&dull.Cell{
 			Rune:      'g',
 			Underline: true,
-			Bg:        red,
-		}, 2, 1, red, true)
+			Fg:        red,
+			Bg:        green,
+		}, 2, 1)
+
+		for i, r := range "Hello world!" {
+			window.DrawCell(&dull.Cell{
+				Rune:      r,
+				Underline: true,
+				Fg:        black,
+				Bg:        white,
+			}, 1+i, 3)
+		}
 	})
 
 	//window.Borders().Add(dull.NewBorder(2, 2+3, 7, 7, dull.NewColor(1.0, 0.2, 0.2, 0.7)))

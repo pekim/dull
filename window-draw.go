@@ -199,29 +199,26 @@ func (w *Window) drawCells() {
 	gl.DeleteVertexArrays(1, &vao)
 }
 
-func (w *Window) DrawCell(cell *Cell,
-	column, row int,
-	colour Color,
-	fillCell bool,
-) {
-	windowWidth := float32(w.width)
-	windowHeight := float32(w.height)
+func (w *Window) DrawCell(cell *Cell, column, row int) {
+	w.drawCellBackground(column, row, cell.Bg)
+	w.drawRune(column, row, cell.Rune, cell.Fg)
+}
 
+func (w *Window) drawRune(
+	column, row int,
+	rune rune,
+	colour Color,
+) {
 	cellWidth := w.viewportCellWidth
 	cellHeight := w.viewportCellHeight
 
-	textureItem := w.fontFamily.Regular.GetGlyph(cell.Rune)
+	textureItem := w.fontFamily.Regular.GetGlyph(rune)
 
-	var width, height float32
-	//if fillCell {
-	//	width = cellWidth
-	//	height = cellHeight
-	//} else {
-	//	width = float32(textureItem.PixelWidth()) / windowWidth * 2
-	//	height = float32(textureItem.PixelHeight()) / windowHeight * 2
-	//}
-	width = float32(textureItem.PixelWidth) / windowWidth * 2
-	height = float32(textureItem.PixelHeight) / windowHeight * 2
+	windowWidth := float32(w.width)
+	windowHeight := float32(w.height)
+
+	width := float32(textureItem.PixelWidth) / windowWidth * 2
+	height := float32(textureItem.PixelHeight) / windowHeight * 2
 
 	leftBearing := textureItem.LeftBearing / windowWidth * 2
 	topBearing := (textureItem.TopBearing) / windowHeight * 2
@@ -235,12 +232,26 @@ func (w *Window) DrawCell(cell *Cell,
 		Bottom: top + height,
 	}
 
-	//textureItemSolid := w.fontFamily.Regular.GetGlyph(textureatlas.Solid)
-
-	//w.generateCellVertices(cell, column, row, textureItemSolid)
-	//w.vertices = append(w.vertices, cell.vertices...)
 	w.drawTextureItemToQuad(destination, textureItem, colour)
-	//fmt.Println(123, len(w.vertices))
+}
+
+func (w *Window) drawCellBackground(column, row int, colour Color) {
+	cellWidth := w.viewportCellWidth
+	cellHeight := w.viewportCellHeight
+
+	width := cellWidth
+	height := cellHeight
+
+	left := float32(-1.0 + (float32(column) * cellWidth))
+	top := float32(-1.0 + (float32(row) * cellHeight))
+	destination := geometry.RectFloat{
+		Left:   left,
+		Top:    top,
+		Right:  left + width,
+		Bottom: top + height,
+	}
+
+	w.drawSolidQuad(destination, colour)
 }
 
 func (w *Window) addCellVertices(cell *Cell,

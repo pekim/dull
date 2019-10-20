@@ -2,6 +2,7 @@ package dull
 
 import (
 	"github.com/pekim/dull/geometry"
+	"github.com/pekim/dull/internal/textureatlas"
 	"math"
 	"time"
 
@@ -29,6 +30,7 @@ type Window struct {
 	scale              float64
 	fontSize           float64
 	fontFamily         *font.Family
+	solidTextureItem   *textureatlas.TextureItem
 	glfwWindow         *glfw.Window
 	glTerminated       bool
 	program            uint32
@@ -197,6 +199,7 @@ func (*Window) getDpiAndScale() (float32, float64) {
 func (w *Window) setFontSize(delta float64) {
 	w.fontSize += delta
 	w.fontFamily = font.NewFamily(w.Application.fontRenderer.new(), int(w.dpi), w.scale*w.fontSize)
+	w.solidTextureItem = w.fontFamily.Regular.GetGlyph(textureatlas.Solid)
 	w.setResizeIncrement()
 	w.resized()
 }

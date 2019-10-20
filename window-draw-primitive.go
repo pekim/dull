@@ -38,3 +38,7 @@ func (w *Window) drawTextureItemToQuad(
 		dest.Right, dest.Top, tiRect.Right, tiRect.Top, c.R, c.G, c.B, c.A,
 	)
 }
+
+func (w *Window) drawSolidQuad(dest geometry.RectFloat, c Color) {
+	w.drawTextureItemToQuad(dest, w.solidTextureItem, c)
+}
