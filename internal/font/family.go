@@ -57,3 +57,16 @@ func NewFamily(newRenderer NewRenderer, dpi int, height float64) *Family {
 
 	return family
 }
+
+func (f *Family) Font(bold bool, italic bool) *FontTextureAtlas {
+	switch {
+	case bold && italic:
+		return f.BoldItalic
+	case bold && !italic:
+		return f.Bold
+	case !bold && italic:
+		return f.Italic
+	default:
+		return f.Regular
+	}
+}

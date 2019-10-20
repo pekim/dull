@@ -2,6 +2,7 @@ package dull
 
 import (
 	"fmt"
+	"github.com/pekim/dull/internal/font"
 	"github.com/pekim/dull/internal/geometry"
 	"image"
 	"time"
@@ -201,18 +202,19 @@ func (w *Window) drawCells() {
 
 func (w *Window) DrawCell(cell *Cell, column, row int) {
 	w.drawCellBackground(column, row, cell.Bg)
-	w.drawRune(column, row, cell.Rune, cell.Fg)
+	w.drawRune(column, row, cell.Rune, cell.Fg, w.fontFamily.Font(cell.Bold, cell.Italic))
 }
 
 func (w *Window) drawRune(
 	column, row int,
 	rune rune,
 	colour Color,
+	font *font.FontTextureAtlas,
 ) {
 	cellWidth := w.viewportCellWidth
 	cellHeight := w.viewportCellHeight
 
-	textureItem := w.fontFamily.Regular.GetGlyph(rune)
+	textureItem := font.GetGlyph(rune)
 
 	windowWidth := float32(w.width)
 	windowHeight := float32(w.height)

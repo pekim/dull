@@ -23,35 +23,29 @@ func initialise(app *dull.Application, err error) {
 	}
 
 	window.SetDrawCallback(func(columns, rows int) {
-		//fmt.Println(columns, rows)
-
 		window.DrawCell(&dull.Cell{
-			Rune:      'A',
-			Underline: true,
-			Fg:        black,
-			Bg:        green,
+			Rune: 'A',
+			Fg:   black,
+			Bg:   green,
 		}, 0, 0)
 
 		window.DrawCell(&dull.Cell{
-			Rune:      'A',
-			Underline: true,
-			Fg:        white,
-			Bg:        red,
+			Rune: 'A',
+			Fg:   white,
+			Bg:   red,
 		}, 1, 1)
 		window.DrawCell(&dull.Cell{
-			Rune:      'g',
-			Underline: true,
-			Fg:        red,
-			Bg:        green,
+			Rune: 'g',
+			Fg:   red,
+			Bg:   green,
 		}, 2, 1)
 
 		for i, r := range "Hello world!" {
-			window.DrawCell(&dull.Cell{
-				Rune:      r,
-				Underline: true,
-				Fg:        black,
-				Bg:        white,
-			}, 1+i, 3)
+			row := 3
+			window.DrawCell(&dull.Cell{Rune: r, Fg: black, Bg: white, Bold: false, Italic: false}, 1+i, row)
+			window.DrawCell(&dull.Cell{Rune: r, Fg: black, Bg: white, Bold: true, Italic: false}, 1+i, row+1)
+			window.DrawCell(&dull.Cell{Rune: r, Fg: black, Bg: white, Bold: false, Italic: true}, 1+i, row+2)
+			window.DrawCell(&dull.Cell{Rune: r, Fg: black, Bg: white, Bold: true, Italic: true}, 1+i, row+3)
 		}
 	})
 
