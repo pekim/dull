@@ -1,7 +1,6 @@
 package dull
 
 import (
-	"fmt"
 	"github.com/pekim/dull/internal/font"
 	"github.com/pekim/dull/internal/geometry"
 	"image"
@@ -40,7 +39,7 @@ func (w *Window) draw() {
 	w.glfwWindow.SwapBuffers()
 
 	w.lastRenderDuration = time.Now().Sub(startTime)
-	fmt.Printf("%.1fms\n", w.lastRenderDuration.Seconds()*1000)
+	//fmt.Printf("%.1fms\n", w.lastRenderDuration.Seconds()*1000)
 }
 
 func (w *Window) addBorderToVertices(border *Border) {
