@@ -189,8 +189,8 @@ func (w *Window) drawRune(
 	leftBearing := textureItem.LeftBearing / windowWidth * 2
 	topBearing := (textureItem.TopBearing) / windowHeight * 2
 
-	left := float32(-1.0 + (float32(column) * cellWidth) + leftBearing)
-	top := float32(-1.0 + (float32(row) * cellHeight) + topBearing)
+	left := -1.0 + (float32(column) * cellWidth) + leftBearing
+	top := -1.0 + (float32(row) * cellHeight) + topBearing
 	destination := geometry.RectFloat{
 		Left:   left,
 		Top:    top,
@@ -208,8 +208,8 @@ func (w *Window) drawCellBackground(column, row int, colour Color) {
 	width := cellWidth
 	height := cellHeight
 
-	left := float32(-1.0 + (float32(column) * cellWidth))
-	top := float32(-1.0 + (float32(row) * cellHeight))
+	left := -1.0 + (float32(column) * cellWidth)
+	top := -1.0 + (float32(row) * cellHeight)
 	destination := geometry.RectFloat{
 		Left:   left,
 		Top:    top,
