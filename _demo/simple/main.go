@@ -57,8 +57,9 @@ func initialise(app *dull.Application, err error) {
 
 		for i, r := range "Hello world!" {
 			window.DrawCell(&dull.Cell{Rune: r, Fg: black, Bg: white}, 1+i, 10)
+			window.DrawCell(&dull.Cell{Rune: r, Fg: black, Bg: white}, 1+i, 11)
 		}
-		window.DrawBorder(1, 10, 1+len("Hello world!")-1, 10, dull.NewColor(1.0, 0.2, 0.2, 0.7))
+		window.DrawBorder(1, 10, 1+len("Hello world!")-1, 11, dull.NewColor(1.0, 0.2, 0.2, 0.7))
 	})
 
 	//window.Borders().Add(dull.NewBorder(2, 2+3, 7, 7, dull.NewColor(1.0, 0.2, 0.2, 0.7)))

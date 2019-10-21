@@ -225,8 +225,52 @@ func (w *Window) drawCellBackground(column, row int, colour Color) {
 }
 
 func (w *Window) DrawBorder(left, top, right, bottom int, color Color) {
-	//w.drawCellSolid(left, top, geometry.RectFloat{0, 0.1, 0, float32(right - left)}, color)
-
+	verticalLinesFraction := float32(0.15)
+	horizontalLinesFraction := w.viewportCellRatio * verticalLinesFraction
+	// top
+	w.drawCellSolid(
+		left, top,
+		geometry.RectFloat{
+			Top:    0,
+			Bottom: horizontalLinesFraction,
+			Left:   0,
+			Right:  float32(right - left + 1),
+		},
+		color,
+	)
+	// bottom
+	w.drawCellSolid(
+		left, bottom,
+		geometry.RectFloat{
+			Top:    1.0 - horizontalLinesFraction,
+			Bottom: 1.0,
+			Left:   0,
+			Right:  float32(right - left + 1),
+		},
+		color,
+	)
+	// left
+	w.drawCellSolid(
+		left, top,
+		geometry.RectFloat{
+			Top:    0,
+			Bottom: float32(bottom - top + 1),
+			Left:   0,
+			Right:  verticalLinesFraction,
+		},
+		color,
+	)
+	// right
+	w.drawCellSolid(
+		right, top,
+		geometry.RectFloat{
+			Top:    0,
+			Bottom: float32(bottom - top + 1),
+			Left:   1.0,
+			Right:  1 - verticalLinesFraction,
+		},
+		color,
+	)
 }
 
 func (w *Window) configureTextureUniform() {

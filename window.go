@@ -61,6 +61,7 @@ type Window struct {
 
 	viewportCellHeightPixel int
 	viewportCellWidthPixel  int
+	viewportCellRatio       float32
 	viewportCellHeight      float32
 	viewportCellWidth       float32
 
@@ -264,6 +265,7 @@ func (w *Window) resized() {
 
 	w.viewportCellWidthPixel = w.fontFamily.CellWidth
 	w.viewportCellHeightPixel = w.fontFamily.CellHeight
+	w.viewportCellRatio = float32(w.viewportCellWidthPixel) / float32(w.viewportCellHeightPixel)
 	if w.viewportCellWidthPixel == 0 || w.viewportCellHeightPixel == 0 {
 		return
 	}
