@@ -202,6 +202,15 @@ func (w *Window) drawCells() {
 func (w *Window) DrawCell(cell *Cell, column, row int) {
 	w.drawCellBackground(column, row, cell.Bg)
 	w.drawRune(column, row, cell.Rune, cell.Fg, w.fontFamily.Font(cell.Bold, cell.Italic))
+
+	if cell.Strikethrough {
+		// COMBINING LONG STROKE OVERLAY
+		w.drawRune(column, row, '\u0336', cell.Fg, w.fontFamily.Font(cell.Bold, cell.Italic))
+	}
+	if cell.Underline {
+		// COMBINING LOW LINE
+		w.drawRune(column, row, '\u0332', cell.Fg, w.fontFamily.Font(cell.Bold, cell.Italic))
+	}
 }
 
 func (w *Window) drawRune(
