@@ -8,7 +8,6 @@ import (
 	"unsafe"
 
 	"github.com/go-gl/gl/v3.3-core/gl"
-	"github.com/pekim/dull/internal/textureatlas"
 )
 
 const sizeofGlFloat = 4
@@ -130,49 +129,6 @@ func (w *Window) addUnderCursorToCellVertices(cell *Cell, cursor *Cursor) {
 	//w.drawTextureItemToQuad(left, top, right, bottom, textureItem, cursor.color)
 }
 
-func (w *Window) generateCellVertices(cell *Cell, columnInt int, rowInt int, textureItemSolid *textureatlas.TextureItem) {
-	//cell.vertices = cell.vertices[:0]
-	//
-	//font := w.fontFamily.Regular
-	//if cell.Bold && cell.Italic {
-	//	font = w.fontFamily.BoldItalic
-	//} else if cell.Bold {
-	//	font = w.fontFamily.Bold
-	//} else if cell.Italic {
-	//	font = w.fontFamily.Italic
-	//}
-	//textureItem := font.GetGlyph(cell.Rune)
-	//
-	//column := float32(columnInt)
-	//row := float32(rowInt)
-	//
-	//bg := cell.Bg
-	//fg := cell.Fg
-	//if cell.Invert {
-	//	bg = cell.Fg
-	//	fg = cell.Bg
-	//}
-	//
-	////if w.haveBlockCursorForCell(columnInt, rowInt) {
-	////	bgTemp := bg
-	////	bg = fg
-	////	fg = bgTemp
-	////}
-	//
-	//w.addCellVertices(cell, column, row, textureItemSolid, bg, true)
-	//w.addCellVertices(cell, column, row, textureItem, fg, false)
-	//
-	//if cell.Strikethrough {
-	//	// COMBINING LONG STROKE OVERLAY
-	//	w.addCellVertices(cell, column, row, font.GetGlyph('\u0336'), fg, false)
-	//}
-	//if cell.Underline {
-	//	// COMBINING LOW LINE
-	//	w.addCellVertices(cell, column, row, font.GetGlyph('\u0332'), fg, false)
-	//}
-	//fmt.Println("cv", len(cell.vertices))
-}
-
 func (w *Window) drawCells() {
 	// gl.BufferData panics if the length of the data is 0
 	if len(w.vertices) == 0 {
@@ -262,38 +218,6 @@ func (w *Window) drawCellBackground(column, row int, colour Color) {
 	}
 
 	w.drawSolidQuad(destination, colour)
-}
-
-func (w *Window) addCellVertices(cell *Cell,
-	column, row float32,
-	textureItem *textureatlas.TextureItem,
-	colour Color,
-	fillCell bool,
-) {
-	//windowWidth := float32(w.width)
-	//windowHeight := float32(w.height)
-	//
-	//cellWidth := w.viewportCellWidth
-	//cellHeight := w.viewportCellHeight
-	//
-	//var width, height float32
-	//if fillCell {
-	//	width = cellWidth
-	//	height = cellHeight
-	//} else {
-	//	width = float32(textureItem.PixelWidth()) / windowWidth * 2
-	//	height = float32(textureItem.PixelHeight()) / windowHeight * 2
-	//}
-	//
-	//leftBearing := textureItem.LeftBearing / windowWidth * 2
-	//topBearing := (textureItem.TopBearing) / windowHeight * 2
-	//
-	//left := float32(-1.0 + (column * cellWidth) + leftBearing)
-	//top := float32(-1.0 + (row * cellHeight) + topBearing)
-	//right := left + width
-	//bottom := top + height
-	//
-	//w.drawTextureItemToQuad(&cell.vertices, left, top, right, bottom, textureItem, colour)
 }
 
 func (w *Window) configureTextureUniform() {
