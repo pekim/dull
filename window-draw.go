@@ -201,23 +201,32 @@ func (w *Window) drawRune(
 	w.drawTextureItemToQuad(destination, textureItem, colour)
 }
 
-func (w *Window) drawCellBackground(column, row int, colour Color) {
+func (w *Window) drawCellSolid(column, row int, rect geometry.RectFloat, colour Color) {
 	cellWidth := w.viewportCellWidth
 	cellHeight := w.viewportCellHeight
 
 	width := cellWidth
 	height := cellHeight
 
-	left := -1.0 + (float32(column) * cellWidth)
-	top := -1.0 + (float32(row) * cellHeight)
+	left := -1.0 + ((float32(column) + rect.Left) * cellWidth)
+	top := -1.0 + ((float32(row) + rect.Top) * cellHeight)
 	destination := geometry.RectFloat{
 		Left:   left,
 		Top:    top,
-		Right:  left + width,
-		Bottom: top + height,
+		Right:  left + (width * (rect.Right - rect.Left)),
+		Bottom: top + (height * (rect.Bottom - rect.Top)),
 	}
 
 	w.drawSolidQuad(destination, colour)
+}
+
+func (w *Window) drawCellBackground(column, row int, colour Color) {
+	w.drawCellSolid(column, row, geometry.RectFloat{0, 1.0, 0, 1.0}, colour)
+}
+
+func (w *Window) DrawBorder(left, top, right, bottom int, color Color) {
+	//w.drawCellSolid(left, top, geometry.RectFloat{0, 0.1, 0, float32(right - left)}, color)
+
 }
 
 func (w *Window) configureTextureUniform() {
