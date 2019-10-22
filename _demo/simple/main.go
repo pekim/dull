@@ -84,6 +84,15 @@ func initialise(app *dull.Application, err error) {
 	cursors.Blink(500 * time.Millisecond)
 	//time.AfterFunc(4*time.Second, cursors.StopBlink)
 
+	//ticker := time.NewTicker(1 * time.Second)
+	//go func() {
+	//	for {
+	//		<-ticker.C
+	//		cursor1.Column--
+	//		window.Draw()
+	//	}
+	//}()
+
 	//window.Borders().Add(dull.NewBorder(2, 2+3, 7, 7, dull.NewColor(1.0, 0.2, 0.2, 0.7)))
 	//window.Borders().Add(dull.NewBorder(2+4, 2+4+5, 7, 7, dull.NewColor(0.0, 0, 0.9, 0.7)))
 	//

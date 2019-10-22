@@ -18,6 +18,7 @@ func CursorsNew(window *Window, drawCallback DrawCallback) *Cursors {
 	cc := &Cursors{
 		drawCallback: drawCallback,
 		window:       window,
+		visible:      true,
 	}
 
 	window.SetDrawCallback(cc.draw)
