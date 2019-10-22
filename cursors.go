@@ -33,6 +33,7 @@ func (cc *Cursors) Blink(period time.Duration) {
 		for {
 			select {
 			case <-cc.blinkDone:
+				cc.visible = true
 				return
 			case <-ticker.C:
 				cc.visible = !cc.visible
@@ -44,6 +45,7 @@ func (cc *Cursors) Blink(period time.Duration) {
 
 func (cc *Cursors) StopBlink() {
 	cc.blinkDone <- true
+	cc.blinkDone = nil
 }
 
 // Add adds a cursor.

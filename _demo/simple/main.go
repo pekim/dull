@@ -82,7 +82,10 @@ func initialise(app *dull.Application, err error) {
 	cursors.Add(cursor1)
 	cursors.Add(cursor2)
 	cursors.Blink(500 * time.Millisecond)
-	//time.AfterFunc(4*time.Second, cursors.StopBlink)
+	//time.AfterFunc(3*time.Second, cursors.StopBlink)
+	//time.AfterFunc(6*time.Second, func() {
+	//	cursors.Blink(200 * time.Millisecond)
+	//})
 
 	//ticker := time.NewTicker(1 * time.Second)
 	//go func() {
