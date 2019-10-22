@@ -205,7 +205,7 @@ func (w *Window) drawRune(
 	w.drawTextureItemToQuad(destination, textureItem, colour)
 }
 
-func (w *Window) drawCellSolid(column, row int, rect geometry.RectFloat, colour Color) {
+func (w *Window) DrawCellSolid(column, row int, rect geometry.RectFloat, colour Color) {
 	cellWidth := w.viewportCellWidth
 	cellHeight := w.viewportCellHeight
 
@@ -225,14 +225,14 @@ func (w *Window) drawCellSolid(column, row int, rect geometry.RectFloat, colour 
 }
 
 func (w *Window) drawCellBackground(column, row int, colour Color) {
-	w.drawCellSolid(column, row, geometry.RectFloat{0, 1.0, 0, 1.0}, colour)
+	w.DrawCellSolid(column, row, geometry.RectFloat{0, 1.0, 0, 1.0}, colour)
 }
 
 func (w *Window) DrawBorder(left, top, right, bottom int, color Color) {
 	verticalLinesFraction := float32(0.15)
 	horizontalLinesFraction := w.viewportCellRatio * verticalLinesFraction
 	// top
-	w.drawCellSolid(
+	w.DrawCellSolid(
 		left, top,
 		geometry.RectFloat{
 			Top:    0,
@@ -243,7 +243,7 @@ func (w *Window) DrawBorder(left, top, right, bottom int, color Color) {
 		color,
 	)
 	// bottom
-	w.drawCellSolid(
+	w.DrawCellSolid(
 		left, bottom,
 		geometry.RectFloat{
 			Top:    1.0 - horizontalLinesFraction,
@@ -254,7 +254,7 @@ func (w *Window) DrawBorder(left, top, right, bottom int, color Color) {
 		color,
 	)
 	// left
-	w.drawCellSolid(
+	w.DrawCellSolid(
 		left, top,
 		geometry.RectFloat{
 			Top:    0,
@@ -265,7 +265,7 @@ func (w *Window) DrawBorder(left, top, right, bottom int, color Color) {
 		color,
 	)
 	// right
-	w.drawCellSolid(
+	w.DrawCellSolid(
 		right, top,
 		geometry.RectFloat{
 			Top:    0,
@@ -341,4 +341,30 @@ func (w *Window) Capture() image.Image {
 	img.Stride = stride
 
 	return img
+}
+
+func (w *Window) DrawCursor(cursor *Cursor) {
+	switch cursor.Type {
+	case CursorTypeBlock:
+		w.DrawCellSolid(
+			cursor.Column, cursor.Row,
+			geometry.RectFloat{
+				Top:    0,
+				Bottom: 1.0,
+				Left:   0,
+				Right:  1.0,
+			},
+			cursor.Color)
+
+	case CursorTypeUnder:
+		w.DrawCellSolid(
+			cursor.Column, cursor.Row,
+			geometry.RectFloat{
+				Top:    0.9,
+				Bottom: 1.0,
+				Left:   0,
+				Right:  1.0,
+			},
+			cursor.Color)
+	}
 }

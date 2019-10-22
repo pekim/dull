@@ -1,7 +1,6 @@
 package dull
 
 import (
-	"github.com/pekim/dull/internal/geometry"
 	"time"
 )
 
@@ -73,29 +72,6 @@ func (cc *Cursors) draw(columns, rows int) {
 	}
 
 	for _, c := range cc.cursors {
-		switch c.Type {
-
-		case CursorTypeBlock:
-			cc.window.drawCellSolid(
-				c.Column, c.Row,
-				geometry.RectFloat{
-					Top:    0,
-					Bottom: 1.0,
-					Left:   0,
-					Right:  1.0,
-				},
-				c.Color)
-
-		case CursorTypeUnder:
-			cc.window.drawCellSolid(
-				c.Column, c.Row,
-				geometry.RectFloat{
-					Top:    0.9,
-					Bottom: 1.0,
-					Left:   0,
-					Right:  1.0,
-				},
-				c.Color)
-		}
+		cc.window.DrawCursor(c)
 	}
 }
