@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/pekim/dull"
+	"time"
 )
 
 func initialise(app *dull.Application, err error) {
@@ -22,7 +23,8 @@ func initialise(app *dull.Application, err error) {
 		panic(err)
 	}
 
-	window.SetDrawCallback(func(columns, rows int) {
+	//window.SetDrawCallback(func(columns, rows int) {
+	draw := func(columns, rows int) {
 		window.DrawCell(&dull.Cell{
 			Rune: 'A',
 			Fg:   black,
@@ -60,9 +62,11 @@ func initialise(app *dull.Application, err error) {
 			window.DrawCell(&dull.Cell{Rune: r, Fg: black, Bg: white}, 1+i, 11)
 		}
 		window.DrawBorder(1, 10, 1+len("Hello world!")-1, 11, dull.NewColor(1.0, 0.2, 0.2, 0.7))
-	})
+	}
 
-	dull.CursorsNew(window)
+	cursors := dull.CursorsNew(window, draw)
+	cursors.Blink(500 * time.Millisecond)
+	//time.AfterFunc(4*time.Second, cursors.StopBlink)
 
 	//window.Borders().Add(dull.NewBorder(2, 2+3, 7, 7, dull.NewColor(1.0, 0.2, 0.2, 0.7)))
 	//window.Borders().Add(dull.NewBorder(2+4, 2+4+5, 7, 7, dull.NewColor(0.0, 0, 0.9, 0.7)))
