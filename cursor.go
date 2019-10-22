@@ -1,23 +1,21 @@
 package dull
 
+type CursorType int
+
 const (
 	// Render the cursor as a line at the bottom of the cell.
 	CursorTypeUnder CursorType = iota
 
-	// Render the cursor as a block,
-	// by inverting the cell's background and foreground colors.
-	CursorTypeBlock
+	//// Render the cursor as a block,
+	//// by inverting the cell's background and foreground colors.
+	//CursorTypeBlock
 
 	// Render the cursor as a vertical bar between two cells.
 	CursorTypeBar
 )
 
-type CursorType int
-
-// Cursor defines a cursor within a cell.
+// Cursor defines a cursor at a column and row.
 type Cursor struct {
-	window *Window
-
 	// The column of the cell to show the cursor in.
 	column int
 	// The row of the cell to show the cursor in.
@@ -26,10 +24,6 @@ type Cursor struct {
 	color Color
 	// How the cursor is to be rendered.
 	typ CursorType
-	// Whether the cursor is renderer or not.
-	// Should always be set to true, unless it is used
-	// to perform cursor flashing.
-	visible bool
 }
 
 // CursorId is an identifier provided when adding a cursor.
@@ -47,12 +41,4 @@ func (c *Cursor) SetColor(color Color) {
 
 func (c *Cursor) SetType(typ CursorType) {
 	c.typ = typ
-}
-
-func (c *Cursor) SetVisible(visible bool) {
-	c.visible = visible
-}
-
-func (c *Cursor) Visible() bool {
-	return c.visible
 }

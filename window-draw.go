@@ -12,6 +12,10 @@ import (
 
 const sizeofGlFloat = 4
 
+func (w *Window) Draw() {
+	w.Do(w.draw)
+}
+
 func (w *Window) draw() {
 	if w.glTerminated {
 		return
