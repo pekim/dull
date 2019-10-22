@@ -69,23 +69,30 @@ func (cc *Cursors) draw(columns, rows int) {
 		return
 	}
 
-	cc.window.drawCellSolid(
-		10, 10,
-		geometry.RectFloat{
-			Top:    0,
-			Bottom: 1.0,
-			Left:   0,
-			Right:  1.0,
-		},
-		NewColor(0.5, 0.7, 0.2, 0.7))
+	for _, c := range cc.cursors {
+		switch c.Type {
 
-	cc.window.drawCellSolid(
-		1, 6,
-		geometry.RectFloat{
-			Top:    0.9,
-			Bottom: 1.0,
-			Left:   0,
-			Right:  1.0,
-		},
-		NewColor(1.0, 0.0, 0.0, 1.0))
+		case CursorTypeBlock:
+			cc.window.drawCellSolid(
+				c.Column, c.Row,
+				geometry.RectFloat{
+					Top:    0,
+					Bottom: 1.0,
+					Left:   0,
+					Right:  1.0,
+				},
+				c.Color)
+
+		case CursorTypeUnder:
+			cc.window.drawCellSolid(
+				c.Column, c.Row,
+				geometry.RectFloat{
+					Top:    0.9,
+					Bottom: 1.0,
+					Left:   0,
+					Right:  1.0,
+				},
+				c.Color)
+		}
+	}
 }

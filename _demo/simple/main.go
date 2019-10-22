@@ -64,7 +64,23 @@ func initialise(app *dull.Application, err error) {
 		window.DrawBorder(1, 10, 1+len("Hello world!")-1, 11, dull.NewColor(1.0, 0.2, 0.2, 0.7))
 	}
 
+	cursor1 := &dull.Cursor{
+		Column: 10,
+		Row:    10,
+		Color:  dull.NewColor(0.5, 0.3, 0.2, 0.7),
+		Type:   dull.CursorTypeBlock,
+	}
+
+	cursor2 := &dull.Cursor{
+		Column: 1,
+		Row:    6,
+		Color:  dull.NewColor(1.0, 0.0, 0.0, 1.0),
+		Type:   dull.CursorTypeUnder,
+	}
+
 	cursors := dull.CursorsNew(window, draw)
+	cursors.Add(cursor1)
+	cursors.Add(cursor2)
 	cursors.Blink(500 * time.Millisecond)
 	//time.AfterFunc(4*time.Second, cursors.StopBlink)
 
