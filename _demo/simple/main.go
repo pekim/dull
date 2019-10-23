@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/pekim/dull"
-	"time"
 )
 
 func initialise(app *dull.Application, err error) {
@@ -81,7 +80,8 @@ func initialise(app *dull.Application, err error) {
 	cursors := dull.CursorsNew(window, draw)
 	cursors.Add(cursor1)
 	cursors.Add(cursor2)
-	cursors.Blink(500 * time.Millisecond)
+
+	//cursors.Blink(500 * time.Millisecond)
 	//time.AfterFunc(3*time.Second, cursors.StopBlink)
 	//time.AfterFunc(6*time.Second, func() {
 	//	cursors.Blink(200 * time.Millisecond)
@@ -96,118 +96,36 @@ func initialise(app *dull.Application, err error) {
 	//	}
 	//}()
 
-	//window.Borders().Add(dull.NewBorder(2, 2+3, 7, 7, dull.NewColor(1.0, 0.2, 0.2, 0.7)))
-	//window.Borders().Add(dull.NewBorder(2+4, 2+4+5, 7, 7, dull.NewColor(0.0, 0, 0.9, 0.7)))
-	//
-	//cursorBlock := window.Cursors().New()
-	//cursorBlock.SetPosition(3, 4)
-	//cursorBlock.SetColor(dull.NewColor(1.0, 0.0, 0.0, 0.9))
-	//cursorBlock.SetType(dull.CursorTypeBlock)
-	//cursorBlock.SetVisible(true)
-	//window.Cursors().Add(cursorBlock)
-	//
-	//cursorUnder := window.Cursors().New()
-	//cursorUnder.SetPosition(5, 4)
-	//cursorUnder.SetColor(dull.NewColor(1.0, 0.0, 0.0, 0.9))
-	//cursorUnder.SetType(dull.CursorTypeUnder)
-	//cursorUnder.SetVisible(true)
-	//window.Cursors().Add(cursorUnder)
-	//
-	//// cell, err := window.Grid().Cell(7, 2)
-	//// if err == nil {
-	//// 	cell.invert = true
-	//// }
-	//
-	//durations := make([]float64, 10, 10)
-	//renderDuration := func() {
-	//	durations = durations[1:len(durations)]
-	//	durations = append(durations, window.LastRenderDuration().Seconds())
-	//
-	//	avgDuration := float64(0)
-	//	for _, dur := range durations {
-	//		avgDuration += dur
-	//	}
-	//	avgDuration /= float64(len(durations))
-	//
-	//	text := fmt.Sprintf("%5.2fms", avgDuration*1000)
-	//	window.Grid().PrintAt(0, 2, text)
-	//}
-	//
-	//renderFontVariations := func() {
-	//	cell, _ := window.Grid().Cell(2, 4)
-	//	if cell == nil {
-	//		return
-	//	}
-	//	cell.Rune = 'F'
-	//
-	//	cell, _ = window.Grid().Cell(3, 4)
-	//	if cell == nil {
-	//		return
-	//	}
-	//	cell.Rune = 'F'
-	//	cell.Bold = true
-	//	cell.Fg = dull.NewColor(0.7, 0.0, 0.2, 1.0)
-	//	cell.Bg = dull.NewColor(0.7, 0.7, 0.9, 1.0)
-	//
-	//	cell, _ = window.Grid().Cell(4, 4)
-	//	if cell == nil {
-	//		return
-	//	}
-	//	cell.Rune = 'F'
-	//	cell.Italic = true
-	//
-	//	cell, _ = window.Grid().Cell(5, 4)
-	//	if cell == nil {
-	//		return
-	//	}
-	//	cell.Rune = 'F'
-	//	cell.Bold = true
-	//	cell.Italic = true
-	//}
-	//
-	//renderAdditionalVariations := func() {
-	//	for r, rune := range "Mighty Oaks." {
-	//		cell, err := window.Grid().Cell(2+r, 6)
-	//		if err != nil {
-	//			return
-	//		}
-	//
-	//		cell.Rune = rune
-	//		cell.Underline = true
-	//	}
-	//
-	//	for r, rune := range "Mighty Oaks." {
-	//		cell, err := window.Grid().Cell(2+r, 7)
-	//		if err != nil {
-	//			return
-	//		}
-	//
-	//		cell.Rune = rune
-	//		cell.Strikethrough = true
-	//	}
-	//}
-	//
-	//renderAll := func(columns, rows int) {
-	//	text := fmt.Sprintf("%3d %3d", columns, rows)
-	//
-	//	window.Grid().PrintAt(0, 0, text)
-	//
-	//	column := columns - len(text)
-	//	row := rows - 1
-	//	window.Grid().PrintAt(column, row, text)
-	//
-	//	renderDuration()
-	//	renderFontVariations()
-	//	renderAdditionalVariations()
-	//
-	//	//cell, _ := window.Grid().Cell(1, 1)
-	//	//cell.Rune ='\u2295'
-	//	//cell.Invert = true
-	//}
-
 	window.SetTitle("dull - simple")
 	window.SetPosition(200, 200)
 	window.Show()
+
+	window.SetKeyCallback(func(key dull.Key, action dull.Action, mods dull.ModifierKey) {
+		if action == dull.Release {
+			return
+		}
+
+		if key == dull.KeyLeft {
+			cursor1.Column--
+			cursor2.Column--
+			window.Draw()
+		}
+		if key == dull.KeyRight {
+			cursor1.Column++
+			cursor2.Column++
+			window.Draw()
+		}
+		if key == dull.KeyUp {
+			cursor1.Row--
+			cursor2.Row--
+			window.Draw()
+		}
+		if key == dull.KeyDown {
+			cursor1.Row++
+			cursor2.Row++
+			window.Draw()
+		}
+	})
 
 	//window.SetGridSizeCallback(renderAll)
 
