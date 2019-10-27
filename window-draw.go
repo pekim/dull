@@ -366,5 +366,15 @@ func (w *Window) DrawCursor(cursor *Cursor) {
 				Right:  1.0,
 			},
 			cursor.Color)
+	case CursorTypeBar:
+		w.DrawCellSolid(
+			cursor.Column, cursor.Row,
+			geometry.RectFloat{
+				Top:    0,
+				Bottom: 1.0,
+				Left:   -0.1,
+				Right:  0.1,
+			},
+			cursor.Color)
 	}
 }

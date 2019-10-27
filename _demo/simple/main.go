@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/pekim/dull"
+	"time"
 )
 
 func initialise(app *dull.Application, err error) {
@@ -71,6 +72,13 @@ func initialise(app *dull.Application, err error) {
 	}
 
 	cursor2 := &dull.Cursor{
+		Column: 6,
+		Row:    10,
+		Color:  dull.NewColor(1.0, 0.3, 0.2, 1.0),
+		Type:   dull.CursorTypeBar,
+	}
+
+	cursor3 := &dull.Cursor{
 		Column: 1,
 		Row:    6,
 		Color:  dull.NewColor(1.0, 0.0, 0.0, 1.0),
@@ -80,8 +88,9 @@ func initialise(app *dull.Application, err error) {
 	cursors := dull.CursorsNew(window, draw)
 	cursors.Add(cursor1)
 	cursors.Add(cursor2)
+	cursors.Add(cursor3)
 
-	//cursors.Blink(500 * time.Millisecond)
+	cursors.Blink(300 * time.Millisecond)
 	//time.AfterFunc(3*time.Second, cursors.StopBlink)
 	//time.AfterFunc(6*time.Second, func() {
 	//	cursors.Blink(200 * time.Millisecond)
