@@ -6,21 +6,17 @@ import (
 
 // Cursors represents a collection of cursors that a window may render.
 type Cursors struct {
-	cursors      []*Cursor
-	drawCallback DrawCallback
-	window       *Window
-	visible      bool
-	blinkDone    chan bool
+	cursors   []*Cursor
+	window    *Window
+	visible   bool
+	blinkDone chan bool
 }
 
-func CursorsNew(window *Window, drawCallback DrawCallback) *Cursors {
+func CursorsNew(window *Window) *Cursors {
 	cc := &Cursors{
-		drawCallback: drawCallback,
-		window:       window,
-		visible:      true,
+		window:  window,
+		visible: true,
 	}
-
-	window.SetDrawCallback(cc.draw)
 
 	return cc
 }
@@ -64,9 +60,7 @@ func (cc *Cursors) Remove(cursor *Cursor) {
 	cc.cursors = cc.cursors[:n]
 }
 
-func (cc *Cursors) draw(columns, rows int) {
-	cc.drawCallback(columns, rows)
-
+func (cc *Cursors) Draw() {
 	if !cc.visible {
 		return
 	}

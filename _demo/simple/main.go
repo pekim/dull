@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/pekim/dull"
 	"time"
+
+	"github.com/pekim/dull"
 )
 
 func initialise(app *dull.Application, err error) {
@@ -23,8 +24,40 @@ func initialise(app *dull.Application, err error) {
 		panic(err)
 	}
 
-	//window.SetDrawCallback(func(columns, rows int) {
-	draw := func(columns, rows int) {
+	cursor1 := &dull.Cursor{
+		Column: 10,
+		Row:    10,
+		Color:  dull.NewColor(0.5, 0.3, 0.2, 0.7),
+		Type:   dull.CursorTypeBlock,
+	}
+
+	cursor2 := &dull.Cursor{
+		Column: 6,
+		Row:    10,
+		Color:  dull.NewColor(1.0, 0.3, 0.2, 1.0),
+		Type:   dull.CursorTypeBar,
+	}
+
+	cursor3 := &dull.Cursor{
+		Column: 1,
+		Row:    6,
+		Color:  dull.NewColor(1.0, 0.0, 0.0, 1.0),
+		Type:   dull.CursorTypeUnder,
+	}
+
+	cursors := dull.CursorsNew(window)
+	cursors.Add(cursor1)
+	cursors.Add(cursor2)
+	cursors.Add(cursor3)
+
+	cursors.Blink(300 * time.Millisecond)
+	//time.AfterFunc(3*time.Second, cursors.StopBlink)
+	//time.AfterFunc(6*time.Second, func() {
+	//	cursors.Blink(200 * time.Millisecond)
+	//})
+
+	window.SetDrawCallback(func(columns, rows int) {
+		// draw := func(columns, rows int) {
 		window.DrawCell(&dull.Cell{
 			Rune: 'A',
 			Fg:   black,
@@ -62,39 +95,9 @@ func initialise(app *dull.Application, err error) {
 			window.DrawCell(&dull.Cell{Rune: r, Fg: black, Bg: white}, 1+i, 11)
 		}
 		window.DrawBorder(1, 10, 1+len("Hello world!")-1, 11, dull.NewColor(1.0, 0.2, 0.2, 0.7))
-	}
 
-	cursor1 := &dull.Cursor{
-		Column: 10,
-		Row:    10,
-		Color:  dull.NewColor(0.5, 0.3, 0.2, 0.7),
-		Type:   dull.CursorTypeBlock,
-	}
-
-	cursor2 := &dull.Cursor{
-		Column: 6,
-		Row:    10,
-		Color:  dull.NewColor(1.0, 0.3, 0.2, 1.0),
-		Type:   dull.CursorTypeBar,
-	}
-
-	cursor3 := &dull.Cursor{
-		Column: 1,
-		Row:    6,
-		Color:  dull.NewColor(1.0, 0.0, 0.0, 1.0),
-		Type:   dull.CursorTypeUnder,
-	}
-
-	cursors := dull.CursorsNew(window, draw)
-	cursors.Add(cursor1)
-	cursors.Add(cursor2)
-	cursors.Add(cursor3)
-
-	cursors.Blink(300 * time.Millisecond)
-	//time.AfterFunc(3*time.Second, cursors.StopBlink)
-	//time.AfterFunc(6*time.Second, func() {
-	//	cursors.Blink(200 * time.Millisecond)
-	//})
+		cursors.Draw()
+	})
 
 	//ticker := time.NewTicker(1 * time.Second)
 	//go func() {
