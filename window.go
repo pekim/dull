@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/go-gl/gl/v3.3-core/gl"
-	"github.com/go-gl/glfw/v3.2/glfw"
+	"github.com/go-gl/glfw/v3.3/glfw"
 	"github.com/pekim/dull/internal/font"
 	"github.com/pkg/errors"
 )
@@ -322,7 +322,7 @@ func (w *Window) setKeybindings() {
 	}
 }
 
-func (w *Window) GetClipboard() (string, error) {
+func (w *Window) GetClipboard() string {
 	return w.glfwWindow.GetClipboardString()
 }
 

@@ -5,7 +5,7 @@ import (
 	"sync"
 
 	"github.com/faiface/mainthread"
-	"github.com/go-gl/glfw/v3.2/glfw"
+	"github.com/go-gl/glfw/v3.3/glfw"
 )
 
 // Application represents a dull application and its windows.

@@ -1,6 +1,6 @@
 package dull
 
-import "github.com/go-gl/glfw/v3.2/glfw"
+import "github.com/go-gl/glfw/v3.3/glfw"
 
 // The types and constants in this file are based on the corresponding
 // definitions in github.com/go-gl/glfw/v3.2/glfw/input.go .
