@@ -12,14 +12,14 @@ package dull
 //// Cells are addressed at a column and row.
 //// An alternative point of view would be x and y.
 ////
-//// Column and row indexes are zero-based.
+//// column and row indexes are zero-based.
 //type CellGrid struct {
 //	width  int
 //	height int
 //	cells  []*Cell
 //}
 //
-//func NewCellGrid(width, height int, bg, fg Color) *CellGrid {
+//func NewCellGrid(width, height int, bg, fg color) *CellGrid {
 //	g := &CellGrid{
 //		width:  width,
 //		height: height,

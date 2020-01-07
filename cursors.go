@@ -10,6 +10,7 @@ type Cursors struct {
 	window    *Window
 	visible   bool
 	blinkDone chan bool
+	lastMove  time.Time
 }
 
 func CursorsNew(window *Window) *Cursors {
@@ -31,6 +32,11 @@ func (cc *Cursors) Blink(period time.Duration) {
 				cc.visible = true
 				return
 			case <-ticker.C:
+				sinceLastMove := time.Now().Sub(cc.lastMove)
+				if sinceLastMove < time.Second/5 {
+					continue
+				}
+
 				cc.visible = !cc.visible
 				cc.window.Draw()
 			}
@@ -44,8 +50,16 @@ func (cc *Cursors) StopBlink() {
 }
 
 // Add adds a cursor.
-func (cc *Cursors) Add(cursor *Cursor) {
+func (cc *Cursors) New(typ CursorType, color Color) *Cursor {
+	cursor := &Cursor{
+		cursors: cc,
+		typ:     typ,
+		color:   color,
+	}
+
 	cc.cursors = append(cc.cursors, cursor)
+
+	return cursor
 }
 
 // Remove removes a cursor.
@@ -68,4 +82,9 @@ func (cc *Cursors) Draw() {
 	for _, c := range cc.cursors {
 		cc.window.DrawCursor(c)
 	}
+}
+
+func (cc *Cursors) keepVisible() {
+	cc.visible = true
+	cc.lastMove = time.Now()
 }

@@ -344,37 +344,37 @@ func (w *Window) Capture() image.Image {
 }
 
 func (w *Window) DrawCursor(cursor *Cursor) {
-	switch cursor.Type {
+	switch cursor.typ {
 	case CursorTypeBlock:
 		w.DrawCellSolid(
-			cursor.Column, cursor.Row,
+			cursor.column, cursor.row,
 			geometry.RectFloat{
 				Top:    0,
 				Bottom: 1.0,
 				Left:   0,
 				Right:  1.0,
 			},
-			cursor.Color)
+			cursor.color)
 
 	case CursorTypeUnder:
 		w.DrawCellSolid(
-			cursor.Column, cursor.Row,
+			cursor.column, cursor.row,
 			geometry.RectFloat{
 				Top:    0.9,
 				Bottom: 1.0,
 				Left:   0,
 				Right:  1.0,
 			},
-			cursor.Color)
+			cursor.color)
 	case CursorTypeBar:
 		w.DrawCellSolid(
-			cursor.Column, cursor.Row,
+			cursor.column, cursor.row,
 			geometry.RectFloat{
 				Top:    0,
 				Bottom: 1.0,
 				Left:   -0.1,
 				Right:  0.1,
 			},
-			cursor.Color)
+			cursor.color)
 	}
 }

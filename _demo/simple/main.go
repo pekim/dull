@@ -24,31 +24,16 @@ func initialise(app *dull.Application, err error) {
 		panic(err)
 	}
 
-	cursor1 := &dull.Cursor{
-		Column: 10,
-		Row:    10,
-		Color:  dull.NewColor(0.5, 0.3, 0.2, 0.7),
-		Type:   dull.CursorTypeBlock,
-	}
-
-	cursor2 := &dull.Cursor{
-		Column: 6,
-		Row:    10,
-		Color:  dull.NewColor(1.0, 0.3, 0.2, 1.0),
-		Type:   dull.CursorTypeBar,
-	}
-
-	cursor3 := &dull.Cursor{
-		Column: 1,
-		Row:    6,
-		Color:  dull.NewColor(1.0, 0.0, 0.0, 1.0),
-		Type:   dull.CursorTypeUnder,
-	}
-
 	cursors := dull.CursorsNew(window)
-	cursors.Add(cursor1)
-	cursors.Add(cursor2)
-	cursors.Add(cursor3)
+
+	cursor1 := cursors.New(dull.CursorTypeBlock, dull.NewColor(0.5, 0.3, 0.2, 0.7))
+	cursor1.SetPosition(10, 10)
+
+	cursor2 := cursors.New(dull.CursorTypeBar, dull.NewColor(1.0, 0.3, 0.2, 1.0))
+	cursor2.SetPosition(6, 10)
+
+	cursor3 := cursors.New(dull.CursorTypeUnder, dull.NewColor(1.0, 0.0, 0.0, 1.0))
+	cursor3.SetPosition(1, 6)
 
 	cursors.Blink(300 * time.Millisecond)
 	//time.AfterFunc(3*time.Second, cursors.StopBlink)
@@ -103,7 +88,7 @@ func initialise(app *dull.Application, err error) {
 	//go func() {
 	//	for {
 	//		<-ticker.C
-	//		cursor1.Column--
+	//		cursor1.column--
 	//		window.Draw()
 	//	}
 	//}()
@@ -118,23 +103,23 @@ func initialise(app *dull.Application, err error) {
 		}
 
 		if key == dull.KeyLeft {
-			cursor1.Column--
-			cursor2.Column--
+			cursor1.SetColumn(cursor1.Column() - 1)
+			cursor2.SetColumn(cursor1.Column() - 1)
 			window.Draw()
 		}
 		if key == dull.KeyRight {
-			cursor1.Column++
-			cursor2.Column++
+			cursor1.SetColumn(cursor1.Column() + 1)
+			cursor2.SetColumn(cursor1.Column() + 1)
 			window.Draw()
 		}
 		if key == dull.KeyUp {
-			cursor1.Row--
-			cursor2.Row--
+			cursor1.SetRow(cursor1.Row() - 1)
+			cursor2.SetRow(cursor1.Row() - 1)
 			window.Draw()
 		}
 		if key == dull.KeyDown {
-			cursor1.Row++
-			cursor2.Row++
+			cursor1.SetRow(cursor1.Row() + 1)
+			cursor2.SetRow(cursor1.Row() + 1)
 			window.Draw()
 		}
 	})
