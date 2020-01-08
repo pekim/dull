@@ -126,7 +126,9 @@ func newWindow(application *Application, options *WindowOptions) (*Window, error
 		return nil, err
 	}
 
-	w.dpi, w.scale = w.getDpiAndScale()
+	scale, _ := w.glfwWindow.GetContentScale()
+	w.scale = float64(scale)
+	w.dpi = 96
 	w.setFontSize(0)
 
 	w.glfwWindow.SetKeyCallback(w.callKeyCallback)
@@ -182,17 +184,6 @@ func (w *Window) glInit() error {
 	gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
 
 	return nil
-}
-
-func (w *Window) getDpiAndScale() (float32, float64) {
-	monitor := glfw.GetPrimaryMonitor()
-	mode := monitor.GetVideoMode()
-	widthMm, _ := monitor.GetPhysicalSize()
-	dpi := float32(mode.Width) / float32(widthMm) * 25.4
-
-	scale, _ := w.glfwWindow.GetContentScale()
-
-	return dpi, float64(scale)
 }
 
 func (w *Window) setFontSize(delta float64) {
