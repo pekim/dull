@@ -246,6 +246,20 @@ func (w *Window) SetTitle(title string) {
 	w.glfwWindow.SetTitle(title)
 }
 
+// SetBg changes the window's background color.
+//
+// This function may only be called from the main thread.
+func (w *Window) SetBg(color Color) {
+	w.bg = color
+}
+
+// SetFg changes the window's foreground color.
+//
+// This function may only be called from the main thread.
+func (w *Window) SetFg(color Color) {
+	w.fg = color
+}
+
 // Destroy destroys the window, and removes it from the Application.
 //
 // This function may only be called from the main thread.
