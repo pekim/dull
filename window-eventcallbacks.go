@@ -144,3 +144,21 @@ func (w *Window) callCharCallback(_ *glfw.Window, char rune, mods glfw.ModifierK
 		w.draw()
 	}
 }
+
+// FocusCallback is a function for use with SetFocusCallback.
+type FocusCallback func(focused bool)
+
+// SetFocusCallback sets or clears a function to call when the window
+// gains or loses focus.
+//
+// To remove a previously set callback, pass nil for the callback.
+func (w *Window) SetFocusCallback(fn FocusCallback) {
+	w.focusCallback = fn
+}
+
+func (w *Window) callFocusCallback(_ *glfw.Window, focused bool) {
+	if w.focusCallback != nil {
+		w.focusCallback(focused)
+		w.draw()
+	}
+}

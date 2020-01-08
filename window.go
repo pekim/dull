@@ -71,6 +71,7 @@ type Window struct {
 	gridSizeCallback GridSizeCallback
 	keyCallback      KeyCallback
 	charCallback     CharCallback
+	focusCallback    FocusCallback
 }
 
 // WindowOptions is used when creating new windows to provide
@@ -131,6 +132,7 @@ func newWindow(application *Application, options *WindowOptions) (*Window, error
 
 	w.glfwWindow.SetKeyCallback(w.callKeyCallback)
 	w.glfwWindow.SetCharModsCallback(w.callCharCallback)
+	w.glfwWindow.SetFocusCallback(w.callFocusCallback)
 
 	w.glfwWindow.SetSizeCallback(func(_ *glfw.Window, width, height int) {
 		w.resized()
