@@ -9,6 +9,7 @@ type Cursors struct {
 	cursors   []*Cursor
 	window    *Window
 	visible   bool
+	hidden    bool
 	blinkDone chan bool
 	lastMove  time.Time
 }
@@ -32,6 +33,10 @@ func (cc *Cursors) Blink(period time.Duration) {
 				cc.visible = true
 				return
 			case <-ticker.C:
+				if cc.hidden {
+					continue
+				}
+
 				sinceLastMove := time.Now().Sub(cc.lastMove)
 				if sinceLastMove < time.Second/5 {
 					continue
@@ -87,4 +92,16 @@ func (cc *Cursors) Draw() {
 func (cc *Cursors) keepVisible() {
 	cc.visible = true
 	cc.lastMove = time.Now()
+}
+
+// Hide will result in cursors no longer being drawn.
+func (cc *Cursors) Hide() {
+	cc.visible = false
+	cc.hidden = true
+}
+
+// Show will result in cursors being drawn.
+func (cc *Cursors) Show() {
+	cc.visible = true
+	cc.hidden = false
 }
