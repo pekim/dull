@@ -3,7 +3,6 @@ package dull
 import (
 	"github.com/pekim/dull/geometry"
 	"github.com/pekim/dull/internal/textureatlas"
-	"math"
 	"time"
 
 	"github.com/go-gl/gl/v3.3-core/gl"
@@ -185,18 +184,15 @@ func (w *Window) glInit() error {
 	return nil
 }
 
-func (*Window) getDpiAndScale() (float32, float64) {
+func (w *Window) getDpiAndScale() (float32, float64) {
 	monitor := glfw.GetPrimaryMonitor()
 	mode := monitor.GetVideoMode()
 	widthMm, _ := monitor.GetPhysicalSize()
 	dpi := float32(mode.Width) / float32(widthMm) * 25.4
 
-	// Round down, to limit excesive scaling on high dpi screens.
-	scale := math.Floor(float64(dpi / 96))
-	// Ensure scaling is never less 1.
-	scale = math.Max(scale, 1.0)
+	scale, _ := w.glfwWindow.GetContentScale()
 
-	return dpi, scale
+	return dpi, float64(scale)
 }
 
 func (w *Window) setFontSize(delta float64) {
