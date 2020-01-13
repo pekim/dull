@@ -11,7 +11,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-const defaultFontSize = 16
+const defaultFontSize = 15
 const fontZoomDelta = 0.75
 
 type keybinding struct {
