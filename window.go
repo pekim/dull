@@ -81,6 +81,9 @@ type WindowOptions struct {
 
 	Bg *Color // default background color for cells
 	Fg *Color // default foreground color for cells
+
+	Iconified bool
+	Maximized bool
 }
 
 func (o *WindowOptions) applyDefaults() {
@@ -153,6 +156,13 @@ func (w *Window) createWindow(options *WindowOptions) error {
 	glfw.WindowHint(glfw.OpenGLForwardCompatible, glfw.True)
 	glfw.WindowHint(glfw.Resizable, glfw.True)
 	glfw.WindowHint(glfw.Visible, glfw.False)
+
+	if options.Iconified {
+		glfw.WindowHint(glfw.Iconified, glfw.True)
+	}
+	if options.Maximized {
+		glfw.WindowHint(glfw.Maximized, glfw.True)
+	}
 
 	glfwWindow, err := glfw.CreateWindow(options.Width, options.Height, "", nil, nil)
 	if err != nil {
