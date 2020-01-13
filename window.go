@@ -132,7 +132,7 @@ func newWindow(application *Application, options *WindowOptions) (*Window, error
 	w.setFontSize(0)
 
 	w.glfwWindow.SetKeyCallback(w.callKeyCallback)
-	w.glfwWindow.SetCharModsCallback(w.callCharCallback)
+	w.glfwWindow.SetCharCallback(w.callCharCallback)
 	w.glfwWindow.SetFocusCallback(w.callFocusCallback)
 
 	w.glfwWindow.SetSizeCallback(func(_ *glfw.Window, width, height int) {
