@@ -332,3 +332,18 @@ func (w *Window) GetClipboard() string {
 func (w *Window) SetClipboard(text string) {
 	w.glfwWindow.SetClipboardString(text)
 }
+
+// Iconify iconifies/minimizes the window.
+func (w *Window) Iconify() {
+	w.glfwWindow.Iconify()
+}
+
+// Maximize maximizes the window if it was previously not maximized.
+func (w *Window) Maximize() {
+	w.glfwWindow.Maximize()
+}
+
+// Restore restores the window, if it was previously iconified/minimized..
+func (w *Window) Restore() {
+	w.glfwWindow.Restore()
+}
