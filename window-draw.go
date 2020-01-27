@@ -77,62 +77,6 @@ func (w *Window) addBorderToVertices(border *Border) {
 	//w.drawTextureItemToQuad(rightLeft, topBottom, rightRight, bottomTop, textureItem, border.color)
 }
 
-func (w *Window) addCursorToVertices(cursor *Cursor) {
-	//if cursor.visible && cursor.typ == CursorTypeUnder || cursor.typ == CursorTypeBar {
-	//	cell, _ := w.grid.Cell(cursor.column, cursor.row)
-	//	if cell != nil {
-	//		if cursor.typ == CursorTypeBar {
-	//			w.addBarCursorToCellVertices(cell, cursor)
-	//		}
-	//		if cursor.typ == CursorTypeUnder {
-	//			w.addUnderCursorToCellVertices(cell, cursor)
-	//		}
-	//	}
-	//}
-}
-
-func (w *Window) addBarCursorToCellVertices(cell *Cell, cursor *Cursor) {
-	//cellWidth := w.viewportCellWidth
-	//cellHeight := w.viewportCellHeight
-	//width := 0.15 * cellWidth
-	//
-	//left := float32(-1.0 + (float32(cursor.column) * cellWidth))
-	//if cursor.column == 0 {
-	//	// no need to adjust position
-	//} else if cursor.column == w.grid.width {
-	//	// move so that cursor is within the window
-	//	left -= width
-	//} else {
-	//	// span two cells; half the width in the previous cell
-	//	left -= width / 2
-	//}
-	//right := left + width
-	//
-	//top := float32(-1.0 + (float32(cursor.row) * cellHeight))
-	//bottom := float32(-1.0 + (float32(cursor.row+1) * cellHeight))
-	//
-	//textureItem := w.fontFamily.Regular.GetGlyph(textureatlas.Solid)
-	//
-	//w.drawTextureItemToQuad(left, top, right, bottom, textureItem, cursor.color)
-}
-
-func (w *Window) addUnderCursorToCellVertices(cell *Cell, cursor *Cursor) {
-	//cellWidth := w.viewportCellWidth
-	//cellHeight := w.viewportCellHeight
-	//
-	//thickness := 0.12 * cellHeight
-	//
-	//left := float32(-1.0 + (float32(cursor.column) * cellWidth))
-	//right := float32(-1.0 + (float32(cursor.column+1) * cellWidth))
-	//
-	//bottom := float32(-1.0 + (float32(cursor.row+1) * cellHeight))
-	//top := bottom - thickness
-	//
-	//textureItem := w.fontFamily.Regular.GetGlyph(textureatlas.Solid)
-	//
-	//w.drawTextureItemToQuad(left, top, right, bottom, textureItem, cursor.color)
-}
-
 func (w *Window) drawCells() {
 	// gl.BufferData panics if the length of the data is 0
 	if len(w.vertices) == 0 {
@@ -341,40 +285,4 @@ func (w *Window) Capture() image.Image {
 	img.Stride = stride
 
 	return img
-}
-
-func (w *Window) DrawCursor(cursor *Cursor) {
-	switch cursor.typ {
-	case CursorTypeBlock:
-		w.DrawCellSolid(
-			cursor.column, cursor.row,
-			geometry.RectFloat{
-				Top:    0,
-				Bottom: 1.0,
-				Left:   0,
-				Right:  1.0,
-			},
-			cursor.color)
-
-	case CursorTypeUnder:
-		w.DrawCellSolid(
-			cursor.column, cursor.row,
-			geometry.RectFloat{
-				Top:    0.9,
-				Bottom: 1.0,
-				Left:   0,
-				Right:  1.0,
-			},
-			cursor.color)
-	case CursorTypeBar:
-		w.DrawCellSolid(
-			cursor.column, cursor.row,
-			geometry.RectFloat{
-				Top:    0,
-				Bottom: 1.0,
-				Left:   -0.1,
-				Right:  0.1,
-			},
-			cursor.color)
-	}
 }
