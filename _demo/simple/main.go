@@ -1,8 +1,6 @@
 package main
 
 import (
-	"time"
-
 	"github.com/pekim/dull"
 )
 
@@ -23,23 +21,6 @@ func initialise(app *dull.Application, err error) {
 	if err != nil {
 		panic(err)
 	}
-
-	cursors := dull.CursorsNew(window)
-
-	cursor1 := cursors.New(dull.CursorTypeBlock, dull.NewColor(0.5, 0.3, 0.2, 0.7))
-	cursor1.SetPosition(10, 10)
-
-	cursor2 := cursors.New(dull.CursorTypeBar, dull.NewColor(1.0, 0.3, 0.2, 1.0))
-	cursor2.SetPosition(6, 10)
-
-	cursor3 := cursors.New(dull.CursorTypeUnder, dull.NewColor(1.0, 0.0, 0.0, 1.0))
-	cursor3.SetPosition(1, 6)
-
-	cursors.Blink(300 * time.Millisecond)
-	//time.AfterFunc(3*time.Second, cursors.StopBlink)
-	//time.AfterFunc(6*time.Second, func() {
-	//	cursors.Blink(200 * time.Millisecond)
-	//})
 
 	window.SetDrawCallback(func(columns, rows int) {
 		// draw := func(columns, rows int) {
@@ -79,9 +60,6 @@ func initialise(app *dull.Application, err error) {
 			window.DrawCell(&dull.Cell{Rune: r, Fg: black, Bg: white}, 1+i, 10)
 			window.DrawCell(&dull.Cell{Rune: r, Fg: black, Bg: white}, 1+i, 11)
 		}
-		window.DrawBorder(1, 10, 1+len("Hello world!")-1, 11, dull.NewColor(1.0, 0.2, 0.2, 0.7))
-
-		cursors.Draw()
 	})
 
 	//ticker := time.NewTicker(1 * time.Second)
@@ -96,33 +74,6 @@ func initialise(app *dull.Application, err error) {
 	window.SetTitle("dull - simple")
 	window.SetPosition(200, 200)
 	window.Show()
-
-	window.SetKeyCallback(func(key dull.Key, action dull.Action, mods dull.ModifierKey) {
-		if action == dull.Release {
-			return
-		}
-
-		if key == dull.KeyLeft {
-			cursor1.SetColumn(cursor1.Column() - 1)
-			cursor2.SetColumn(cursor1.Column() - 1)
-			window.Draw()
-		}
-		if key == dull.KeyRight {
-			cursor1.SetColumn(cursor1.Column() + 1)
-			cursor2.SetColumn(cursor1.Column() + 1)
-			window.Draw()
-		}
-		if key == dull.KeyUp {
-			cursor1.SetRow(cursor1.Row() - 1)
-			cursor2.SetRow(cursor1.Row() - 1)
-			window.Draw()
-		}
-		if key == dull.KeyDown {
-			cursor1.SetRow(cursor1.Row() + 1)
-			cursor2.SetRow(cursor1.Row() + 1)
-			window.Draw()
-		}
-	})
 
 	//window.SetGridSizeCallback(renderAll)
 

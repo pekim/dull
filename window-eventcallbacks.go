@@ -6,8 +6,8 @@ import (
 )
 
 // DrawCallback is a function that is called when it is time to draw a window.
-// The application show call drawing functions, such as DrawCell, DrawCursor,
-// and DrawBorder.
+// The application show call drawing functions, such as DrawCell, DrawCellSolid,
+// and DrawCellsSolid.
 //
 // See SetDrawCallback.
 type DrawCallback func(columns, rows int)

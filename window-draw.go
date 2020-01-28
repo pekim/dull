@@ -45,38 +45,6 @@ func (w *Window) draw() {
 	//fmt.Printf("%.1fms\n", w.lastRenderDuration.Seconds()*1000)
 }
 
-func (w *Window) addBorderToVertices(border *Border) {
-	//cellWidth := w.viewportCellWidth
-	//cellHeight := w.viewportCellHeight
-	//
-	//thicknessVertical := 0.08 * cellHeight
-	//thicknessVerticalPixels := float32(w.height) * (thicknessVertical / 2.0)
-	//thicknessHorizontal := (thicknessVerticalPixels * 2.0) / float32(w.width)
-	//
-	//topTop := float32(-1.0 + (float32(border.topRow) * cellHeight))
-	//topBottom := topTop + thicknessVertical
-	//
-	//bottomBottom := float32(-1.0 + (float32(border.bottomRow+1) * cellHeight))
-	//bottomTop := bottomBottom - thicknessVertical
-	//
-	//leftLeft := float32(-1.0 + (float32(border.leftColumn) * cellWidth))
-	//leftRight := leftLeft + thicknessHorizontal
-	//
-	//rightRight := float32(-1.0 + (float32(border.rightColumn+1) * cellWidth))
-	//rightLeft := rightRight - thicknessHorizontal
-	//
-	//textureItem := w.fontFamily.Regular.GetGlyph(textureatlas.Solid)
-	//
-	//// top line
-	//w.drawTextureItemToQuad(leftLeft, topTop, rightRight, topBottom, textureItem, border.color)
-	//// bottom line
-	//w.drawTextureItemToQuad(leftLeft, bottomTop, rightRight, bottomBottom, textureItem, border.color)
-	//// left line
-	//w.drawTextureItemToQuad(leftLeft, topBottom, leftRight, bottomTop, textureItem, border.color)
-	//// right line
-	//w.drawTextureItemToQuad(rightLeft, topBottom, rightRight, bottomTop, textureItem, border.color)
-}
-
 func (w *Window) drawCells() {
 	// gl.BufferData panics if the length of the data is 0
 	if len(w.vertices) == 0 {
@@ -205,55 +173,6 @@ func (w *Window) DrawCellsSolid(rect geometry.RectFloat, colour Color) {
 
 func (w *Window) drawCellBackground(column, row int, colour Color) {
 	w.DrawCellSolid(column, row, geometry.RectFloat{0, 1.0, 0, 1.0}, colour)
-}
-
-func (w *Window) DrawBorder(left, top, right, bottom int, color Color) {
-	verticalLinesFraction := float32(0.15)
-	horizontalLinesFraction := w.viewportCellRatio * verticalLinesFraction
-	// top
-	w.DrawCellSolid(
-		left, top,
-		geometry.RectFloat{
-			Top:    0,
-			Bottom: horizontalLinesFraction,
-			Left:   0,
-			Right:  float32(right - left + 1),
-		},
-		color,
-	)
-	// bottom
-	w.DrawCellSolid(
-		left, bottom,
-		geometry.RectFloat{
-			Top:    1.0 - horizontalLinesFraction,
-			Bottom: 1.0,
-			Left:   0,
-			Right:  float32(right - left + 1),
-		},
-		color,
-	)
-	// left
-	w.DrawCellSolid(
-		left, top,
-		geometry.RectFloat{
-			Top:    0,
-			Bottom: float32(bottom - top + 1),
-			Left:   0,
-			Right:  verticalLinesFraction,
-		},
-		color,
-	)
-	// right
-	w.DrawCellSolid(
-		right, top,
-		geometry.RectFloat{
-			Top:    0,
-			Bottom: float32(bottom - top + 1),
-			Left:   1.0,
-			Right:  1 - verticalLinesFraction,
-		},
-		color,
-	)
 }
 
 func (w *Window) configureTextureUniform() {
