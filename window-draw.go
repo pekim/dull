@@ -174,6 +174,35 @@ func (w *Window) DrawCellSolid(column, row int, rect geometry.RectFloat, colour 
 	w.drawSolidQuad(destination, colour)
 }
 
+// DrawCellsSolid draws a rectangle of solid colour spanning some
+// or all of some cells.
+//
+// The rectangle dimensions represent the cells.
+//
+// 0,0 is the top left corner of the top left most cell.
+// 3,4 is the top left corner of the fourth cell in the fifth row.
+// 3,4 is also the bottom right corner of the third cell in the fourth row.
+//
+// Fractional values may be used for positions not in the corners of cells.
+func (w *Window) DrawCellsSolid(rect geometry.RectFloat, colour Color) {
+	cellWidth := w.viewportCellWidth
+	cellHeight := w.viewportCellHeight
+
+	width := cellWidth * rect.Width()
+	height := cellHeight * rect.Height()
+
+	left := -1.0 + (rect.Left * cellWidth)
+	top := -1.0 + (rect.Top * cellHeight)
+	destination := geometry.RectFloat{
+		Left:   left,
+		Top:    top,
+		Right:  left + width,
+		Bottom: top + height,
+	}
+
+	w.drawSolidQuad(destination, colour)
+}
+
 func (w *Window) drawCellBackground(column, row int, colour Color) {
 	w.DrawCellSolid(column, row, geometry.RectFloat{0, 1.0, 0, 1.0}, colour)
 }
