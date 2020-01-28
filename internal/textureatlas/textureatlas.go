@@ -2,7 +2,7 @@ package textureatlas
 
 import (
 	"fmt"
-	"github.com/pekim/dull/internal/geometry"
+	"github.com/pekim/dull/geometry"
 	"math"
 
 	"github.com/go-gl/gl/v3.3-core/gl"

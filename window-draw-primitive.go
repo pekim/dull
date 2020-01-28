@@ -1,7 +1,7 @@
 package dull
 
 import (
-	"github.com/pekim/dull/internal/geometry"
+	"github.com/pekim/dull/geometry"
 	"github.com/pekim/dull/internal/textureatlas"
 )
 

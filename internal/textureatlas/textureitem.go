@@ -1,6 +1,8 @@
 package textureatlas
 
-import "github.com/pekim/dull/internal/geometry"
+import (
+	"github.com/pekim/dull/geometry"
+)
 
 type TextureItem struct {
 	key    string
