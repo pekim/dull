@@ -43,7 +43,7 @@ func (w *Window) callGridSizeCallback() {
 }
 
 // KeyCallback is a function for use with SetKeyCallback.
-type KeyCallback func(key Key, action Action, mods ModifierKey)
+type KeyCallback func(key Key, action Action, mods ModifierKey) bool
 
 // SetKeyCallback sets or clears a function to call when a key is
 // pressed, repeated or released.
@@ -63,8 +63,11 @@ func (w *Window) callKeyCallback(_ *glfw.Window,
 	w.handleKeyEvent(Key(key), Action(action), ModifierKey(mods))
 
 	if w.keyCallback != nil {
-		w.keyCallback(Key(key), Action(action), ModifierKey(mods))
-		w.draw()
+		drawRequired := w.keyCallback(Key(key), Action(action), ModifierKey(mods))
+
+		if drawRequired {
+			w.draw()
+		}
 	}
 }
 
@@ -124,7 +127,7 @@ func (w *Window) ToggleFullscreen() {
 }
 
 // CharCallback is a function for use with SetCharCallback.
-type CharCallback func(char rune)
+type CharCallback func(char rune) bool
 
 // SetCharCallback sets or clears a function to call when a character
 // is input.
@@ -140,13 +143,16 @@ func (w *Window) SetCharCallback(fn CharCallback) {
 
 func (w *Window) callCharCallback(_ *glfw.Window, char rune) {
 	if w.charCallback != nil && !w.blockCharEvents {
-		w.charCallback(char)
-		w.draw()
+		drawRequired := w.charCallback(char)
+
+		if drawRequired {
+			w.draw()
+		}
 	}
 }
 
 // FocusCallback is a function for use with SetFocusCallback.
-type FocusCallback func(focused bool)
+type FocusCallback func(focused bool) bool
 
 // SetFocusCallback sets or clears a function to call when the window
 // gains or loses focus.
@@ -158,7 +164,10 @@ func (w *Window) SetFocusCallback(fn FocusCallback) {
 
 func (w *Window) callFocusCallback(_ *glfw.Window, focused bool) {
 	if w.focusCallback != nil {
-		w.focusCallback(focused)
-		w.draw()
+		drawRequired := w.focusCallback(focused)
+
+		if drawRequired {
+			w.draw()
+		}
 	}
 }
