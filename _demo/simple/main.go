@@ -22,20 +22,20 @@ func initialise(app *dull.Application, err error) {
 		panic(err)
 	}
 
-	window.SetDrawCallback(func(columns, rows int) {
+	window.SetDrawCallback(func(d dull.Drawer, columns, rows int) {
 		// draw := func(columns, rows int) {
-		window.DrawCell(&dull.Cell{
+		d.DrawCell(&dull.Cell{
 			Rune: 'A',
 			Fg:   black,
 			Bg:   green,
 		}, 0, 0)
 
-		window.DrawCell(&dull.Cell{
+		d.DrawCell(&dull.Cell{
 			Rune: 'A',
 			Fg:   white,
 			Bg:   red,
 		}, 1, 1)
-		window.DrawCell(&dull.Cell{
+		d.DrawCell(&dull.Cell{
 			Rune: 'g',
 			Fg:   red,
 			Bg:   green,
@@ -43,22 +43,22 @@ func initialise(app *dull.Application, err error) {
 
 		for i, r := range "Hello world!" {
 			row := 3
-			window.DrawCell(&dull.Cell{Rune: r, Fg: black, Bg: white, Bold: false, Italic: false}, 1+i, row+0)
-			window.DrawCell(&dull.Cell{Rune: r, Fg: black, Bg: white, Bold: true, Italic: false}, 1+i, row+1)
-			window.DrawCell(&dull.Cell{Rune: r, Fg: black, Bg: white, Bold: false, Italic: true}, 1+i, row+2)
-			window.DrawCell(&dull.Cell{Rune: r, Fg: black, Bg: white, Bold: true, Italic: true}, 1+i, row+3)
+			d.DrawCell(&dull.Cell{Rune: r, Fg: black, Bg: white, Bold: false, Italic: false}, 1+i, row+0)
+			d.DrawCell(&dull.Cell{Rune: r, Fg: black, Bg: white, Bold: true, Italic: false}, 1+i, row+1)
+			d.DrawCell(&dull.Cell{Rune: r, Fg: black, Bg: white, Bold: false, Italic: true}, 1+i, row+2)
+			d.DrawCell(&dull.Cell{Rune: r, Fg: black, Bg: white, Bold: true, Italic: true}, 1+i, row+3)
 		}
 
 		for i, r := range "Hello world!" {
-			window.DrawCell(&dull.Cell{Rune: r, Fg: black, Bg: white, Strikethrough: true}, 1+i, 7)
+			d.DrawCell(&dull.Cell{Rune: r, Fg: black, Bg: white, Strikethrough: true}, 1+i, 7)
 		}
 		for i, r := range "Hello world!" {
-			window.DrawCell(&dull.Cell{Rune: r, Fg: black, Bg: white, Underline: true}, 1+i, 8)
+			d.DrawCell(&dull.Cell{Rune: r, Fg: black, Bg: white, Underline: true}, 1+i, 8)
 		}
 
 		for i, r := range "Hello world!" {
-			window.DrawCell(&dull.Cell{Rune: r, Fg: black, Bg: white}, 1+i, 10)
-			window.DrawCell(&dull.Cell{Rune: r, Fg: black, Bg: white}, 1+i, 11)
+			d.DrawCell(&dull.Cell{Rune: r, Fg: black, Bg: white}, 1+i, 10)
+			d.DrawCell(&dull.Cell{Rune: r, Fg: black, Bg: white}, 1+i, 11)
 		}
 	})
 
@@ -67,7 +67,7 @@ func initialise(app *dull.Application, err error) {
 	//	for {
 	//		<-ticker.C
 	//		cursor1.column--
-	//		window.Draw()
+	//		d.Draw()
 	//	}
 	//}()
 

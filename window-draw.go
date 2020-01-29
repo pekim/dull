@@ -25,7 +25,7 @@ func (w *Window) draw() {
 	w.vertices = w.vertices[:0]
 
 	if w.drawCallback != nil {
-		w.drawCallback(w.columns, w.rows)
+		w.drawCallback(w, w.columns, w.rows)
 	}
 
 	startTime := time.Now()
@@ -117,12 +117,6 @@ func (w *Window) drawRune(
 	w.drawTextureItemToQuad(destination, textureItem, colour)
 }
 
-// DrawCellSolid draws a rectangle of the desired color within
-// a cell.
-//
-// The rectangle described by rect dictates how much of the cell the solid
-// block of color fills. 0,0 represents the top left of the cell, and 1,1
-// the bottom right of the cell.
 func (w *Window) DrawCellSolid(column, row int, rect geometry.RectFloat, colour Color) {
 	cellWidth := w.viewportCellWidth
 	cellHeight := w.viewportCellHeight

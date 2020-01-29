@@ -10,7 +10,7 @@ import (
 // and DrawCellsSolid.
 //
 // See SetDrawCallback.
-type DrawCallback func(columns, rows int)
+type DrawCallback func(drawer Drawer, columns, rows int)
 
 // GridSizeCallback is a function for use with SetGridSizeCallback.
 type GridSizeCallback func(columns, rows int)
