@@ -3,7 +3,7 @@ package dull
 import "github.com/pekim/dull/geometry"
 
 type Drawer interface {
-	DrawCell(cell *Cell, column, row int)
+	DrawCell(cell *Cell, column, row float32)
 
 	// DrawCellSolid draws a rectangle of the desired color within
 	// a cell.
@@ -11,7 +11,7 @@ type Drawer interface {
 	// The rectangle described by rect dictates how much of the cell the solid
 	// block of color fills. 0,0 represents the top left of the cell, and 1,1
 	// the bottom right of the cell.
-	DrawCellSolid(column, row int, rect geometry.RectFloat, colour Color)
+	DrawCellSolid(column, row float32, rect geometry.RectFloat, colour Color)
 
 	// DrawCellsSolid draws a rectangle of solid colour spanning some
 	// or all of some cells.

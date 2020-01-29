@@ -71,17 +71,20 @@ func (w *Window) drawCells() {
 	gl.DeleteVertexArrays(1, &vao)
 }
 
-func (w *Window) DrawCell(cell *Cell, column, row int) {
-	w.drawCellBackground(column, row, cell.Bg)
-	w.drawRune(column, row, cell.Rune, cell.Fg, w.fontFamily.Font(cell.Bold, cell.Italic))
+func (w *Window) DrawCell(cell *Cell, column, row float32) {
+	columnI := int(column)
+	rowI := int(row)
+
+	w.drawCellBackground(columnI, rowI, cell.Bg)
+	w.drawRune(columnI, rowI, cell.Rune, cell.Fg, w.fontFamily.Font(cell.Bold, cell.Italic))
 
 	if cell.Strikethrough {
 		// COMBINING LONG STROKE OVERLAY
-		w.drawRune(column, row, '\u0336', cell.Fg, w.fontFamily.Font(cell.Bold, cell.Italic))
+		w.drawRune(columnI, rowI, '\u0336', cell.Fg, w.fontFamily.Font(cell.Bold, cell.Italic))
 	}
 	if cell.Underline {
 		// COMBINING LOW LINE
-		w.drawRune(column, row, '\u0332', cell.Fg, w.fontFamily.Font(cell.Bold, cell.Italic))
+		w.drawRune(columnI, rowI, '\u0332', cell.Fg, w.fontFamily.Font(cell.Bold, cell.Italic))
 	}
 }
 
@@ -117,15 +120,15 @@ func (w *Window) drawRune(
 	w.drawTextureItemToQuad(destination, textureItem, colour)
 }
 
-func (w *Window) DrawCellSolid(column, row int, rect geometry.RectFloat, colour Color) {
+func (w *Window) DrawCellSolid(column, row float32, rect geometry.RectFloat, colour Color) {
 	cellWidth := w.viewportCellWidth
 	cellHeight := w.viewportCellHeight
 
 	width := cellWidth
 	height := cellHeight
 
-	left := -1.0 + ((float32(column) + rect.Left) * cellWidth)
-	top := -1.0 + ((float32(row) + rect.Top) * cellHeight)
+	left := -1.0 + ((column + rect.Left) * cellWidth)
+	top := -1.0 + ((row + rect.Top) * cellHeight)
 	destination := geometry.RectFloat{
 		Left:   left,
 		Top:    top,
@@ -166,7 +169,7 @@ func (w *Window) DrawCellsSolid(rect geometry.RectFloat, colour Color) {
 }
 
 func (w *Window) drawCellBackground(column, row int, colour Color) {
-	w.DrawCellSolid(column, row, geometry.RectFloat{0, 1.0, 0, 1.0}, colour)
+	w.DrawCellSolid(float32(column), float32(row), geometry.RectFloat{0, 1.0, 0, 1.0}, colour)
 }
 
 func (w *Window) configureTextureUniform() {

@@ -42,23 +42,27 @@ func initialise(app *dull.Application, err error) {
 		}, 2, 1)
 
 		for i, r := range "Hello world!" {
-			row := 3
-			d.DrawCell(&dull.Cell{Rune: r, Fg: black, Bg: white, Bold: false, Italic: false}, 1+i, row+0)
-			d.DrawCell(&dull.Cell{Rune: r, Fg: black, Bg: white, Bold: true, Italic: false}, 1+i, row+1)
-			d.DrawCell(&dull.Cell{Rune: r, Fg: black, Bg: white, Bold: false, Italic: true}, 1+i, row+2)
-			d.DrawCell(&dull.Cell{Rune: r, Fg: black, Bg: white, Bold: true, Italic: true}, 1+i, row+3)
+			row := float32(3)
+			col := float32(i + 1)
+			d.DrawCell(&dull.Cell{Rune: r, Fg: black, Bg: white, Bold: false, Italic: false}, col, row+0)
+			d.DrawCell(&dull.Cell{Rune: r, Fg: black, Bg: white, Bold: true, Italic: false}, col, row+1)
+			d.DrawCell(&dull.Cell{Rune: r, Fg: black, Bg: white, Bold: false, Italic: true}, col, row+2)
+			d.DrawCell(&dull.Cell{Rune: r, Fg: black, Bg: white, Bold: true, Italic: true}, col, row+3)
 		}
 
 		for i, r := range "Hello world!" {
-			d.DrawCell(&dull.Cell{Rune: r, Fg: black, Bg: white, Strikethrough: true}, 1+i, 7)
+			col := float32(i + 1)
+			d.DrawCell(&dull.Cell{Rune: r, Fg: black, Bg: white, Strikethrough: true}, col, 7)
 		}
 		for i, r := range "Hello world!" {
-			d.DrawCell(&dull.Cell{Rune: r, Fg: black, Bg: white, Underline: true}, 1+i, 8)
+			col := float32(i + 1)
+			d.DrawCell(&dull.Cell{Rune: r, Fg: black, Bg: white, Underline: true}, col, 8)
 		}
 
 		for i, r := range "Hello world!" {
-			d.DrawCell(&dull.Cell{Rune: r, Fg: black, Bg: white}, 1+i, 10)
-			d.DrawCell(&dull.Cell{Rune: r, Fg: black, Bg: white}, 1+i, 11)
+			col := float32(i + 1)
+			d.DrawCell(&dull.Cell{Rune: r, Fg: black, Bg: white}, col, 10)
+			d.DrawCell(&dull.Cell{Rune: r, Fg: black, Bg: white}, col, 11)
 		}
 	})
 
