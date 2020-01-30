@@ -1,9 +1,15 @@
 package imui
 
-import "github.com/pekim/dull"
+import (
+	"github.com/pekim/dull"
+	"os"
+)
+
+type AppRender func(renderer *Renderer)
 
 type Renderer struct {
 	drawer     dull.Drawer
+	appRender  AppRender
 	event      *Event
 	id         Id
 	previousId Id
@@ -11,23 +17,36 @@ type Renderer struct {
 	rerender   bool
 }
 
-func Render(
+func NewRenderer(
 	drawer dull.Drawer,
-	event *Event,
-	appRender func(renderer *Renderer),
-) {
-
-	r := &Renderer{
-		drawer: drawer,
-		event:  event,
+	appRender AppRender,
+) *Renderer {
+	return &Renderer{
+		drawer:    drawer,
+		appRender: appRender,
 	}
+}
 
-	appRender(r)
+func (r *Renderer) reset() {
+	r.event = nil
+	r.id = emptyId
+	r.previousId = emptyId
+	r.rerender = false
+}
+
+func (r *Renderer) Render(event *Event) {
+	r.reset()
+	r.event = event
+	r.appRender(r)
 
 	if r.rerender {
 		r.rerender = false
 		r.event = nil
-		appRender(r)
+		r.appRender(r)
+
+		if r.rerender {
+			os.Stderr.WriteString("ERROR: 2nd rerender detected\n")
+		}
 	}
 }
 
