@@ -2,23 +2,23 @@ package imui
 
 import "github.com/pekim/dull"
 
-type Event struct {
+type KeyEvent struct {
 	key      dull.Key
 	mod      dull.ModifierKey
 	noBubble bool
 }
 
-func NewEvent(key dull.Key, mod dull.ModifierKey) *Event {
-	return &Event{
+func newEvent(key dull.Key, mod dull.ModifierKey) *KeyEvent {
+	return &KeyEvent{
 		key: key,
 		mod: mod,
 	}
 }
 
-func (e *Event) Detail() (dull.Key, dull.ModifierKey) {
+func (e *KeyEvent) Detail() (dull.Key, dull.ModifierKey) {
 	return e.key, e.mod
 }
 
-func (e *Event) PreventBubble() {
+func (e *KeyEvent) PreventBubble() {
 	e.noBubble = true
 }

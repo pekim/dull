@@ -21,8 +21,7 @@ func (w *Window) draw() {
 		return
 	}
 
-	// empty vertices
-	w.vertices = w.vertices[:0]
+	w.Clear()
 
 	if w.drawCallback != nil {
 		w.drawCallback(w, w.columns, w.rows)
@@ -45,6 +44,11 @@ func (w *Window) draw() {
 	//fmt.Printf("%.1fms\n", w.lastRenderDuration.Seconds()*1000)
 }
 
+func (w *Window) Clear() {
+	// empty vertices
+	w.vertices = w.vertices[:0]
+}
+
 func (w *Window) drawCells() {
 	// gl.BufferData panics if the length of the data is 0
 	if len(w.vertices) == 0 {
@@ -64,7 +68,7 @@ func (w *Window) drawCells() {
 
 	gl.BufferData(gl.ARRAY_BUFFER, len(w.vertices)*sizeofGlFloat, gl.Ptr(w.vertices), gl.STREAM_DRAW)
 
-	// Render quads (each of which is 2 triangles)
+	// render quads (each of which is 2 triangles)
 	gl.DrawArrays(gl.TRIANGLES, 0, int32(len(w.vertices)/4))
 
 	gl.DeleteBuffers(1, &vbo)

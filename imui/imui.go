@@ -9,9 +9,9 @@ import (
 type AppRender func(renderer *Renderer)
 
 type Renderer struct {
-	drawer     dull.Drawer
+	window     *dull.Window
 	appRender  AppRender
-	event      *Event
+	keyEvent   *KeyEvent
 	id         Id
 	previousId Id
 	focusedId  Id
@@ -19,54 +19,79 @@ type Renderer struct {
 }
 
 func NewRenderer(
-	drawer dull.Drawer,
+	window *dull.Window,
 	appRender AppRender,
 ) *Renderer {
-	return &Renderer{
-		drawer:    drawer,
+	r := &Renderer{
+		window:    window,
 		appRender: appRender,
 	}
+
+	r.window.SetDrawCallback(r.drawCallback)
+	r.window.SetKeyCallback(r.keyEventCallback)
+
+	return r
 }
 
 func (r *Renderer) reset() {
-	r.event = nil
+	r.Drawer().Clear()
 	r.id = emptyId
 	r.previousId = emptyId
 	r.rerender = false
 }
 
-func (r *Renderer) Render(event *Event) {
+func (r *Renderer) keyEventCallback(key dull.Key, action dull.Action, mods dull.ModifierKey) bool {
+	if action == dull.Release {
+		return false
+	}
+
+	r.keyEvent = newEvent(key, mods)
+	return true
+}
+
+func (r *Renderer) drawCallback(drawer dull.Drawer, columns, rows int) {
 	r.reset()
-	r.event = event
+	fmt.Println("render", r.keyEvent)
 	r.appRender(r)
 
 	if r.rerender {
 		r.rerender = false
-		r.event = nil
+		r.keyEvent = nil
 		r.appRender(r)
 
 		if r.rerender {
 			os.Stderr.WriteString("ERROR: 2nd rerender detected\n")
 		}
 	}
+
+	r.keyEvent = nil
 }
 
 func (r *Renderer) Drawer() dull.Drawer {
-	return r.drawer
+	return r.window
 }
 
-func (r *Renderer) Event() *Event {
-	return r.event
+func (r *Renderer) Event() *KeyEvent {
+	return r.keyEvent
 }
 
 func (r *Renderer) Widget(id Id, render func(renderer *Renderer)) {
 	currentId := r.id
 	r.id = r.id.appendPath(id)
+	fmt.Println(r.id)
 
 	if id != emptyId && r.focusedId == emptyId {
 		// Nothing has focus and this widget is focusable, so grab focus.
 		r.focusedId = r.id
 		fmt.Println("grab focus", r.id)
+	}
+
+	if r.Event() != nil {
+		key, _ := r.Event().Detail()
+		if key == dull.KeyTab {
+			r.FocusNext()
+			r.keyEvent = nil
+		}
 	}
 
 	render(r)

@@ -3,6 +3,9 @@ package dull
 import "github.com/pekim/dull/geometry"
 
 type Drawer interface {
+	// Clear discards pending drawing instructions (vertexes).
+	Clear()
+
 	DrawCell(cell *Cell, column, row float32)
 
 	// DrawCellSolid draws a rectangle of the desired color within
