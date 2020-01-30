@@ -44,19 +44,19 @@ func main() {
 }
 
 func (a *testApp) render(renderer *imui.Renderer) {
-	renderer.Widget("one", func(renderer *imui.Renderer) {
+	renderer.Focusable("one", func(renderer *imui.Renderer) {
 		button(renderer, " Qaz ", 5, 4)
 	})
 
-	renderer.Widget("two", func(renderer *imui.Renderer) {
+	renderer.Focusable("two", func(renderer *imui.Renderer) {
 		button(renderer, " qwerty ", 20, 4)
 	})
 
-	renderer.Widget("three", func(renderer *imui.Renderer) {
+	renderer.Focusable("three", func(renderer *imui.Renderer) {
 		button(renderer, " another ", 35, 4)
 	})
 
-	renderer.Widget("four", func(renderer *imui.Renderer) {
+	renderer.Focusable("four", func(renderer *imui.Renderer) {
 		button(renderer, " fred ", 50, 4)
 	})
 }

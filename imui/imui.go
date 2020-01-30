@@ -84,7 +84,7 @@ func (r *Renderer) Event() *KeyEvent {
 	return r.keyEvent
 }
 
-func (r *Renderer) Widget(id Id, render func(renderer *Renderer)) {
+func (r *Renderer) Focusable(id Id, render func(renderer *Renderer)) {
 	currentId := r.id
 	r.id = r.id.appendPath(id)
 
