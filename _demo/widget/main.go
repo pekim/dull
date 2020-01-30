@@ -1,9 +1,17 @@
 package main
 
 import (
+	"fmt"
 	"github.com/pekim/dull"
-	"github.com/pekim/dull/widget"
+	"github.com/pekim/dull/imui"
+	"github.com/pekim/dull/imui/widget"
 )
+
+type testApp struct {
+	app      *dull.Application
+	window   *dull.Window
+	renderer *imui.Renderer
+}
 
 func initialise(app *dull.Application, err error) {
 	if err != nil {
@@ -12,7 +20,6 @@ func initialise(app *dull.Application, err error) {
 
 	white := dull.NewColor(1.0, 1.0, 1.0, 1.0)
 	black := dull.NewColor(0.0, 0.0, 0.0, 1.0)
-	red := dull.NewColor(0.7, 0.3, 0.3, 1.0)
 
 	window, err := app.NewWindow(&dull.WindowOptions{
 		Bg: &white,
@@ -22,42 +29,35 @@ func initialise(app *dull.Application, err error) {
 		panic(err)
 	}
 
-	root := widget.NewRoot(window, nil)
-
-	topBar := widget.NewFlex(widget.DirectionHorizontal)
-
-	topBar.Add(widget.NewLabel("left", nil), widget.FlexChildOptions{Size: widget.FlexChildSizeWidget})
-	topBar.Add(widget.NewBox(black), widget.FlexChildOptions{Size: widget.FlexChildSizeProportion, Proportion: 1})
-	topBar.Add(widget.NewLabel("right", nil), widget.FlexChildOptions{Size: widget.FlexChildSizeWidget})
-
-	flex := widget.NewFlex(widget.DirectionVertical)
-
-	flex.Add(topBar, widget.FlexChildOptions{
-		Size:      widget.FlexChildSizeFixed,
-		FixedSize: 1,
-	})
-
-	flex.Add(widget.NewBox(red), widget.FlexChildOptions{
-		Size:       widget.FlexChildSizeProportion,
-		Proportion: 1,
-	})
-
-	opts := &dull.CellOptions{
-		Fg: dull.NewColor(1.0, 1.0, 1.0, 1.0),
-		Bg: dull.NewColor(0.0, 0.3, 0.0, 1.0),
+	a := &testApp{
+		app:    app,
+		window: window,
 	}
-	flex.Add(widget.NewLabel("Two", opts), widget.FlexChildOptions{
-		Size:      widget.FlexChildSizeFixed,
-		FixedSize: 1,
-	})
+	a.renderer = imui.NewRenderer(window, a.render)
 
-	root.SetChild(flex)
-
+	window.SetDrawCallback(a.draw)
 	window.SetTitle("dull - widgets")
 	window.SetPosition(200, 200)
 	window.Show()
+
 }
 
 func main() {
 	dull.Run(initialise)
+}
+
+func (a *testApp) draw(drawer dull.Drawer, columns, rows int) {
+	a.renderer.Render(nil)
+}
+
+func (a *testApp) render(renderer *imui.Renderer) {
+	fmt.Println("render")
+
+	renderer.Widget("one", func(renderer *imui.Renderer) {
+		widget.Button(renderer, " Qaz ", 4, 4)
+	})
+
+	renderer.Widget("two", func(renderer *imui.Renderer) {
+		widget.Button(renderer, " qwerty ", 24, 4)
+	})
 }
