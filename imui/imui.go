@@ -64,6 +64,8 @@ func (r *Renderer) drawCallback(drawer dull.Drawer, columns, rows int) {
 	if r.rerender {
 		r.rerender = false
 		r.keyEvent = nil
+
+		r.Drawer().Clear()
 		r.appRender(r)
 
 		if r.rerender {
