@@ -12,6 +12,13 @@ func Button(r *imui.Renderer, label string, x, y float32) {
 
 	if r.IsFocused() {
 		bg = dull.NewColor(0.8, 0.0, 0.0, 0.3) // red
+
+		if r.Event() != nil {
+			key, _ := r.Event().Detail()
+			if key == dull.KeyTab {
+				r.FocusNext()
+			}
+		}
 	}
 
 	for i, ch := range label {

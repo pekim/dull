@@ -36,6 +36,8 @@ func initialise(app *dull.Application, err error) {
 	a.renderer = imui.NewRenderer(window, a.render)
 
 	window.SetDrawCallback(a.draw)
+	window.SetKeyCallback(a.keyEvent)
+
 	window.SetTitle("dull - widgets")
 	window.SetPosition(200, 200)
 	window.Show()
@@ -48,6 +50,11 @@ func main() {
 
 func (a *testApp) draw(drawer dull.Drawer, columns, rows int) {
 	a.renderer.Render(nil)
+}
+
+func (a *testApp) keyEvent(key dull.Key, action dull.Action, mods dull.ModifierKey) bool {
+	a.renderer.Render(imui.NewEvent(key, mods))
+	return false
 }
 
 func (a *testApp) render(renderer *imui.Renderer) {

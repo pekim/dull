@@ -1,6 +1,7 @@
 package imui
 
 import (
+	"fmt"
 	"github.com/pekim/dull"
 	"os"
 )
@@ -65,6 +66,7 @@ func (r *Renderer) Widget(id Id, render func(renderer *Renderer)) {
 	if id != emptyId && r.focusedId == emptyId {
 		// Nothing has focus and this widget is focusable, so grab focus.
 		r.focusedId = r.id
+		fmt.Println("grab focus", r.id)
 	}
 
 	render(r)
