@@ -45,6 +45,14 @@ func (r *Renderer) keyEventCallback(key dull.Key, action dull.Action, mods dull.
 		return false
 	}
 
+	if key == dull.KeyLeftShift || key == dull.KeyRightShift ||
+		key == dull.KeyLeftAlt || key == dull.KeyRightAlt ||
+		key == dull.KeyLeftControl || key == dull.KeyRightControl ||
+		key == dull.KeyLeftSuper || key == dull.KeyRightSuper {
+
+		return false
+	}
+
 	r.keyEvent = newEvent(key, mods)
 	return true
 }
