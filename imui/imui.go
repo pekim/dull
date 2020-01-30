@@ -1,7 +1,6 @@
 package imui
 
 import (
-	"fmt"
 	"github.com/pekim/dull"
 	"os"
 )
@@ -35,6 +34,7 @@ func NewRenderer(
 
 func (r *Renderer) reset() {
 	r.Drawer().Clear()
+
 	r.id = emptyId
 	r.previousId = emptyId
 	r.rerender = false
@@ -51,7 +51,6 @@ func (r *Renderer) keyEventCallback(key dull.Key, action dull.Action, mods dull.
 
 func (r *Renderer) drawCallback(drawer dull.Drawer, columns, rows int) {
 	r.reset()
-	fmt.Println("render", r.keyEvent)
 	r.appRender(r)
 
 	if r.rerender {
@@ -78,18 +77,21 @@ func (r *Renderer) Event() *KeyEvent {
 func (r *Renderer) Widget(id Id, render func(renderer *Renderer)) {
 	currentId := r.id
 	r.id = r.id.appendPath(id)
-	fmt.Println(r.id)
 
-	if id != emptyId && r.focusedId == emptyId {
+	if r.focusedId == emptyId {
 		// Nothing has focus and this widget is focusable, so grab focus.
 		r.focusedId = r.id
-		fmt.Println("grab focus", r.id)
 	}
 
-	if r.Event() != nil {
-		key, _ := r.Event().Detail()
+	if r.IsFocused() && r.Event() != nil {
+		key, mods := r.Event().Detail()
 		if key == dull.KeyTab {
-			r.FocusNext()
+			if mods == dull.ModShift {
+				r.FocusPrevious()
+			} else {
+				r.FocusNext()
+			}
+
 			r.keyEvent = nil
 		}
 	}
