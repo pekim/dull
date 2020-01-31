@@ -49,7 +49,7 @@ func (a *testApp) render(renderer *imui.Renderer, width, height int) {
 	y := height / 2
 
 	renderer.Focusable("one", func(renderer *imui.Renderer) {
-		button(renderer, " Qaz \u25c9 \u25ce ", 5, y)
+		button(renderer, " Qaz ", 5, y)
 	})
 
 	renderer.Focusable("two", func(renderer *imui.Renderer) {
@@ -63,6 +63,18 @@ func (a *testApp) render(renderer *imui.Renderer, width, height int) {
 	renderer.Focusable("four", func(renderer *imui.Renderer) {
 		button(renderer, " fred ", 45, y)
 	})
+
+	d := renderer.Drawer()
+	i := 2
+	for _, ch := range "\u25c9\u25ce\u25ce" {
+		cell := &dull.Cell{
+			Rune: ch,
+			Fg:   dull.NewColor(0.5, 0.5, 0.5, 1.0),
+			Bg:   dull.NewColor(0.0, 0.0, 0.0, 0.0), // transparent
+		}
+		d.DrawCell(cell, 5, float32(y+i))
+		i++
+	}
 }
 
 func button(r *imui.Renderer, label string, x, y int) {
