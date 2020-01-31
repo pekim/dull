@@ -2,11 +2,11 @@ package dull
 
 import "github.com/pekim/dull/geometry"
 
-type lineAlignment int
+type outlinePosition int
 
 const (
-	lineAlignmentInside = iota
-	lineAlignmentOutside
+	outlineInside = iota
+	outlineOutside
 )
 
 type Drawer interface {
@@ -36,5 +36,17 @@ type Drawer interface {
 	// Fractional values may be used for positions not in the corners of cells.
 	DrawCellsRect(rect geometry.RectFloat, colour Color)
 
-	DrawUnfilledRect(rect geometry.RectFloat, thickness float32, alignment lineAlignment, colour Color)
+	// DrawOutlineRect draws an unfilled (outline) rectangle.
+	//
+	// The thickness is relative to the width of a cell.
+	// So a thickness of 0.2 will result in the outline being a fifth
+	// of the width of a cell.
+	//
+	// The position dictates whether the line is drawn outside of the rectangle
+	// or inside of the rectangle.
+	// A value of outlineOutside will result in the inside edge of the outline
+	// matching the rectangle coordinates.
+	// Whereas a value of outlineInside will result in the outside edge of the outline
+	// matching the rectangle coordinates.
+	DrawOutlineRect(rect geometry.RectFloat, thickness float32, position outlinePosition, colour Color)
 }

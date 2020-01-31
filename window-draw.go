@@ -164,8 +164,8 @@ func (w *Window) DrawCellsRect(rect geometry.RectFloat, colour Color) {
 	w.drawSolidQuad(destination, colour)
 }
 
-func (w *Window) DrawUnfilledRect(rect geometry.RectFloat, thickness float32,
-	alignment lineAlignment, colour Color,
+func (w *Window) DrawOutlineRect(rect geometry.RectFloat, thickness float32,
+	alignment outlinePosition, colour Color,
 ) {
 
 }
