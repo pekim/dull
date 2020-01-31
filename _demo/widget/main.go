@@ -69,7 +69,7 @@ func (a *testApp) render(renderer *imui.Renderer, width, height int) {
 	for _, ch := range "\u25c9\u25ce\u25ce" {
 		cell := &dull.Cell{
 			Rune: ch,
-			Fg:   dull.NewColor(0.5, 0.5, 0.5, 1.0),
+			Fg:   dull.NewColor(0.0, 0.0, 0.0, 1.0),
 			Bg:   dull.NewColor(0.0, 0.0, 0.0, 0.0), // transparent
 		}
 		d.DrawCell(cell, 5, float32(y+i))
@@ -79,7 +79,7 @@ func (a *testApp) render(renderer *imui.Renderer, width, height int) {
 
 func button(r *imui.Renderer, label string, x, y int) {
 	d := r.Drawer()
-	fg := dull.NewColor(0.5, 0.5, 0.5, 1.0)
+	fg := dull.NewColor(0.0, 0.0, 0.0, 1.0)
 	bg := dull.NewColor(0.0, 0.0, 0.0, 0.0) // transparent
 
 	if r.IsFocused() {
