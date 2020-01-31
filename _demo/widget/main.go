@@ -44,21 +44,23 @@ func main() {
 	dull.Run(initialise)
 }
 
-func (a *testApp) render(renderer *imui.Renderer) {
+func (a *testApp) render(renderer *imui.Renderer, width, height float32) {
+	y := height / 2
+
 	renderer.Focusable("one", func(renderer *imui.Renderer) {
-		button(renderer, " Qaz ", 5, 4)
+		button(renderer, " Qaz ", 5, y)
 	})
 
 	renderer.Focusable("two", func(renderer *imui.Renderer) {
-		button(renderer, " qwerty ", 15, 4)
+		button(renderer, " qwerty ", 15, y)
 	})
 
 	renderer.Focusable("three", func(renderer *imui.Renderer) {
-		button(renderer, " another ", 30, 4)
+		button(renderer, " another ", 30, y)
 	})
 
 	renderer.Focusable("four", func(renderer *imui.Renderer) {
-		button(renderer, " fred ", 45, 4)
+		button(renderer, " fred ", 45, y)
 	})
 }
 

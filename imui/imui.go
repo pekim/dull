@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-type AppRender func(renderer *Renderer)
+type AppRender func(renderer *Renderer, width float32, height float32)
 
 type Renderer struct {
 	window     *dull.Window
@@ -55,7 +55,7 @@ func (r *Renderer) drawCallback(drawer dull.Drawer, columns, rows int) {
 	r.previousId = emptyId
 	r.rerender = false
 
-	r.appRender(r)
+	r.appRender(r, float32(columns), float32(rows))
 	r.processFocusLoop()
 
 	if r.rerender {
@@ -63,7 +63,7 @@ func (r *Renderer) drawCallback(drawer dull.Drawer, columns, rows int) {
 		r.keyEvent = nil
 
 		r.Drawer().Clear()
-		r.appRender(r)
+		r.appRender(r, float32(columns), float32(rows))
 
 		if r.rerender {
 			os.Stderr.WriteString("ERROR: 2nd rerender detected\n")
