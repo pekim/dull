@@ -8,14 +8,14 @@ import (
 type AppRender func(renderer *Renderer)
 
 type Renderer struct {
-	window        *dull.Window
-	appRender     AppRender
-	keyEvent      *KeyEvent
-	id            Id
-	previousId    Id
-	focusedId     Id
-	haveFocusable bool
-	rerender      bool
+	window     *dull.Window
+	appRender  AppRender
+	keyEvent   *KeyEvent
+	id         Id
+	previousId Id
+	focusedId  Id
+	focusLast  bool
+	rerender   bool
 }
 
 func NewRenderer(
@@ -31,14 +31,6 @@ func NewRenderer(
 	r.window.SetKeyCallback(r.keyEventCallback)
 
 	return r
-}
-
-func (r *Renderer) reset() {
-	r.Drawer().Clear()
-
-	r.id = emptyId
-	r.previousId = emptyId
-	r.rerender = false
 }
 
 func (r *Renderer) keyEventCallback(key dull.Key, action dull.Action, mods dull.ModifierKey) bool {
@@ -59,14 +51,12 @@ func (r *Renderer) keyEventCallback(key dull.Key, action dull.Action, mods dull.
 }
 
 func (r *Renderer) drawCallback(drawer dull.Drawer, columns, rows int) {
-	r.reset()
-	r.appRender(r)
+	r.id = emptyId
+	r.previousId = emptyId
+	r.rerender = false
 
-	if r.focusedId == emptyId && r.haveFocusable {
-		// Have at least one focusable widget but none are focused.
-		// Which probably means that focus was advanced from the last widget.
-		r.rerender = true
-	}
+	r.appRender(r)
+	r.processFocusLoop()
 
 	if r.rerender {
 		r.rerender = false
@@ -83,6 +73,19 @@ func (r *Renderer) drawCallback(drawer dull.Drawer, columns, rows int) {
 	r.keyEvent = nil
 }
 
+func (r *Renderer) processFocusLoop() {
+	// last to first
+	if r.focusedId == emptyId && r.previousId != emptyId {
+		r.rerender = true
+	}
+
+	// first to last
+	if r.focusLast {
+		r.focusLast = false
+		r.focusedId = r.previousId
+	}
+}
+
 func (r *Renderer) Drawer() dull.Drawer {
 	return r.window
 }
@@ -94,8 +97,6 @@ func (r *Renderer) Event() *KeyEvent {
 func (r *Renderer) Focusable(id Id, render func(renderer *Renderer)) {
 	currentId := r.id
 	r.id = r.id.appendPath(id)
-
-	r.haveFocusable = true
 
 	if r.focusedId == emptyId {
 		// Nothing has focus and this widget is focusable, so grab focus.
@@ -131,7 +132,13 @@ func (r *Renderer) IsFocused() bool {
 }
 
 func (r *Renderer) FocusPrevious() {
-	r.focusedId = r.previousId
+	if r.previousId != emptyId {
+		// give focus to previous
+		r.focusedId = r.previousId
+	} else {
+		r.focusLast = true
+	}
+
 	r.rerender = true
 }
 
