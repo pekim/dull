@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/pekim/dull"
 	"github.com/pekim/dull/imui"
 )
@@ -71,6 +72,13 @@ func button(r *imui.Renderer, label string, x, y float32) {
 
 	if r.IsFocused() {
 		bg = dull.NewColor(0.8, 0.0, 0.0, 0.3) // red
+	}
+
+	if r.IsFocused() && r.KeyEvent() != nil {
+		key, _ := r.KeyEvent().Detail()
+		if key == dull.KeyEnter || key == dull.KeySpace {
+			fmt.Println("activated -", label)
+		}
 	}
 
 	for i, ch := range label {

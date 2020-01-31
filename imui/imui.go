@@ -90,7 +90,7 @@ func (r *Renderer) Drawer() dull.Drawer {
 	return r.window
 }
 
-func (r *Renderer) Event() *KeyEvent {
+func (r *Renderer) KeyEvent() *KeyEvent {
 	return r.keyEvent
 }
 
@@ -103,8 +103,8 @@ func (r *Renderer) Focusable(id Id, render func(renderer *Renderer)) {
 		r.focusedId = r.id
 	}
 
-	if r.IsFocused() && r.Event() != nil {
-		key, mods := r.Event().Detail()
+	if r.IsFocused() && r.KeyEvent() != nil {
+		key, mods := r.KeyEvent().Detail()
 		if key == dull.KeyTab {
 			if mods == dull.ModShift {
 				r.FocusPrevious()

@@ -8,8 +8,8 @@ package widget
 //	if r.IsFocused() {
 //		bg = dull.NewColor(0.8, 0.0, 0.0, 0.3) // red
 //
-//		if r.Event() != nil {
-//			key, _ := r.Event().Detail()
+//		if r.KeyEvent() != nil {
+//			key, _ := r.KeyEvent().Detail()
 //			if key == dull.KeyTab {
 //				r.FocusNext()
 //			}
