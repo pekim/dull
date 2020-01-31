@@ -20,8 +20,9 @@ func initialise(app *dull.Application, err error) {
 	black := dull.NewColor(0.0, 0.0, 0.0, 1.0)
 
 	window, err := app.NewWindow(&dull.WindowOptions{
-		Bg: &white,
-		Fg: &black,
+		Bg:    &white,
+		Fg:    &black,
+		Width: 1000,
 	})
 	if err != nil {
 		panic(err)
@@ -49,15 +50,15 @@ func (a *testApp) render(renderer *imui.Renderer) {
 	})
 
 	renderer.Focusable("two", func(renderer *imui.Renderer) {
-		button(renderer, " qwerty ", 20, 4)
+		button(renderer, " qwerty ", 15, 4)
 	})
 
 	renderer.Focusable("three", func(renderer *imui.Renderer) {
-		button(renderer, " another ", 35, 4)
+		button(renderer, " another ", 30, 4)
 	})
 
 	renderer.Focusable("four", func(renderer *imui.Renderer) {
-		button(renderer, " fred ", 50, 4)
+		button(renderer, " fred ", 45, 4)
 	})
 }
 

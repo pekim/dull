@@ -8,13 +8,14 @@ import (
 type AppRender func(renderer *Renderer)
 
 type Renderer struct {
-	window     *dull.Window
-	appRender  AppRender
-	keyEvent   *KeyEvent
-	id         Id
-	previousId Id
-	focusedId  Id
-	rerender   bool
+	window        *dull.Window
+	appRender     AppRender
+	keyEvent      *KeyEvent
+	id            Id
+	previousId    Id
+	focusedId     Id
+	haveFocusable bool
+	rerender      bool
 }
 
 func NewRenderer(
@@ -61,6 +62,12 @@ func (r *Renderer) drawCallback(drawer dull.Drawer, columns, rows int) {
 	r.reset()
 	r.appRender(r)
 
+	if r.focusedId == emptyId && r.haveFocusable {
+		// Have at least one focusable widget but none are focused.
+		// Which probably means that focus was advanced from the last widget.
+		r.rerender = true
+	}
+
 	if r.rerender {
 		r.rerender = false
 		r.keyEvent = nil
@@ -87,6 +94,8 @@ func (r *Renderer) Event() *KeyEvent {
 func (r *Renderer) Focusable(id Id, render func(renderer *Renderer)) {
 	currentId := r.id
 	r.id = r.id.appendPath(id)
+
+	r.haveFocusable = true
 
 	if r.focusedId == emptyId {
 		// Nothing has focus and this widget is focusable, so grab focus.
