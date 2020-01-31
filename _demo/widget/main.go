@@ -45,7 +45,7 @@ func main() {
 	dull.Run(initialise)
 }
 
-func (a *testApp) render(renderer *imui.Renderer, width, height float32) {
+func (a *testApp) render(renderer *imui.Renderer, width, height int) {
 	y := height / 2
 
 	renderer.Focusable("one", func(renderer *imui.Renderer) {
@@ -65,7 +65,7 @@ func (a *testApp) render(renderer *imui.Renderer, width, height float32) {
 	})
 }
 
-func button(r *imui.Renderer, label string, x, y float32) {
+func button(r *imui.Renderer, label string, x, y int) {
 	d := r.Drawer()
 	fg := dull.NewColor(0.5, 0.5, 0.5, 1.0)
 	bg := dull.NewColor(0.0, 0.0, 0.0, 0.0) // transparent
@@ -87,6 +87,6 @@ func button(r *imui.Renderer, label string, x, y float32) {
 			Fg:   fg,
 			Bg:   bg,
 		}
-		d.DrawCell(cell, x+float32(i), y)
+		d.DrawCell(cell, float32(x+i), float32(y))
 	}
 }
