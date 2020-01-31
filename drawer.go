@@ -2,10 +2,18 @@ package dull
 
 import "github.com/pekim/dull/geometry"
 
+type lineAlignment int
+
+const (
+	lineAlignmentInside = iota
+	lineAlignmentOutside
+)
+
 type Drawer interface {
 	// Clear discards pending drawing instructions (vertexes).
 	Clear()
 
+	// DrawCell draws a rune in a cell.
 	DrawCell(cell *Cell, column, row float32)
 
 	// DrawCellRect draws a rectangle of the desired color within
@@ -27,4 +35,6 @@ type Drawer interface {
 	//
 	// Fractional values may be used for positions not in the corners of cells.
 	DrawCellsRect(rect geometry.RectFloat, colour Color)
+
+	DrawUnfilledRect(rect geometry.RectFloat, thickness float32, alignment lineAlignment, colour Color)
 }

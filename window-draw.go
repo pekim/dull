@@ -145,14 +145,6 @@ func (w *Window) DrawCellRect(column, row float32, rect geometry.RectFloat, colo
 
 // DrawCellsRect draws a rectangle of solid colour spanning some
 // or all of some cells.
-//
-// The rectangle dimensions represent the cells.
-//
-// 0,0 is the top left corner of the top left most cell.
-// 3,4 is the top left corner of the fourth cell in the fifth row.
-// 3,4 is also the bottom right corner of the third cell in the fourth row.
-//
-// Fractional values may be used for positions not in the corners of cells.
 func (w *Window) DrawCellsRect(rect geometry.RectFloat, colour Color) {
 	cellWidth := w.viewportCellWidth
 	cellHeight := w.viewportCellHeight
@@ -170,6 +162,12 @@ func (w *Window) DrawCellsRect(rect geometry.RectFloat, colour Color) {
 	}
 
 	w.drawSolidQuad(destination, colour)
+}
+
+func (w *Window) DrawUnfilledRect(rect geometry.RectFloat, thickness float32,
+	alignment lineAlignment, colour Color,
+) {
+
 }
 
 func (w *Window) drawCellBackground(column, row int, colour Color) {
