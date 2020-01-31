@@ -8,16 +8,16 @@ type Drawer interface {
 
 	DrawCell(cell *Cell, column, row float32)
 
-	// DrawCellSolid draws a rectangle of the desired color within
+	// DrawCellRect draws a rectangle of the desired color within
 	// a cell.
 	//
 	// The rectangle described by rect dictates how much of the cell the solid
 	// block of color fills. 0,0 represents the top left of the cell, and 1,1
 	// the bottom right of the cell.
-	DrawCellSolid(column, row float32, rect geometry.RectFloat, colour Color)
+	DrawCellRect(column, row float32, rect geometry.RectFloat, colour Color)
 
-	// DrawCellsSolid draws a rectangle of solid colour spanning some
-	// or all of some cells.
+	// DrawCellsRect draws a rectangle of solid colour spanning some
+	// or all of the cells.
 	//
 	// The rectangle dimensions represent the cells.
 	//
@@ -26,5 +26,5 @@ type Drawer interface {
 	// 3,4 is also the bottom right corner of the third cell in the fourth row.
 	//
 	// Fractional values may be used for positions not in the corners of cells.
-	DrawCellsSolid(rect geometry.RectFloat, colour Color)
+	DrawCellsRect(rect geometry.RectFloat, colour Color)
 }

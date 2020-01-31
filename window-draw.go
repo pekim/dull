@@ -124,7 +124,7 @@ func (w *Window) drawRune(
 	w.drawTextureItemToQuad(destination, textureItem, colour)
 }
 
-func (w *Window) DrawCellSolid(column, row float32, rect geometry.RectFloat, colour Color) {
+func (w *Window) DrawCellRect(column, row float32, rect geometry.RectFloat, colour Color) {
 	cellWidth := w.viewportCellWidth
 	cellHeight := w.viewportCellHeight
 
@@ -143,7 +143,7 @@ func (w *Window) DrawCellSolid(column, row float32, rect geometry.RectFloat, col
 	w.drawSolidQuad(destination, colour)
 }
 
-// DrawCellsSolid draws a rectangle of solid colour spanning some
+// DrawCellsRect draws a rectangle of solid colour spanning some
 // or all of some cells.
 //
 // The rectangle dimensions represent the cells.
@@ -153,7 +153,7 @@ func (w *Window) DrawCellSolid(column, row float32, rect geometry.RectFloat, col
 // 3,4 is also the bottom right corner of the third cell in the fourth row.
 //
 // Fractional values may be used for positions not in the corners of cells.
-func (w *Window) DrawCellsSolid(rect geometry.RectFloat, colour Color) {
+func (w *Window) DrawCellsRect(rect geometry.RectFloat, colour Color) {
 	cellWidth := w.viewportCellWidth
 	cellHeight := w.viewportCellHeight
 
@@ -173,7 +173,7 @@ func (w *Window) DrawCellsSolid(rect geometry.RectFloat, colour Color) {
 }
 
 func (w *Window) drawCellBackground(column, row int, colour Color) {
-	w.DrawCellSolid(float32(column), float32(row), geometry.RectFloat{0, 1.0, 0, 1.0}, colour)
+	w.DrawCellRect(float32(column), float32(row), geometry.RectFloat{0, 1.0, 0, 1.0}, colour)
 }
 
 func (w *Window) configureTextureUniform() {
