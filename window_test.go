@@ -12,8 +12,8 @@ func TestWindowSimple(t *testing.T) {
 				for i, r := range "Qaz" {
 					drawer.DrawCell(&Cell{
 						Rune: r,
-						Fg:   Color{0.0, 0.0, 0.0, 1.0},
-						Bg:   Color{},
+						Fg:   Black,
+						Bg:   White,
 					}, float32(i), 1)
 				}
 			})

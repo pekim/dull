@@ -17,8 +17,8 @@ func initialise(app *dull.Application, err error) {
 		panic(err)
 	}
 
-	white := dull.NewColor(1.0, 1.0, 1.0, 1.0)
-	black := dull.NewColor(0.0, 0.0, 0.0, 1.0)
+	white := dull.White
+	black := dull.Black
 
 	window, err := app.NewWindow(&dull.WindowOptions{
 		Bg:    &white,
@@ -69,8 +69,8 @@ func (a *testApp) render(renderer *imui.Renderer, width, height int) {
 	for _, ch := range "\u25c9\u25ce\u25ce" {
 		cell := &dull.Cell{
 			Rune: ch,
-			Fg:   dull.NewColor(0.0, 0.0, 0.0, 1.0),
-			Bg:   dull.NewColor(0.0, 0.0, 0.0, 0.0), // transparent
+			Fg:   dull.Black,
+			Bg:   dull.Transparent,
 		}
 		d.DrawCell(cell, 5, float32(y+i))
 		i++
@@ -79,11 +79,11 @@ func (a *testApp) render(renderer *imui.Renderer, width, height int) {
 
 func button(r *imui.Renderer, label string, x, y int) {
 	d := r.Drawer()
-	fg := dull.NewColor(0.0, 0.0, 0.0, 1.0)
-	bg := dull.NewColor(0.0, 0.0, 0.0, 0.0) // transparent
+	fg := dull.Black
+	bg := dull.Transparent
 
 	if r.IsFocused() {
-		bg = dull.NewColor(0.8, 0.0, 0.0, 0.3) // red
+		bg = dull.Lightsteelblue
 	}
 
 	if r.IsFocused() && r.KeyEvent() != nil {
