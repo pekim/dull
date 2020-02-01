@@ -1,6 +1,7 @@
 package dull
 
 import (
+	"github.com/pekim/dull/color"
 	"github.com/pekim/dull/geometry"
 	"github.com/pekim/dull/internal/textureatlas"
 	"time"
@@ -49,8 +50,8 @@ type Window struct {
 	//      key up    :  CTRL
 	blockCharEvents bool
 
-	bg      Color
-	fg      Color
+	bg      color.Color
+	fg      color.Color
 	bgDirty bool
 
 	width   int
@@ -79,8 +80,8 @@ type WindowOptions struct {
 	Width  int // initial window width, in pixels
 	Height int // initial window height, in pixels
 
-	Bg *Color // default background color for cells
-	Fg *Color // default foreground color for cells
+	Bg *color.Color // default background color for cells
+	Fg *color.Color // default foreground color for cells
 
 	Iconified bool
 	Maximized bool
@@ -94,11 +95,11 @@ func (o *WindowOptions) applyDefaults() {
 		o.Height = 600
 	}
 	if o.Bg == nil {
-		color := NewColor(0.0, 0.0, 0.0, 1.0) // black
+		color := color.New(0.0, 0.0, 0.0, 1.0) // black
 		o.Bg = &color
 	}
 	if o.Fg == nil {
-		color := NewColor(1.0, 1.0, 1.0, 1.0) // white
+		color := color.New(1.0, 1.0, 1.0, 1.0) // white
 		o.Fg = &color
 	}
 }
@@ -246,14 +247,14 @@ func (w *Window) SetTitle(title string) {
 // SetBg changes the window's background color.
 //
 // This function may only be called from the main thread.
-func (w *Window) SetBg(color Color) {
+func (w *Window) SetBg(color color.Color) {
 	w.bg = color
 }
 
 // SetFg changes the window's foreground color.
 //
 // This function may only be called from the main thread.
-func (w *Window) SetFg(color Color) {
+func (w *Window) SetFg(color color.Color) {
 	w.fg = color
 }
 

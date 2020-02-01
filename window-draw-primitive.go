@@ -1,6 +1,7 @@
 package dull
 
 import (
+	"github.com/pekim/dull/color"
 	"github.com/pekim/dull/geometry"
 	"github.com/pekim/dull/internal/textureatlas"
 )
@@ -12,7 +13,7 @@ blending a rectangle from the texture to a rectangle int the window.
 func (w *Window) drawTextureItemToQuad(
 	dest geometry.RectFloat,
 	textureItem *textureatlas.TextureItem,
-	c Color,
+	c color.Color,
 ) {
 	tiRect := textureItem.Rect
 
@@ -39,6 +40,6 @@ func (w *Window) drawTextureItemToQuad(
 	)
 }
 
-func (w *Window) drawSolidQuad(dest geometry.RectFloat, c Color) {
+func (w *Window) drawSolidQuad(dest geometry.RectFloat, c color.Color) {
 	w.drawTextureItemToQuad(dest, w.solidTextureItem, c)
 }

@@ -1,6 +1,7 @@
 package dull
 
 import (
+	"github.com/pekim/dull/color"
 	"github.com/pekim/dull/geometry"
 	"github.com/pekim/dull/internal/font"
 	"image"
@@ -95,7 +96,7 @@ func (w *Window) DrawCell(cell *Cell, column, row float32) {
 func (w *Window) drawRune(
 	column, row int,
 	rune rune,
-	colour Color,
+	colour color.Color,
 	font *font.FontTextureAtlas,
 ) {
 	cellWidth := w.viewportCellWidth
@@ -124,7 +125,7 @@ func (w *Window) drawRune(
 	w.drawTextureItemToQuad(destination, textureItem, colour)
 }
 
-func (w *Window) DrawCellRect(column, row float32, rect geometry.RectFloat, colour Color) {
+func (w *Window) DrawCellRect(column, row float32, rect geometry.RectFloat, colour color.Color) {
 	cellWidth := w.viewportCellWidth
 	cellHeight := w.viewportCellHeight
 
@@ -145,7 +146,7 @@ func (w *Window) DrawCellRect(column, row float32, rect geometry.RectFloat, colo
 
 // DrawCellsRect draws a rectangle of solid colour spanning some
 // or all of some cells.
-func (w *Window) DrawCellsRect(rect geometry.RectFloat, colour Color) {
+func (w *Window) DrawCellsRect(rect geometry.RectFloat, colour color.Color) {
 	cellWidth := w.viewportCellWidth
 	cellHeight := w.viewportCellHeight
 
@@ -165,12 +166,12 @@ func (w *Window) DrawCellsRect(rect geometry.RectFloat, colour Color) {
 }
 
 func (w *Window) DrawOutlineRect(rect geometry.RectFloat, thickness float32,
-	alignment outlinePosition, colour Color,
+	alignment outlinePosition, colour color.Color,
 ) {
 
 }
 
-func (w *Window) drawCellBackground(column, row int, colour Color) {
+func (w *Window) drawCellBackground(column, row int, colour color.Color) {
 	w.DrawCellRect(float32(column), float32(row), geometry.RectFloat{0, 1.0, 0, 1.0}, colour)
 }
 

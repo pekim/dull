@@ -1,8 +1,10 @@
 package dull
 
+import "github.com/pekim/dull/color"
+
 type CellOptions struct {
-	Fg            Color
-	Bg            Color
+	Fg            color.Color
+	Bg            color.Color
 	Bold          bool
 	Italic        bool
 	Underline     bool
@@ -20,9 +22,9 @@ type Cell struct {
 	// Rune is the Rune to be rendered.
 	Rune rune
 	// Fg is the foreground colour, used to render the Rune.
-	Fg Color
+	Fg color.Color
 	// Bg is the background colour, used to fill the cell's background.
-	Bg Color
+	Bg color.Color
 
 	// Bold denotes whether the Rune is rendered in Bold.
 	// May be combined with Italic.

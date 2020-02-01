@@ -1,6 +1,9 @@
 package dull
 
-import "github.com/pekim/dull/geometry"
+import (
+	"github.com/pekim/dull/color"
+	"github.com/pekim/dull/geometry"
+)
 
 type outlinePosition int
 
@@ -22,7 +25,7 @@ type Drawer interface {
 	// The rectangle described by rect dictates how much of the cell the solid
 	// block of color fills. 0,0 represents the top left of the cell, and 1,1
 	// the bottom right of the cell.
-	DrawCellRect(column, row float32, rect geometry.RectFloat, colour Color)
+	DrawCellRect(column, row float32, rect geometry.RectFloat, colour color.Color)
 
 	// DrawCellsRect draws a rectangle of solid colour spanning some
 	// or all of the cells.
@@ -34,7 +37,7 @@ type Drawer interface {
 	// 3,4 is also the bottom right corner of the third cell in the fourth row.
 	//
 	// Fractional values may be used for positions not in the corners of cells.
-	DrawCellsRect(rect geometry.RectFloat, colour Color)
+	DrawCellsRect(rect geometry.RectFloat, colour color.Color)
 
 	// DrawOutlineRect draws an unfilled (outline) rectangle.
 	//
@@ -48,5 +51,5 @@ type Drawer interface {
 	// matching the rectangle coordinates.
 	// Whereas a value of outlineInside will result in the outside edge of the outline
 	// matching the rectangle coordinates.
-	DrawOutlineRect(rect geometry.RectFloat, thickness float32, position outlinePosition, colour Color)
+	DrawOutlineRect(rect geometry.RectFloat, thickness float32, position outlinePosition, colour color.Color)
 }

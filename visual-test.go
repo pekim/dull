@@ -3,6 +3,7 @@ package dull
 import (
 	"bytes"
 	"fmt"
+	"github.com/pekim/dull/color"
 	"github.com/stretchr/testify/assert"
 	"image"
 	"image/png"
@@ -53,8 +54,8 @@ func testCaptureAndCompareImage(
 		w, err := app.NewWindow(&WindowOptions{
 			Width:  width,
 			Height: height,
-			Bg:     &White,
-			Fg:     &Black,
+			Bg:     &color.White,
+			Fg:     &color.Black,
 		})
 		if err != nil {
 			t.Fatal(err)

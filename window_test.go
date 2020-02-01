@@ -2,7 +2,10 @@
 
 package dull
 
-import "testing"
+import (
+	"github.com/pekim/dull/color"
+	"testing"
+)
 
 func TestWindowSimple(t *testing.T) {
 	testCaptureAndCompareImage(t, "simple", 200, 200, 2.0,
@@ -12,8 +15,8 @@ func TestWindowSimple(t *testing.T) {
 				for i, r := range "Qaz" {
 					drawer.DrawCell(&Cell{
 						Rune: r,
-						Fg:   Black,
-						Bg:   White,
+						Fg:   color.Black,
+						Bg:   color.White,
 					}, float32(i), 1)
 				}
 			})

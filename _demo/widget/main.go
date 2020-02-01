@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/pekim/dull"
+	"github.com/pekim/dull/color"
 	"github.com/pekim/dull/imui"
 )
 
@@ -17,8 +18,8 @@ func initialise(app *dull.Application, err error) {
 		panic(err)
 	}
 
-	white := dull.White
-	black := dull.Black
+	white := color.White
+	black := color.Black
 
 	window, err := app.NewWindow(&dull.WindowOptions{
 		Bg:    &white,
@@ -69,8 +70,8 @@ func (a *testApp) render(renderer *imui.Renderer, width, height int) {
 	for _, ch := range "\u25c9\u25ce\u25ce" {
 		cell := &dull.Cell{
 			Rune: ch,
-			Fg:   dull.Black,
-			Bg:   dull.Transparent,
+			Fg:   color.Black,
+			Bg:   color.Transparent,
 		}
 		d.DrawCell(cell, 5, float32(y+i))
 		i++
@@ -79,11 +80,11 @@ func (a *testApp) render(renderer *imui.Renderer, width, height int) {
 
 func button(r *imui.Renderer, label string, x, y int) {
 	d := r.Drawer()
-	fg := dull.Black
-	bg := dull.Transparent
+	fg := color.Black
+	bg := color.Transparent
 
 	if r.IsFocused() {
-		bg = dull.Lightsteelblue
+		bg = color.Lightsteelblue
 	}
 
 	if r.IsFocused() && r.KeyEvent() != nil {
