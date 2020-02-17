@@ -15,6 +15,11 @@ import (
 
 // Bell rings a bell on the default keyboard.
 func (w *Window) Bell() {
+	if w == nil || w.glfwWindow == nil {
+		// some tests will may have these pre-requisites
+		return
+	}
+
 	cWindow := (C.ulong)(w.glfwWindow.GetX11Window())
 	cDisplay := (*C.Display)(glfw.GetX11Display())
 
