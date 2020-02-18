@@ -358,3 +358,10 @@ func (w *Window) Maximize() {
 func (w *Window) Restore() {
 	w.glfwWindow.Restore()
 }
+
+// Focus brings the window to front and gives it input focus.
+//
+// The window should already be visible and not iconified.
+func (w *Window) Focus() {
+	w.glfwWindow.Focus()
+}
