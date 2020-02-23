@@ -166,9 +166,72 @@ func (w *Window) DrawCellsRect(rect geometry.RectFloat, colour color.Color) {
 }
 
 func (w *Window) DrawOutlineRect(rect geometry.RectFloat, thickness float32,
-	alignment outlinePosition, colour color.Color,
+	position OutlinePosition, colour color.Color,
 ) {
+	xThickness := thickness
+	yThickness := (float32(w.viewportCellWidthPixel) / float32(w.viewportCellHeightPixel)) * thickness
 
+	var topTop float32
+	var topBottom float32
+	var bottomTop float32
+	var bottomBottom float32
+
+	var leftLeft float32
+	var leftRight float32
+	var rightLeft float32
+	var rightRight float32
+
+	if position == OutlineInside {
+		// set outer positions to match the rect
+		topTop = rect.Top
+		bottomBottom = rect.Bottom
+		leftLeft = rect.Left
+		rightRight = rect.Right
+	} else {
+		// set outer positions outside the rect
+		topTop = rect.Top - yThickness
+		bottomBottom = rect.Bottom + yThickness
+		leftLeft = rect.Left - xThickness
+		rightRight = rect.Right + xThickness
+	}
+
+	// set innner positions inside the outer positions
+	topBottom = topTop + yThickness
+	bottomTop = bottomBottom - yThickness
+	leftRight = leftLeft + xThickness
+	rightLeft = rightRight - xThickness
+
+	// draw top line
+	w.DrawCellsRect(geometry.RectFloat{
+		Top:    topTop,
+		Bottom: topBottom,
+		Left:   leftLeft,
+		Right:  rightRight,
+	}, colour)
+
+	// draw bottom line
+	w.DrawCellsRect(geometry.RectFloat{
+		Top:    bottomTop,
+		Bottom: bottomBottom,
+		Left:   leftLeft,
+		Right:  rightRight,
+	}, colour)
+
+	// draw left line
+	w.DrawCellsRect(geometry.RectFloat{
+		Top:    topBottom,
+		Bottom: bottomTop,
+		Left:   leftLeft,
+		Right:  leftRight,
+	}, colour)
+
+	// draw right line
+	w.DrawCellsRect(geometry.RectFloat{
+		Top:    topBottom,
+		Bottom: bottomTop,
+		Left:   rightLeft,
+		Right:  rightRight,
+	}, colour)
 }
 
 func (w *Window) drawCellBackground(column, row int, colour color.Color) {

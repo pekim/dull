@@ -5,11 +5,11 @@ import (
 	"github.com/pekim/dull/geometry"
 )
 
-type outlinePosition int
+type OutlinePosition int
 
 const (
-	outlineInside = iota
-	outlineOutside
+	OutlineInside OutlinePosition = iota
+	OutlineOutside
 )
 
 type Drawer interface {
@@ -47,9 +47,9 @@ type Drawer interface {
 	//
 	// The position dictates whether the line is drawn outside of the rectangle
 	// or inside of the rectangle.
-	// A value of outlineOutside will result in the inside edge of the outline
+	// A value of OutlineOutside will result in the inside edge of the outline
 	// matching the rectangle coordinates.
-	// Whereas a value of outlineInside will result in the outside edge of the outline
+	// Whereas a value of OutlineInside will result in the outside edge of the outline
 	// matching the rectangle coordinates.
-	DrawOutlineRect(rect geometry.RectFloat, thickness float32, position outlinePosition, colour color.Color)
+	DrawOutlineRect(rect geometry.RectFloat, thickness float32, position OutlinePosition, colour color.Color)
 }
