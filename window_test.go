@@ -7,9 +7,8 @@ import (
 	"testing"
 )
 
-func TestWindowSimple(t *testing.T) {
+func TestWindowText(t *testing.T) {
 	testCaptureAndCompareImage(t, "text", 200, 200, 2.0,
-
 		func(window *Window) {
 			window.SetDrawCallback(func(drawer Drawer, columns, rows int) {
 				for i, r := range "Qaz" {
@@ -25,3 +24,20 @@ func TestWindowSimple(t *testing.T) {
 		},
 	)
 }
+
+//func TestWindowOutlineRectInside(t *testing.T) {
+//	testCaptureAndCompareImage(t, "outline-rectangle-inside", 200, 200, 2.0,
+//		func(window *Window) {
+//			window.SetDrawCallback(func(drawer Drawer, columns, rows int) {
+//				drawer.DrawCellsRect(geometry.RectFloat{
+//					Top:    2,
+//					Bottom: 4,
+//					Left:   2,
+//					Right:  6,
+//				}, color.Gray4)
+//			})
+//
+//			window.Draw()
+//		},
+//	)
+//}
