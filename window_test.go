@@ -8,7 +8,7 @@ import (
 )
 
 func TestWindowSimple(t *testing.T) {
-	testCaptureAndCompareImage(t, "simple", 200, 200, 2.0,
+	testCaptureAndCompareImage(t, "text", 200, 200, 2.0,
 
 		func(window *Window) {
 			window.SetDrawCallback(func(drawer Drawer, columns, rows int) {

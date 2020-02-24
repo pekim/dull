@@ -71,13 +71,13 @@ func testCaptureAndCompareImage(
 		w.draw()
 
 		go w.Do(func() {
-			asserttTestImage(t, name, w)
+			assertTestImage(t, name, w)
 			w.Destroy()
 		})
 	})
 }
 
-func asserttTestImage(t *testing.T, name string, w *Window) {
+func assertTestImage(t *testing.T, name string, w *Window) {
 	// capture
 	generatedImage := w.Capture()
 	normaliseImageIfRequired(generatedImage)
