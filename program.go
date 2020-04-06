@@ -39,8 +39,12 @@ var fragmentShaderSource = `
 
 	void main()
 	{
+		float gamma = 2.2;
+
+		vec4 decoded_color = pow(Color, vec4(1.0, 1.0, 1.0, gamma));
 		vec4 sampled = vec4(1.0, 1.0, 1.0, texture(textur, TexCoords).r);
-		color = Color * sampled;
+
+		color = pow(decoded_color * sampled, vec4(1.0, 1.0, 1.0, 1.0/gamma));
 	}
 `
 
