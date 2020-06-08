@@ -27,3 +27,20 @@ func NewRGB(rgb string) Color {
 
 	return Color{r, g, b, 1.0}
 }
+
+// NewRGBA creates a color from an 8 hex character RGBA string.
+func NewRGBA(rgba string) Color {
+	rInt, _ := strconv.ParseUint(rgba[0:2], 16, 32)
+	r := float32(rInt) / 255
+
+	gInt, _ := strconv.ParseUint(rgba[2:4], 16, 32)
+	g := float32(gInt) / 255
+
+	bInt, _ := strconv.ParseUint(rgba[4:6], 16, 32)
+	b := float32(bInt) / 255
+
+	aInt, _ := strconv.ParseUint(rgba[6:8], 16, 32)
+	a := float32(aInt) / 255
+
+	return Color{r, g, b, a}
+}
