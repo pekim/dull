@@ -32,3 +32,12 @@ make run_simple
 ## documentation
 
 [godoc.org/github.com/pekim/dull](https://godoc.org/github.com/pekim/dull)
+
+## generate font asset data
+If the font data in `internal/font/data` is changed,
+it will be necessary to re-generate `internal/asset.go`.
+
+```shell script
+cd <this-directory>
+go generate
+```

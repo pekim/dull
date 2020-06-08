@@ -5,7 +5,7 @@ import (
 )
 
 type TextureItem struct {
-	key    string
+	key    uint32
 	pixels *[]byte
 
 	PixelHeight int

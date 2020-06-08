@@ -1,10 +1,11 @@
 package dull
 
 import (
+	"time"
+
 	"github.com/pekim/dull/color"
 	"github.com/pekim/dull/geometry"
 	"github.com/pekim/dull/internal/textureatlas"
-	"time"
 
 	"github.com/go-gl/gl/v3.3-core/gl"
 	"github.com/go-gl/glfw/v3.3/glfw"
@@ -72,6 +73,8 @@ type Window struct {
 	keyCallback      KeyCallback
 	charCallback     CharCallback
 	focusCallback    FocusCallback
+	closeCallback    CloseCallback
+	fontsizeCallback FontsizeCallback
 }
 
 // WindowOptions is used when creating new windows to provide
@@ -95,11 +98,11 @@ func (o *WindowOptions) applyDefaults() {
 		o.Height = 600
 	}
 	if o.Bg == nil {
-		color := color.New(0.0, 0.0, 0.0, 1.0) // black
+		color := color.Black
 		o.Bg = &color
 	}
 	if o.Fg == nil {
-		color := color.New(1.0, 1.0, 1.0, 1.0) // white
+		color := color.White
 		o.Fg = &color
 	}
 }
@@ -133,11 +136,12 @@ func newWindow(application *Application, options *WindowOptions) (*Window, error
 	scale, _ := w.glfwWindow.GetContentScale()
 	w.scale = float64(scale)
 	w.dpi = 96
-	w.setFontSize(0)
+	w.adjustFontSize(0)
 
 	w.glfwWindow.SetKeyCallback(w.callKeyCallback)
 	w.glfwWindow.SetCharCallback(w.callCharCallback)
 	w.glfwWindow.SetFocusCallback(w.callFocusCallback)
+	w.glfwWindow.SetCloseCallback(w.callCloseCallback)
 
 	w.glfwWindow.SetSizeCallback(func(_ *glfw.Window, width, height int) {
 		w.resized()
@@ -191,18 +195,25 @@ func (w *Window) glInit() error {
 		return errors.Wrap(err, "Failed to create gl program")
 	}
 
+	// gl.Enable(gl.FRAMEBUFFER_SRGB)
 	gl.Enable(gl.BLEND)
 	gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
 
 	return nil
 }
 
-func (w *Window) setFontSize(delta float64) {
-	w.fontSize += delta
+func (w *Window) SetFontSize(fontsize float64) {
+	w.fontSize = fontsize
 	w.fontFamily = font.NewFamily(w.Application.fontRenderer.new(), int(w.dpi), w.scale*w.fontSize)
 	w.solidTextureItem = w.fontFamily.Regular.GetGlyph(textureatlas.Solid)
 	w.setResizeIncrement()
 	w.resized()
+
+	w.callFontsizeCallback()
+}
+
+func (w *Window) adjustFontSize(delta float64) {
+	w.SetFontSize(w.fontSize + delta)
 }
 
 // Show makes the window visible.

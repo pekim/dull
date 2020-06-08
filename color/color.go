@@ -44,3 +44,8 @@ func NewRGBA(rgba string) Color {
 
 	return Color{r, g, b, a}
 }
+
+func (c Color) SetA(a float32) Color {
+	c.A = a
+	return c
+}

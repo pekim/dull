@@ -52,4 +52,6 @@ type Drawer interface {
 	// Whereas a value of OutlineInside will result in the outside edge of the outline
 	// matching the rectangle coordinates.
 	DrawOutlineRect(rect geometry.RectFloat, thickness float32, position OutlinePosition, colour color.Color)
+
+	Bell()
 }

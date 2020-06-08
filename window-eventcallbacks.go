@@ -85,16 +85,36 @@ func (w *Window) handleKeyEvent(key Key, action Action, mods ModifierKey) {
 	}
 }
 
+// FontsizeCallback is a function for use with SetFontsizeCallback.
+type FontsizeCallback func(fontsize float64)
+
+// SetFontsizeCallback sets or clears a function to call when the fontsize is changed.
+//
+// To remove a previously set callback, pass nil for the callback.
+//
+// The callback will run on the main thread, so there is no need
+// to use the Do function to effect updates from the callback.
+// Do not perform any long running or blocking operations in the callback.
+func (w *Window) SetFontsizeCallback(fn FontsizeCallback) {
+	w.fontsizeCallback = fn
+}
+
+func (w *Window) callFontsizeCallback() {
+	if w.fontsizeCallback != nil {
+		w.fontsizeCallback(w.fontSize)
+	}
+}
+
 func (w *Window) windowZoomReset() {
-	w.setFontSize(defaultFontSize - w.fontSize)
+	w.adjustFontSize(defaultFontSize - w.fontSize)
 }
 
 func (w *Window) windowZoomIn() {
-	w.setFontSize(+fontZoomDelta)
+	w.adjustFontSize(+fontZoomDelta)
 }
 
 func (w *Window) windowZoomOut() {
-	w.setFontSize(-fontZoomDelta)
+	w.adjustFontSize(-fontZoomDelta)
 }
 
 func (w *Window) ToggleFullscreen() {
@@ -168,6 +188,30 @@ func (w *Window) callFocusCallback(_ *glfw.Window, focused bool) {
 
 		if drawRequired {
 			w.draw()
+		}
+	}
+}
+
+// CloseCallback is a function for use with SetCloseCallback.
+//
+// Return true to allow the window to close.
+// Return false to prevent the window from closing.
+type CloseCallback func() bool
+
+// SetCloseCallback sets or clears a function to call when the user
+// tries to close the window.
+//
+// To remove a previously set callback, pass nil for the callback.
+func (w *Window) SetCloseCallback(fn CloseCallback) {
+	w.closeCallback = fn
+}
+
+func (w *Window) callCloseCallback(_ *glfw.Window) {
+	if w.closeCallback != nil {
+		shouldClose := w.closeCallback()
+
+		if !shouldClose {
+			w.glfwWindow.SetShouldClose(false)
 		}
 	}
 }

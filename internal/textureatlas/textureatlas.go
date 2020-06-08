@@ -15,7 +15,7 @@ const numberOfGlyphsIncrement = 1024
 
 type TextureAtlas struct {
 	Texture uint32
-	items   map[string]*TextureItem
+	items   map[uint32]*TextureItem
 
 	maxTextureSize                int32
 	approxNumberOfGlyphsToSupport int
@@ -38,7 +38,7 @@ func NewTextureAtlas(maxGlyphWidth, maxGlyphHeight int) *TextureAtlas {
 	}
 
 	ta.init()
-	ta.AddItem(string(Solid), &[]byte{0xff}, 1, 1, 0, 0)
+	ta.AddItem(uint32(Solid), &[]byte{0xff}, 1, 1, 0, 0)
 
 	return ta
 }
@@ -46,14 +46,14 @@ func NewTextureAtlas(maxGlyphWidth, maxGlyphHeight int) *TextureAtlas {
 func (ta *TextureAtlas) init() {
 	oldItems := ta.items
 
-	ta.items = map[string]*TextureItem{}
+	ta.items = map[uint32]*TextureItem{}
 	ta.nextX = 0
 	ta.nextY = 0
 
 	ta.setTextureDimension()
 	ta.generateTexture()
 
-	// add items that we're already in the old texture
+	// add items that were already in the old texture
 	for _, item := range oldItems {
 		ta.AddItem(item.key, item.pixels, item.PixelWidth, item.PixelHeight, item.TopBearing, item.LeftBearing)
 	}
@@ -104,12 +104,12 @@ func (ta *TextureAtlas) ensureRoom(width, height int) {
 	}
 }
 
-func (ta *TextureAtlas) Item(key string) *TextureItem {
+func (ta *TextureAtlas) Item(key uint32) *TextureItem {
 	return ta.items[key]
 }
 
 func (ta *TextureAtlas) AddItem(
-	key string,
+	key uint32,
 	pixels *[]byte,
 	width, height int,
 	topBearing, leftBearing float32,

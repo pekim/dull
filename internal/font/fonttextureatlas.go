@@ -19,7 +19,8 @@ func NewFontTextureAtlas(renderer Renderer, textureAtlas *textureatlas.TextureAt
 }
 
 func (fta *FontTextureAtlas) GetGlyph(rune rune) *textureatlas.TextureItem {
-	key := string(rune) + fta.fontRenderer.GetName()
+	//key := string(rune) + fta.fontRenderer.GetName()
+	key := uint32(rune) | uint32(fta.fontRenderer.GetId())
 	glyph := fta.textureAtlas.Item(key)
 
 	if glyph != nil {

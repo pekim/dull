@@ -20,14 +20,15 @@ type FreeType struct {
 
 type RendererFreeType struct {
 	name     string
+	id       int
 	ft       *FreeType
 	fontData unsafe.Pointer
 	face     C.FT_Face
 }
 
-func NewRenderer(name string, fontData []byte, dpi int, height float64) (font.Renderer, error) {
+func NewRenderer(name string, id int, fontData []byte, dpi int, height float64) (font.Renderer, error) {
 	ft := NewFreeType(dpi)
-	return ft.NewRenderer(name, fontData, height)
+	return ft.NewRenderer(name, id, fontData, height)
 }
 
 func NewFreeType(dpi int) *FreeType {
@@ -74,9 +75,10 @@ func (ft *FreeType) assertLibraryVersion() {
 
 }
 
-func (ft *FreeType) NewRenderer(name string, fontData []byte, pixelHeight float64) (font.Renderer, error) {
+func (ft *FreeType) NewRenderer(name string, id int, fontData []byte, pixelHeight float64) (font.Renderer, error) {
 	renderer := &RendererFreeType{
 		name:     name,
+		id:       id,
 		ft:       ft,
 		fontData: C.CBytes(fontData),
 	}
@@ -91,6 +93,15 @@ func (ft *FreeType) NewRenderer(name string, fontData []byte, pixelHeight float6
 	}
 
 	point64ths := C.FT_F26Dot6(pixelHeight / float64(ft.dpi) * 72 * 64)
+
+	// Enable stem darkening for the face.
+	// Necessary because the gamma correction in the shader lightens the pixels.
+	parameter := (*C.FT_Parameter)(C.malloc(C.sizeof_FT_Parameter))
+	defer C.free(unsafe.Pointer(parameter))
+	cTrue := C.FT_Bool(1)
+	parameter.tag = ('d' << 24) | ('a' << 16) | ('r' << 8) | ('k' << 0) // C.FT_PARAM_TAG_STEM_DARKENING
+	parameter.data = (C.FT_Pointer)(&cTrue)
+	C.FT_Face_Properties(renderer.face, 1, parameter)
 
 	ftError = C.FT_Set_Char_Size(
 		renderer.face,
@@ -113,11 +124,15 @@ func (r *RendererFreeType) GetName() string {
 	return r.name
 }
 
+func (r *RendererFreeType) GetId() int {
+	return r.id
+}
+
 func (r *RendererFreeType) GetGlyph(char rune) (*font.Glyph, error) {
 	face := (*C.FT_FaceRec)(r.face)
 	glyphIndex := C.FT_Get_Char_Index(r.face, C.FT_ULong(char))
 
-	ftError := C.FT_Load_Glyph(r.face, glyphIndex, C.FT_LOAD_DEFAULT)
+	ftError := C.FT_Load_Glyph(r.face, glyphIndex, C.FT_LOAD_DEFAULT|C.FT_LOAD_TARGET_LIGHT)
 	if ftError != C.FT_Err_Ok {
 		return nil, fmt.Errorf("failed to load glyph, %s, %d", string(char), int(ftError))
 	}

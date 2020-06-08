@@ -20,6 +20,7 @@ import (
 // RendererStbTruetype is a font glyph renderer back by stb_truetype.
 type RendererStbTruetype struct {
 	name string
+	id   int
 	info C.stbtt_fontinfo
 	data unsafe.Pointer
 
@@ -30,9 +31,10 @@ type RendererStbTruetype struct {
 // a fudge factor
 const scaleToSameSizeAsFreetype = 1.24
 
-func NewRenderer(name string, fontData []byte, dpi int, height float64) (font.Renderer, error) {
+func NewRenderer(name string, id int, fontData []byte, dpi int, height float64) (font.Renderer, error) {
 	renderer := &RendererStbTruetype{
 		name: name,
+		id:   id,
 	}
 
 	// Make a copy of the font data, on the C heap.
@@ -59,6 +61,10 @@ func NewRenderer(name string, fontData []byte, dpi int, height float64) (font.Re
 
 func (r *RendererStbTruetype) GetName() string {
 	return r.name
+}
+
+func (r *RendererStbTruetype) GetId() int {
+	return r.id
 }
 
 func (r *RendererStbTruetype) GetMetrics() *font.Metrics {
