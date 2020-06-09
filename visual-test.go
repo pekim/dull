@@ -3,13 +3,14 @@ package dull
 import (
 	"bytes"
 	"fmt"
-	"github.com/pekim/dull/color"
-	"github.com/stretchr/testify/assert"
 	"image"
 	"image/png"
 	"os"
 	"path"
 	"testing"
+
+	"github.com/pekim/dull/color"
+	"github.com/stretchr/testify/assert"
 )
 
 func normaliseImageIfRequired(img image.Image) {

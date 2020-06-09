@@ -3,10 +3,11 @@ package dull
 //go:generate go-bindata -pkg internal -o internal/asset.go internal/font/data/...
 
 import (
-	"github.com/faiface/mainthread"
-	"github.com/go-gl/glfw/v3.3/glfw"
-	"github.com/pkg/errors"
 	"sync"
+
+	"github.com/go-gl/glfw/v3.3/glfw"
+	"github.com/pekim/dull/internal/mainthread"
+	"github.com/pkg/errors"
 )
 
 var glfwTerminated = false

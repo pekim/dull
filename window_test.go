@@ -4,6 +4,7 @@ package dull
 
 import (
 	"github.com/pekim/dull/color"
+
 	"testing"
 )
 
