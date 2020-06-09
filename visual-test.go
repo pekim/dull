@@ -9,7 +9,6 @@ import (
 	"path"
 	"testing"
 
-	"github.com/pekim/dull/color"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -37,45 +36,6 @@ func normaliseImageIfRequired(img image.Image) {
 		fmt.Println(img)
 		panic("Unsupported Image implementation")
 	}
-}
-
-func testCaptureAndCompareImage(
-	t *testing.T,
-	name string,
-	width int,
-	height int,
-	scale float64,
-	setupWindow func(*Window),
-) {
-	Run(func(app *Application, err error) {
-		if err != nil {
-			t.Fatal(err)
-		}
-
-		w, err := app.NewWindow(&WindowOptions{
-			Width:  width,
-			Height: height,
-			Bg:     &color.White,
-			Fg:     &color.Black,
-		})
-		if err != nil {
-			t.Fatal(err)
-		}
-
-		// Use a fixed scale, to ensure reproducibility on all systems.
-		w.scale = scale
-		w.adjustFontSize(0)
-
-		// allow the test to prepare the window contents
-		setupWindow(w)
-
-		w.draw()
-
-		go w.Do(func() {
-			assertTestImage(t, name, w)
-			w.Destroy()
-		})
-	})
 }
 
 func assertTestImage(t *testing.T, name string, w *Window) {
