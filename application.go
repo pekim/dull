@@ -4,8 +4,8 @@ import (
 	"log"
 	"sync"
 
+	"github.com/faiface/mainthread"
 	"github.com/go-gl/glfw/v3.3/glfw"
-	"github.com/pekim/dull/internal/mainthread"
 )
 
 // Application represents a dull application and its windows.
