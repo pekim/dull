@@ -41,8 +41,6 @@ var fragmentShaderSource = `
 	{
 		vec4 gamma = vec4(1.0, 1.0, 1.0, 1/1.8);
 		vec4 inv_gamma = vec4(1.0, 1.0, 1.0, 1 / gamma.a);
-		// vec4 gamma = vec4(1.8, 1.8, 1.8, 1.0);
-		// vec4 inv_gamma = vec4(1 / 1.8, 1 / 1.8, 1 / 1.8, 1.0);
 
 		vec4 colour_linear = pow(Color, inv_gamma);
 
