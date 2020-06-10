@@ -39,18 +39,17 @@ var fragmentShaderSource = `
 
 	void main()
 	{
-		vec4 gamma = vec4(1.0, 1.0, 1.0, 1/1.8);
-		vec4 inv_gamma = vec4(1.0, 1.0, 1.0, 1 / gamma.a);
-		// vec4 gamma = vec4(1.8, 1.8, 1.8, 1.0);
-		// vec4 inv_gamma = vec4(1 / 1.8, 1 / 1.8, 1 / 1.8, 1.0);
-
-		vec4 colour_linear = pow(Color, inv_gamma);
+		float g = 2.4;
+		vec4 gamma = vec4(1/g, 1/g, 1/g, 1.0);
+		vec4 inv_gamma = vec4(g, g, g, 1.0);
 
 		vec4 sampled = vec4(1.0, 1.0, 1.0, texture(textur, TexCoords).r);
 		vec4 sampled_linear = pow(sampled, inv_gamma);
 
-		vec4 blended = colour_linear * sampled_linear;
-		color = pow(blended, vec4(1.0, 1.0, 1.0, gamma));
+		vec4 color_linear = pow(Color, inv_gamma);
+
+		vec4 blended = color_linear * sampled_linear;
+		color = pow(blended, gamma);
 	}
 `
 

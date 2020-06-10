@@ -56,29 +56,29 @@ func TestWindowVisualRegression(t *testing.T) {
 		},
 		{
 			name:   "greyscale",
-			width:  1200,
-			height: 30,
+			width:  800,
+			height: 60,
 			scale:  2.0,
 			setupWindow: func(window *Window) {
 				window.SetDrawCallback(func(drawer Drawer, columns, rows int) {
 					x := float32(0.0)
 
-					for i := float32(0.0); i <= 1.0; i += 0.02 {
+					for i := float32(0.0); i <= 1.0; i += 0.05 {
 						drawer.DrawCellsRect(geometry.RectFloat{
 							Top:    0,
 							Left:   x,
-							Bottom: 1,
-							Right:  x + 1,
+							Bottom: 2,
+							Right:  x + 2,
 						}, color.Color{R: i, G: i, B: i, A: 1.0})
 
-						x++
+						x += 2
 					}
 
 					drawer.DrawCellsRect(geometry.RectFloat{
 						Top:    0,
 						Left:   x,
-						Bottom: 1,
-						Right:  x + 1,
+						Bottom: 2,
+						Right:  x + 2,
 					}, color.Red1)
 				})
 
