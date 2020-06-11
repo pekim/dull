@@ -195,7 +195,7 @@ func (w *Window) glInit() error {
 		return errors.Wrap(err, "Failed to create gl program")
 	}
 
-	// gl.Enable(gl.FRAMEBUFFER_SRGB)
+	gl.Enable(gl.FRAMEBUFFER_SRGB)
 	gl.Enable(gl.BLEND)
 	gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
 

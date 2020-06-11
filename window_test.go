@@ -56,30 +56,34 @@ func TestWindowVisualRegression(t *testing.T) {
 		},
 		{
 			name:   "greyscale",
-			width:  800,
-			height: 60,
+			width:  1200,
+			height: 150,
 			scale:  2.0,
 			setupWindow: func(window *Window) {
 				window.SetDrawCallback(func(drawer Drawer, columns, rows int) {
-					x := float32(0.0)
+					step := float32(2.0)
+					steps := float32(20)
 
-					for i := float32(0.0); i <= 1.0; i += 0.05 {
-						drawer.DrawCellsRect(geometry.RectFloat{
-							Top:    0,
-							Left:   x,
-							Bottom: 2,
-							Right:  x + 2,
-						}, color.Color{R: i, G: i, B: i, A: 1.0})
-
-						x += 2
-					}
-
+					// A mid-grey background to surround the greyscale
 					drawer.DrawCellsRect(geometry.RectFloat{
 						Top:    0,
-						Left:   x,
-						Bottom: 2,
-						Right:  x + 2,
-					}, color.Red1)
+						Left:   0,
+						Bottom: 4,
+						Right:  step + ((steps + 1) * step) + step,
+					}, color.Color{R: 0.5, G: 0.5, B: 0.5, A: 1.0})
+
+					// Draw a greyscale.
+					x := step
+					for i := float32(0.0); i <= 1.01; i += (1 / steps) {
+						drawer.DrawCellsRect(geometry.RectFloat{
+							Top:    1,
+							Left:   x,
+							Bottom: 3,
+							Right:  x + step,
+						}, color.Color{R: i, G: i, B: i, A: 1.0})
+
+						x += step
+					}
 				})
 
 				window.Draw()
