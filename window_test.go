@@ -20,17 +20,28 @@ func TestWindowVisualRegression(t *testing.T) {
 		{
 			name:   "text",
 			width:  200,
-			height: 200,
+			height: 500,
 			scale:  2.0,
 			setupWindow: func(window *Window) {
 				window.SetDrawCallback(func(drawer Drawer, columns, rows int) {
-					for i, r := range "Qaz" {
-						drawer.DrawCell(&Cell{
-							Rune: r,
-							Fg:   color.Black,
-							Bg:   color.White,
-						}, float32(i), 1)
+					drawText := func(text string, x, y float32, cell *Cell) {
+						for i, r := range text {
+							cell.Rune = r
+							drawer.DrawCell(cell, x+float32(i), y)
+						}
 					}
+
+					drawText("Qwerty", 0, 0, &Cell{Fg: color.Green4})
+					drawText("Qwerty", 0, 1, &Cell{Fg: color.NewRGBA("A00000A0")})
+					drawText("Qwerty", 0, 2, &Cell{Fg: color.Green4, Bg: color.Black})
+
+					drawText("Qwerty", 0, 4, &Cell{Fg: color.Black})
+					drawText("Qwerty", 0, 5, &Cell{Fg: color.Black, Bold: true})
+					drawText("Qwerty", 0, 6, &Cell{Fg: color.Black, Italic: true})
+					drawText("Qwerty", 0, 7, &Cell{Fg: color.Black, Bold: true, Italic: true})
+
+					drawText("Qwerty", 0, 9, &Cell{Fg: color.Black, Strikethrough: true})
+					drawText("Qwerty", 0, 10, &Cell{Fg: color.Black, Underline: true})
 				})
 
 				window.Draw()
