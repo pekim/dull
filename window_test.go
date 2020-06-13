@@ -21,7 +21,7 @@ func TestWindowVisualRegression(t *testing.T) {
 			name:   "text",
 			width:  200,
 			height: 500,
-			scale:  2.0,
+			scale:  1.2,
 			setupWindow: func(window *Window) {
 				window.SetDrawCallback(func(drawer Drawer, columns, rows int) {
 					drawText := func(text string, x, y float32, cell *Cell) {
@@ -40,8 +40,22 @@ func TestWindowVisualRegression(t *testing.T) {
 					drawText("Qwerty", 0, 6, &Cell{Fg: color.Black, Italic: true})
 					drawText("Qwerty", 0, 7, &Cell{Fg: color.Black, Bold: true, Italic: true})
 
-					drawText("Qwerty", 0, 9, &Cell{Fg: color.Black, Strikethrough: true})
-					drawText("Qwerty", 0, 10, &Cell{Fg: color.Black, Underline: true})
+					drawText("Qwerty", 0, 9, &Cell{
+						Fg:                 color.Black,
+						Strikethrough:      true,
+						StrikethroughColor: color.Red1})
+					drawText("Qwerty", 0, 10, &Cell{
+						Fg:             color.Black,
+						Underline:      true,
+						UnderlineColor: color.Blue1,
+					})
+					drawText("Qwerty", 0, 11, &Cell{
+						Fg:                 color.Black,
+						Strikethrough:      true,
+						StrikethroughColor: color.Blue1,
+						Underline:          true,
+						UnderlineColor:     color.Red1,
+					})
 				})
 
 				window.Draw()

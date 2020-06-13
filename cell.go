@@ -30,8 +30,14 @@ type Cell struct {
 
 	// Underline denotes whether the Rune should be underlined (underscored).
 	Underline bool
+	// UnderlineColor is the colour of the underline.
+	// It is ignored unless Underline is true
+	UnderlineColor color.Color
 	// Strikethrough denotes whether the Rune should be struckthrough.
 	Strikethrough bool
+	// StrikethroughColor is the colour of the strikethrough
+	// It is ignored unless SetTitle is true
+	StrikethroughColor color.Color
 
 	// Invert denotes whether the foreground and background colours should be reversed.
 	Invert bool

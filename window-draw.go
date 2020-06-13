@@ -1,12 +1,13 @@
 package dull
 
 import (
-	"github.com/pekim/dull/color"
-	"github.com/pekim/dull/geometry"
-	"github.com/pekim/dull/internal/font"
 	"image"
 	"time"
 	"unsafe"
+
+	"github.com/pekim/dull/color"
+	"github.com/pekim/dull/geometry"
+	"github.com/pekim/dull/internal/font"
 
 	"github.com/go-gl/gl/v3.3-core/gl"
 )
@@ -85,11 +86,19 @@ func (w *Window) DrawCell(cell *Cell, column, row float32) {
 
 	if cell.Strikethrough {
 		// COMBINING LONG STROKE OVERLAY
-		w.drawRune(columnI, rowI, '\u0336', cell.Fg, w.fontFamily.Font(cell.Bold, cell.Italic))
+		w.drawRune(
+			columnI, rowI,
+			'\u0336',
+			cell.StrikethroughColor,
+			w.fontFamily.Font(cell.Bold, cell.Italic))
 	}
 	if cell.Underline {
 		// COMBINING LOW LINE
-		w.drawRune(columnI, rowI, '\u0332', cell.Fg, w.fontFamily.Font(cell.Bold, cell.Italic))
+		w.drawRune(
+			columnI, rowI,
+			'\u0332',
+			cell.UnderlineColor,
+			w.fontFamily.Font(cell.Bold, cell.Italic))
 	}
 }
 
