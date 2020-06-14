@@ -13,9 +13,6 @@ const (
 )
 
 type Drawer interface {
-	// Clear discards pending drawing instructions (vertexes).
-	Clear()
-
 	// DrawCell draws a rune in a cell.
 	DrawCell(cell *Cell, column, row float32)
 

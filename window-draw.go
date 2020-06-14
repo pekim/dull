@@ -23,7 +23,7 @@ func (w *Window) draw() {
 		return
 	}
 
-	w.Clear()
+	w.clear()
 
 	if w.drawCallback != nil {
 		w.drawCallback(w, w.columns, w.rows)
@@ -46,7 +46,7 @@ func (w *Window) draw() {
 	//fmt.Printf("%.1fms\n", w.lastRenderDuration.Seconds()*1000)
 }
 
-func (w *Window) Clear() {
+func (w *Window) clear() {
 	// empty vertices
 	w.vertices = w.vertices[:0]
 }

@@ -1,8 +1,9 @@
 package imui
 
 import (
-	"github.com/pekim/dull"
 	"os"
+
+	"github.com/pekim/dull"
 )
 
 type AppRender func(renderer *Renderer, width int, height int)
@@ -62,7 +63,7 @@ func (r *Renderer) drawCallback(drawer dull.Drawer, columns, rows int) {
 		r.rerender = false
 		r.keyEvent = nil
 
-		r.Drawer().Clear()
+		//r.Drawer().Clear()
 		r.appRender(r, columns, rows)
 
 		if r.rerender {
