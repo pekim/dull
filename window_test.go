@@ -152,8 +152,17 @@ func TestWindowVisualRegression(t *testing.T) {
 
 				w.draw()
 
-				assertTestImage(t, test.name, w)
-				w.Destroy()
+				// At this time the window may not have been updated.
+				// And a captured image may be empty.
+				//
+				// So capture the images in a later execution of the event loop.
+				// (A closure is used to close over the test name and its window.)
+				func(name string, w *Window) {
+					w.Do(func() {
+						assertTestImage(t, name, w)
+						w.Destroy()
+					})
+				}(test.name, w)
 			})
 		}
 
