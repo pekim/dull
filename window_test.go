@@ -61,24 +61,24 @@ func TestWindowVisualRegression(t *testing.T) {
 				window.Draw()
 			},
 		},
-		{
-			name:   "outline-rectangle-inside",
-			width:  200,
-			height: 200,
-			scale:  2.0,
-			setupWindow: func(window *Window) {
-				window.SetDrawCallback(func(drawer Drawer, columns, rows int) {
-					drawer.DrawCellsRect(geometry.RectFloat{
-						Top:    2,
-						Bottom: 4,
-						Left:   2,
-						Right:  6,
-					}, color.Gray4)
-				})
-
-				window.Draw()
-			},
-		},
+		//{
+		//	name:   "outline-rectangle-inside",
+		//	width:  200,
+		//	height: 200,
+		//	scale:  2.0,
+		//	setupWindow: func(window *Window) {
+		//		window.SetDrawCallback(func(drawer Drawer, columns, rows int) {
+		//			drawer.DrawCellsRect(geometry.RectFloat{
+		//				Top:    2,
+		//				Bottom: 4,
+		//				Left:   2,
+		//				Right:  6,
+		//			}, color.Gray4)
+		//		})
+		//
+		//		window.Draw()
+		//	},
+		//},
 		{
 			name:   "greyscale",
 			width:  1200,
