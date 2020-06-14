@@ -77,7 +77,7 @@ func (w *Window) drawCells() {
 	gl.DeleteVertexArrays(1, &vao)
 }
 
-func (w *Window) DrawCell(cell *Cell, column, row float32) {
+func (w *Window) DrawCell(cell *Cell, column, row float64) {
 	columnI := int(column)
 	rowI := int(row)
 
@@ -124,7 +124,7 @@ func (w *Window) drawRune(
 
 	left := -1.0 + (float32(column) * cellWidth) + leftBearing
 	top := -1.0 + (float32(row) * cellHeight) + topBearing
-	destination := geometry.RectFloat{
+	destination := geometry.RectFloat32{
 		Left:   left,
 		Top:    top,
 		Right:  left + width,
@@ -134,20 +134,24 @@ func (w *Window) drawRune(
 	w.drawTextureItemToQuad(destination, textureItem, colour)
 }
 
-func (w *Window) DrawCellRect(column, row float32, rect geometry.RectFloat, colour color.Color) {
+func (w *Window) DrawCellRect(column, row float64, rect geometry.RectFloat, colour color.Color) {
+	column32 := float32(column)
+	row32 := float32(row)
+	rect32 := geometry.RectFloat32From64(rect)
+
 	cellWidth := w.viewportCellWidth
 	cellHeight := w.viewportCellHeight
 
 	width := cellWidth
 	height := cellHeight
 
-	left := -1.0 + ((column + rect.Left) * cellWidth)
-	top := -1.0 + ((row + rect.Top) * cellHeight)
-	destination := geometry.RectFloat{
+	left := -1.0 + (column32+rect32.Left)*cellWidth
+	top := -1.0 + (row32+rect32.Top)*cellHeight
+	destination := geometry.RectFloat32{
 		Left:   left,
 		Top:    top,
-		Right:  left + (width * (rect.Right - rect.Left)),
-		Bottom: top + (height * (rect.Bottom - rect.Top)),
+		Right:  left + (width * (rect32.Right - rect32.Left)),
+		Bottom: top + (height * (rect32.Bottom - rect32.Top)),
 	}
 
 	w.drawSolidQuad(destination, colour)
@@ -156,15 +160,17 @@ func (w *Window) DrawCellRect(column, row float32, rect geometry.RectFloat, colo
 // DrawCellsRect draws a rectangle of solid colour spanning some
 // or all of some cells.
 func (w *Window) DrawCellsRect(rect geometry.RectFloat, colour color.Color) {
+	rect32 := geometry.RectFloat32From64(rect)
+
 	cellWidth := w.viewportCellWidth
 	cellHeight := w.viewportCellHeight
 
-	width := cellWidth * rect.Width()
-	height := cellHeight * rect.Height()
+	width := cellWidth * rect32.Width()
+	height := cellHeight * rect32.Height()
 
-	left := -1.0 + (rect.Left * cellWidth)
-	top := -1.0 + (rect.Top * cellHeight)
-	destination := geometry.RectFloat{
+	left := -1.0 + (rect32.Left * cellWidth)
+	top := -1.0 + (rect32.Top * cellHeight)
+	destination := geometry.RectFloat32{
 		Left:   left,
 		Top:    top,
 		Right:  left + width,
@@ -180,15 +186,15 @@ func (w *Window) DrawOutlineRect(rect geometry.RectFloat, thickness float32,
 	xThickness := thickness
 	yThickness := (float32(w.viewportCellWidthPixel) / float32(w.viewportCellHeightPixel)) * thickness
 
-	var topTop float32
-	var topBottom float32
-	var bottomTop float32
-	var bottomBottom float32
+	var topTop float64
+	var topBottom float64
+	var bottomTop float64
+	var bottomBottom float64
 
-	var leftLeft float32
-	var leftRight float32
-	var rightLeft float32
-	var rightRight float32
+	var leftLeft float64
+	var leftRight float64
+	var rightLeft float64
+	var rightRight float64
 
 	if position == OutlineInside {
 		// set outer positions to match the rect
@@ -198,17 +204,17 @@ func (w *Window) DrawOutlineRect(rect geometry.RectFloat, thickness float32,
 		rightRight = rect.Right
 	} else {
 		// set outer positions outside the rect
-		topTop = rect.Top - yThickness
-		bottomBottom = rect.Bottom + yThickness
-		leftLeft = rect.Left - xThickness
-		rightRight = rect.Right + xThickness
+		topTop = rect.Top - float64(yThickness)
+		bottomBottom = rect.Bottom + float64(yThickness)
+		leftLeft = rect.Left - float64(xThickness)
+		rightRight = rect.Right + float64(xThickness)
 	}
 
 	// set innner positions inside the outer positions
-	topBottom = topTop + yThickness
-	bottomTop = bottomBottom - yThickness
-	leftRight = leftLeft + xThickness
-	rightLeft = rightRight - xThickness
+	topBottom = topTop + float64(yThickness)
+	bottomTop = bottomBottom - float64(yThickness)
+	leftRight = leftLeft + float64(xThickness)
+	rightLeft = rightRight - float64(xThickness)
 
 	// draw top line
 	w.DrawCellsRect(geometry.RectFloat{
@@ -244,7 +250,7 @@ func (w *Window) DrawOutlineRect(rect geometry.RectFloat, thickness float32,
 }
 
 func (w *Window) drawCellBackground(column, row int, colour color.Color) {
-	w.DrawCellRect(float32(column), float32(row), geometry.RectFloat{0, 1.0, 0, 1.0}, colour)
+	w.DrawCellRect(float64(column), float64(row), geometry.RectFloat{0, 1.0, 0, 1.0}, colour)
 }
 
 func (w *Window) configureTextureUniform() {

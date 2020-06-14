@@ -2,8 +2,9 @@ package textureatlas
 
 import (
 	"fmt"
-	"github.com/pekim/dull/geometry"
 	"math"
+
+	"github.com/pekim/dull/geometry"
 
 	"github.com/go-gl/gl/v3.3-core/gl"
 )
@@ -138,7 +139,7 @@ func (ta *TextureAtlas) AddItem(
 		PixelHeight: height,
 		PixelWidth:  width,
 
-		Rect: geometry.RectFloat{
+		Rect: geometry.RectFloat32{
 			Left:   float32(x) / float32(ta.width),
 			Top:    float32(y) / float32(ta.height),
 			Right:  float32(int(x)+width) / float32(ta.width),

@@ -16,5 +16,5 @@ type TextureItem struct {
 	LeftBearing float32
 
 	// in texture co-ordinates
-	Rect geometry.RectFloat
+	Rect geometry.RectFloat32
 }

@@ -24,10 +24,10 @@ func TestWindowVisualRegression(t *testing.T) {
 			scale:  1.2,
 			setupWindow: func(window *Window) {
 				window.SetDrawCallback(func(drawer Drawer, columns, rows int) {
-					drawText := func(text string, x, y float32, cell *Cell) {
+					drawText := func(text string, x, y float64, cell *Cell) {
 						for i, r := range text {
 							cell.Rune = r
-							drawer.DrawCell(cell, x+float32(i), y)
+							drawer.DrawCell(cell, x+float64(i), y)
 						}
 					}
 
@@ -86,8 +86,8 @@ func TestWindowVisualRegression(t *testing.T) {
 			scale:  2.0,
 			setupWindow: func(window *Window) {
 				window.SetDrawCallback(func(drawer Drawer, columns, rows int) {
-					step := float32(2.0)
-					steps := float32(20)
+					step := 2.0
+					steps := 20.0
 
 					// A mid-grey background to surround the greyscale
 					drawer.DrawCellsRect(geometry.RectFloat{
@@ -99,7 +99,7 @@ func TestWindowVisualRegression(t *testing.T) {
 
 					// Draw a greyscale.
 					x := step
-					for i := float32(0.0); i <= 1.01; i += (1 / steps) {
+					for i := float32(0.0); i <= 1.01; i += float32(1 / steps) {
 						drawer.DrawCellsRect(geometry.RectFloat{
 							Top:    1,
 							Left:   x,

@@ -11,7 +11,7 @@ drawTextureItemToQuad adds vertices that wiil result in the gl program
 blending a rectangle from the texture to a rectangle int the window.
 */
 func (w *Window) drawTextureItemToQuad(
-	dest geometry.RectFloat,
+	dest geometry.RectFloat32,
 	textureItem *textureatlas.TextureItem,
 	c color.Color,
 ) {
@@ -40,6 +40,6 @@ func (w *Window) drawTextureItemToQuad(
 	)
 }
 
-func (w *Window) drawSolidQuad(dest geometry.RectFloat, c color.Color) {
+func (w *Window) drawSolidQuad(dest geometry.RectFloat32, c color.Color) {
 	w.drawTextureItemToQuad(dest, w.solidTextureItem, c)
 }
