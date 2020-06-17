@@ -43,8 +43,8 @@ func initialise(app *dull.Application, err error) {
 		}, 2, 1)
 
 		for i, r := range "Hello world!" {
-			row := 3.0
-			col := float64(i) + 1
+			row := 3
+			col := i + 1
 			d.DrawCell(&dull.Cell{Rune: r, Fg: black, Bg: white, Bold: false, Italic: false}, col, row+0)
 			d.DrawCell(&dull.Cell{Rune: r, Fg: black, Bg: white, Bold: true, Italic: false}, col, row+1)
 			d.DrawCell(&dull.Cell{Rune: r, Fg: black, Bg: white, Bold: false, Italic: true}, col, row+2)
@@ -52,16 +52,16 @@ func initialise(app *dull.Application, err error) {
 		}
 
 		for i, r := range "Hello world!" {
-			col := float64(i) + 1
+			col := i + 1
 			d.DrawCell(&dull.Cell{Rune: r, Fg: black, Bg: white, Strikethrough: true}, col, 7)
 		}
 		for i, r := range "Hello world!" {
-			col := float64(i) + 1
+			col := i + 1
 			d.DrawCell(&dull.Cell{Rune: r, Fg: black, Bg: white, Underline: true}, col, 8)
 		}
 
 		for i, r := range "Hello world!" {
-			col := float64(i) + 1
+			col := i + 1
 			d.DrawCell(&dull.Cell{Rune: r, Fg: black, Bg: white}, col, 10)
 			d.DrawCell(&dull.Cell{Rune: r, Fg: black, Bg: white}, col, 11)
 		}

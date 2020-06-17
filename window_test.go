@@ -24,10 +24,10 @@ func TestWindowVisualRegression(t *testing.T) {
 			scale:  1.2,
 			setupWindow: func(window *Window) {
 				window.SetDrawCallback(func(drawer Drawer, columns, rows int) {
-					drawText := func(text string, x, y float64, cell *Cell) {
+					drawText := func(text string, x, y int, cell *Cell) {
 						for i, r := range text {
 							cell.Rune = r
-							drawer.DrawCell(cell, x+float64(i), y)
+							drawer.DrawCell(cell, x+i, y)
 						}
 					}
 

@@ -14,7 +14,7 @@ const (
 
 type Drawer interface {
 	// DrawCell draws a rune in a cell.
-	DrawCell(cell *Cell, column, row float64)
+	DrawCell(cell *Cell, column, row int)
 
 	// DrawCellRect draws a rectangle of the desired color within
 	// a cell.

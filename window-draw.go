@@ -77,17 +77,14 @@ func (w *Window) drawCells() {
 	gl.DeleteVertexArrays(1, &vao)
 }
 
-func (w *Window) DrawCell(cell *Cell, column, row float64) {
-	columnI := int(column)
-	rowI := int(row)
-
-	w.drawCellBackground(columnI, rowI, cell.Bg)
-	w.drawRune(columnI, rowI, cell.Rune, cell.Fg, w.fontFamily.Font(cell.Bold, cell.Italic))
+func (w *Window) DrawCell(cell *Cell, column, row int) {
+	w.drawCellBackground(column, row, cell.Bg)
+	w.drawRune(column, row, cell.Rune, cell.Fg, w.fontFamily.Font(cell.Bold, cell.Italic))
 
 	if cell.Strikethrough {
 		// COMBINING LONG STROKE OVERLAY
 		w.drawRune(
-			columnI, rowI,
+			column, row,
 			'\u0336',
 			cell.StrikethroughColor,
 			w.fontFamily.Font(cell.Bold, cell.Italic))
@@ -95,7 +92,7 @@ func (w *Window) DrawCell(cell *Cell, column, row float64) {
 	if cell.Underline {
 		// COMBINING LOW LINE
 		w.drawRune(
-			columnI, rowI,
+			column, row,
 			'\u0332',
 			cell.UnderlineColor,
 			w.fontFamily.Font(cell.Bold, cell.Italic))
