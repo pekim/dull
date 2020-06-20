@@ -195,7 +195,7 @@ func (w *Window) glInit() error {
 	// Avoids flickering and jumping of content, such as when resizing the window.
 	glfw.SwapInterval(0)
 
-	w.program, err = newProgram(vertexShaderSource, fragmentShaderSource)
+	w.program, err = newProgram(renderVertexShaderSource, renderFragmentShaderSource)
 	if err != nil {
 		return err
 	}
