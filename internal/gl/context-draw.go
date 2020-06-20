@@ -32,12 +32,14 @@ func (c *Context) drawCells(bg color.Color, vertices []float32, glyphsTexture ui
 	gl.BindFramebuffer(gl.FRAMEBUFFER, c.framebuffer)
 	gl.UseProgram(c.program)
 
+	c.configureTextureUniform(glyphsTexture)
+
 	// clear to background colour
 	gl.ClearColor(bg.R, bg.G, bg.B, bg.A)
 	gl.Clear(gl.COLOR_BUFFER_BIT)
 
 	vertexAttributes := []vertexAttribute{vertexAttrPosition, vertexAttrTextureCoords, vertexAttrColor}
-	c.drawVertices(vertexAttributes, glyphsTexture, vertices)
+	c.drawVertices(vertexAttributes, vertices)
 }
 
 // gammaCorrect applies gamma correction to the FBO's texture,
@@ -59,11 +61,13 @@ func (c *Context) gammaCorrect() {
 	gl.BindFramebuffer(gl.FRAMEBUFFER, 0)
 	gl.UseProgram(c.gammaProgram)
 
+	c.configureTextureUniform(c.framebufferTexture)
+
 	vertexAttributes := []vertexAttribute{vertexAttrPosition, vertexAttrTextureCoords}
-	c.drawVertices(vertexAttributes, c.framebufferTexture, vertices)
+	c.drawVertices(vertexAttributes, vertices)
 }
 
-func (c *Context) drawVertices(vertexAttributes []vertexAttribute, texture uint32, vertices []float32) {
+func (c *Context) drawVertices(vertexAttributes []vertexAttribute, vertices []float32) {
 	// gl.BufferData panics if the length of the data is 0
 	if len(vertices) == 0 {
 		return
@@ -78,7 +82,6 @@ func (c *Context) drawVertices(vertexAttributes []vertexAttribute, texture uint3
 	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
 
 	c.configureVertexAttributes(vertexAttributes)
-	c.configureTextureUniform(texture)
 
 	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*sizeofGlFloat, gl.Ptr(vertices), gl.STREAM_DRAW)
 	gl.DrawArrays(gl.TRIANGLES, 0, int32(len(vertices)/4))
