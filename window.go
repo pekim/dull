@@ -1,15 +1,14 @@
 package dull
 
 import (
-	"fmt"
+	"image"
 	"time"
 
 	"github.com/pekim/dull/color"
 	"github.com/pekim/dull/geometry"
-	gl2 "github.com/pekim/dull/internal/gl"
+	gl "github.com/pekim/dull/internal/gl"
 	"github.com/pekim/dull/internal/textureatlas"
 
-	"github.com/go-gl/gl/v3.3-core/gl"
 	"github.com/go-gl/glfw/v3.3/glfw"
 	"github.com/pkg/errors"
 
@@ -37,10 +36,7 @@ type Window struct {
 	solidTextureItem   *textureatlas.TextureItem
 	glfwWindow         *glfw.Window
 	glTerminated       bool
-	program            uint32
-	gammaProgram       uint32
-	framebuffer        uint32
-	framebufferTexture uint32
+	glContext          gl.Context
 	lastRenderDuration time.Duration
 	windowedBounds     geometry.Rect
 	keybindings        []keybinding
@@ -187,47 +183,12 @@ func (w *Window) createWindow(options *WindowOptions) error {
 func (w *Window) glInit() error {
 	w.glfwWindow.MakeContextCurrent()
 
-	err := gl.Init()
-	if err != nil {
-		return errors.Wrap(err, "Failed to initialise OpenGL")
-	}
-
 	// Swap buffers immediately when requested.
 	// Avoids flickering and jumping of content, such as when resizing the window.
 	glfw.SwapInterval(0)
 
-	w.program, err = gl2.NewRenderProgram()
-	if err != nil {
-		return err
-	}
-
-	w.gammaProgram, err = gl2.NewGammaProgram()
-	if err != nil {
-		return err
-	}
-
-	gl.Enable(gl.BLEND)
-	gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
-
-	gl.GenFramebuffers(1, &w.framebuffer)
-	gl.BindFramebuffer(gl.FRAMEBUFFER, w.framebuffer)
-
-	gl.GenTextures(1, &w.framebufferTexture)
-	gl.BindTexture(gl.TEXTURE_2D, w.framebufferTexture)
-	gl.TexImage2D(gl.TEXTURE_2D, 0, gl.RGB, int32(w.width), int32(w.height), 0, gl.RGB, gl.UNSIGNED_BYTE, nil)
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
-	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
-	gl.FramebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, w.framebufferTexture, 0)
-
-	gl.BindTexture(gl.TEXTURE_2D, 0)
-	gl.BindFramebuffer(gl.FRAMEBUFFER, 0)
-
-	fbStatus := gl.CheckFramebufferStatus(gl.FRAMEBUFFER)
-	if fbStatus != gl.FRAMEBUFFER_COMPLETE {
-		return fmt.Errorf("Framebuffer not complete, %d", fbStatus)
-	}
-
-	return nil
+	err := w.glContext.Init()
+	return err
 }
 
 func (w *Window) SetFontSize(fontsize float64) {
@@ -314,12 +275,7 @@ func (w *Window) resized() {
 	}
 
 	w.glfwWindow.MakeContextCurrent()
-	gl.Viewport(0, 0, int32(w.width), int32(w.height))
-
-	// Size the framebuffer texture.
-	gl.BindTexture(gl.TEXTURE_2D, w.framebufferTexture)
-	gl.TexImage2D(gl.TEXTURE_2D, 0, gl.RGB, int32(w.width), int32(w.height), 0, gl.RGB, gl.UNSIGNED_BYTE, nil)
-	gl.BindTexture(gl.TEXTURE_2D, 0)
+	w.glContext.SetWindowSize(w.width, w.height)
 
 	w.viewportCellWidthPixel = w.fontFamily.CellWidth
 	w.viewportCellHeightPixel = w.fontFamily.CellHeight
@@ -408,4 +364,34 @@ func (w *Window) Restore() {
 // The window should already be visible and not iconified.
 func (w *Window) Focus() {
 	w.glfwWindow.Focus()
+}
+
+// Capture captures the Window's pixels in an Image.
+func (w *Window) Capture() image.Image {
+	width, height := w.glfwWindow.GetSize()
+	stride := 4 * width
+
+	buffer := w.glContext.ReadPixels(0, 0, width, height)
+
+	// Flip image vertically,
+	// as ReadPixels starts reading from the bottom left.
+	flippedBuffer := make([]byte, len(buffer))
+	for row := 0; row < height; row++ {
+		flippedRowStart := row * stride
+		flippedRowEnd := flippedRowStart + stride
+
+		originalRowStart := (height - row - 1) * stride
+		originalRowEnd := originalRowStart + stride
+
+		copy(
+			flippedBuffer[flippedRowStart:flippedRowEnd],
+			buffer[originalRowStart:originalRowEnd],
+		)
+	}
+
+	img := image.NewRGBA(image.Rect(0, 0, width, height))
+	img.Pix = flippedBuffer
+	img.Stride = stride
+
+	return img
 }

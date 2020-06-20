@@ -1,18 +1,12 @@
 package dull
 
 import (
-	"image"
 	"time"
-	"unsafe"
 
 	"github.com/pekim/dull/color"
 	"github.com/pekim/dull/geometry"
 	"github.com/pekim/dull/internal/font"
-
-	"github.com/go-gl/gl/v3.3-core/gl"
 )
-
-const sizeofGlFloat = 4
 
 func (w *Window) Draw() {
 	w.Do(w.draw)
@@ -32,64 +26,7 @@ func (w *Window) draw() {
 	startTime := time.Now()
 
 	w.glfwWindow.MakeContextCurrent()
-
-	gl.BindFramebuffer(gl.FRAMEBUFFER, w.framebuffer)
-	gl.UseProgram(w.program)
-
-	// clear to background colour
-	gl.ClearColor(w.bg.R, w.bg.G, w.bg.B, 1.0)
-	gl.Clear(gl.COLOR_BUFFER_BIT)
-
-	w.drawCells()
-
-	// Post-processing; apply gamma correction.
-	// Make default framebuffer active again.
-	gl.BindFramebuffer(gl.FRAMEBUFFER, 0)
-	quadVertices := []float32{
-		// triangle 1
-		-1.0, 1.0, 0.0, 1.0,
-		-1.0, -1.0, 0.0, 0.0,
-		1.0, -1.0, 1.0, 0.0,
-
-		// triangle 2
-		-1.0, 1.0, 0.0, 1.0,
-		1.0, -1.0, 1.0, 0.0,
-		1.0, 1.0, 1.0, 1.0,
-	}
-	//gl.ClearColor(1.0, 0.0, 0.0, 1.0)
-	//gl.Clear(gl.COLOR_BUFFER_BIT)
-	gl.UseProgram(w.gammaProgram)
-
-	gl.BindTexture(gl.TEXTURE_2D, w.framebufferTexture)
-
-	var vao uint32
-	gl.GenVertexArrays(1, &vao)
-	gl.BindVertexArray(vao)
-
-	var vbo uint32
-	gl.GenBuffers(1, &vbo)
-	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
-
-	positionCount := 2
-	texCoordCount := 2
-	vertexAttribStride := int32(
-		sizeofGlFloat * (positionCount + texCoordCount))
-
-	attribOffset := 0
-
-	w.configureVertexAttribute("position", positionCount, vertexAttribStride, &attribOffset)
-	w.configureVertexAttribute("texCoords", texCoordCount, vertexAttribStride, &attribOffset)
-
-	textureUniform := gl.GetUniformLocation(w.program, gl.Str("textur\x00"))
-	gl.Uniform1ui(textureUniform, 0)
-	gl.BindTexture(gl.TEXTURE_2D, w.framebufferTexture)
-
-	gl.BufferData(gl.ARRAY_BUFFER, len(quadVertices)*sizeofGlFloat, gl.Ptr(quadVertices), gl.STREAM_DRAW)
-	gl.DrawArrays(gl.TRIANGLES, 0, int32(len(quadVertices)/4))
-
-	gl.DeleteBuffers(1, &vbo)
-	gl.DeleteVertexArrays(1, &vao)
-
+	w.glContext.Draw(color.New(w.bg.R, w.bg.G, w.bg.B, 1.0), w.fontFamily.TextureAtlas.Texture, w.vertices)
 	w.glfwWindow.SwapBuffers()
 
 	w.lastRenderDuration = time.Now().Sub(startTime)
@@ -99,32 +36,6 @@ func (w *Window) draw() {
 func (w *Window) clear() {
 	// empty vertices
 	w.vertices = w.vertices[:0]
-}
-
-func (w *Window) drawCells() {
-	// gl.BufferData panics if the length of the data is 0
-	if len(w.vertices) == 0 {
-		return
-	}
-
-	var vao uint32
-	gl.GenVertexArrays(1, &vao)
-	gl.BindVertexArray(vao)
-
-	var vbo uint32
-	gl.GenBuffers(1, &vbo)
-	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
-
-	w.configureVertexAttributes()
-	w.configureTextureUniform()
-
-	gl.BufferData(gl.ARRAY_BUFFER, len(w.vertices)*sizeofGlFloat, gl.Ptr(w.vertices), gl.STREAM_DRAW)
-
-	// render quads (each of which is 2 triangles)
-	gl.DrawArrays(gl.TRIANGLES, 0, int32(len(w.vertices)/4))
-
-	gl.DeleteBuffers(1, &vbo)
-	gl.DeleteVertexArrays(1, &vao)
 }
 
 func (w *Window) DrawCell(cell *Cell, column, row int) {
@@ -298,70 +209,4 @@ func (w *Window) DrawOutlineRect(rect geometry.RectFloat, thickness float32,
 
 func (w *Window) drawCellBackground(column, row int, colour color.Color) {
 	w.DrawCellRect(float64(column), float64(row), geometry.RectFloat{0, 1.0, 0, 1.0}, colour)
-}
-
-func (w *Window) configureTextureUniform() {
-	textureUniform := gl.GetUniformLocation(w.program, gl.Str("textur\x00"))
-	gl.Uniform1ui(textureUniform, 0)
-	gl.BindTexture(gl.TEXTURE_2D, w.fontFamily.TextureAtlas.Texture)
-}
-
-func (w *Window) configureVertexAttributes() {
-	positionCount := 2
-	texCoordCount := 2
-	colourCount := 4
-	vertexAttribStride := int32(
-		sizeofGlFloat * (positionCount + texCoordCount + colourCount))
-
-	attribOffset := 0
-
-	w.configureVertexAttribute("position", positionCount, vertexAttribStride, &attribOffset)
-	w.configureVertexAttribute("texCoords", texCoordCount, vertexAttribStride, &attribOffset)
-	w.configureVertexAttribute("color", colourCount, vertexAttribStride, &attribOffset)
-}
-
-func (w *Window) configureVertexAttribute(
-	name string, attributeCount int, vertexAttribStride int32, attributeOffset *int,
-) {
-	attrib := uint32(gl.GetAttribLocation(w.program, gl.Str(name+"\x00")))
-	gl.EnableVertexAttribArray(attrib)
-	gl.VertexAttribPointer(attrib, int32(attributeCount), gl.FLOAT, false,
-		vertexAttribStride, gl.PtrOffset(*attributeOffset))
-
-	*attributeOffset += sizeofGlFloat * attributeCount
-}
-
-// Capture captures the Window's pixels in an Image.
-func (w *Window) Capture() image.Image {
-	width, height := w.glfwWindow.GetSize()
-	buffer := make([]byte, width*height*4)
-	stride := 4 * width
-
-	gl.ReadPixels(
-		0, 0, int32(width), int32(height),
-		gl.RGBA, gl.UNSIGNED_BYTE,
-		unsafe.Pointer(&buffer[0]),
-	)
-
-	// Flip image vertically,
-	// as gl.ReadPixels starts reading from the bottom left.
-	flippedBuffer := make([]byte, len(buffer))
-	for row := 0; row < height; row++ {
-		flippedRowStart := row * stride
-		flippedRowEnd := flippedRowStart + stride
-
-		originalRowStart := (height - row - 1) * stride
-		originalRowEnd := originalRowStart + stride
-
-		copy(
-			flippedBuffer[flippedRowStart:flippedRowEnd],
-			buffer[originalRowStart:originalRowEnd],
-		)
-	}
-
-	img := image.NewRGBA(image.Rect(0, 0, width, height))
-	img.Pix = flippedBuffer
-	img.Stride = stride
-
-	return img
 }

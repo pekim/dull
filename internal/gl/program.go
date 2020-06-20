@@ -7,11 +7,11 @@ import (
 	"github.com/go-gl/gl/v3.3-core/gl"
 )
 
-func NewRenderProgram() (uint32, error) {
+func newRenderProgram() (uint32, error) {
 	return newProgram(renderVertexShaderSource, renderFragmentShaderSource)
 }
 
-func NewGammaProgram() (uint32, error) {
+func newGammaProgram() (uint32, error) {
 	return newProgram(gammaVertexShaderSource, gammaFragmentShaderSource)
 }
 
