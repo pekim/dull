@@ -8,9 +8,24 @@ import (
 
 const sizeofGlFloat = 4
 
+type vertexAttribute struct {
+	name  string
+	count int
+}
+
+var vertexAttrPosition = vertexAttribute{name: "position", count: 2}
+var vertexAttrTextureCoords = vertexAttribute{name: "texCoords", count: 2}
+var vertexAttrColor = vertexAttribute{name: "color", count: 4}
+
 func (c *Context) Draw(bg color.Color, glyphsTexture uint32, vertices []float32) {
 	c.glfwWindow.MakeContextCurrent()
 
+	c.drawCells(bg, vertices, glyphsTexture)
+	c.gammaCorrect()
+}
+
+// drawCells draws the vertices to the FBO's texture.
+func (c *Context) drawCells(bg color.Color, vertices []float32, glyphsTexture uint32) {
 	gl.BindFramebuffer(gl.FRAMEBUFFER, c.framebuffer)
 	gl.UseProgram(c.program)
 
@@ -18,12 +33,15 @@ func (c *Context) Draw(bg color.Color, glyphsTexture uint32, vertices []float32)
 	gl.ClearColor(bg.R, bg.G, bg.B, bg.A)
 	gl.Clear(gl.COLOR_BUFFER_BIT)
 
-	c.drawCells(vertices, glyphsTexture)
+	vertexAttributes := []vertexAttribute{vertexAttrPosition, vertexAttrTextureCoords, vertexAttrColor}
+	c.drawVertices(vertexAttributes, glyphsTexture, vertices)
+}
 
-	// Post-processing; apply gamma correction.
-	// Make default framebuffer active again.
-	gl.BindFramebuffer(gl.FRAMEBUFFER, 0)
-	quadVertices := []float32{
+// gammaCorrect applies gamma correction to the FBO's texture,
+// rendering to the default framebuffer.
+func (c *Context) gammaCorrect() {
+	// A rectangle covering the whole viewport.
+	vertices := []float32{
 		// triangle 1
 		-1.0, 1.0, 0.0, 1.0,
 		-1.0, -1.0, 0.0, 0.0,
@@ -34,40 +52,15 @@ func (c *Context) Draw(bg color.Color, glyphsTexture uint32, vertices []float32)
 		1.0, -1.0, 1.0, 0.0,
 		1.0, 1.0, 1.0, 1.0,
 	}
+
+	gl.BindFramebuffer(gl.FRAMEBUFFER, 0)
 	gl.UseProgram(c.gammaProgram)
 
-	gl.BindTexture(gl.TEXTURE_2D, c.framebufferTexture)
-
-	var vao uint32
-	gl.GenVertexArrays(1, &vao)
-	gl.BindVertexArray(vao)
-
-	var vbo uint32
-	gl.GenBuffers(1, &vbo)
-	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
-
-	positionCount := 2
-	texCoordCount := 2
-	vertexAttribStride := int32(
-		sizeofGlFloat * (positionCount + texCoordCount))
-
-	attribOffset := 0
-
-	c.configureVertexAttribute("position", positionCount, vertexAttribStride, &attribOffset)
-	c.configureVertexAttribute("texCoords", texCoordCount, vertexAttribStride, &attribOffset)
-
-	textureUniform := gl.GetUniformLocation(c.program, gl.Str("textur\x00"))
-	gl.Uniform1ui(textureUniform, 0)
-	gl.BindTexture(gl.TEXTURE_2D, c.framebufferTexture)
-
-	gl.BufferData(gl.ARRAY_BUFFER, len(quadVertices)*sizeofGlFloat, gl.Ptr(quadVertices), gl.STREAM_DRAW)
-	gl.DrawArrays(gl.TRIANGLES, 0, int32(len(quadVertices)/4))
-
-	gl.DeleteBuffers(1, &vbo)
-	gl.DeleteVertexArrays(1, &vao)
+	vertexAttributes := []vertexAttribute{vertexAttrPosition, vertexAttrTextureCoords}
+	c.drawVertices(vertexAttributes, c.framebufferTexture, vertices)
 }
 
-func (c *Context) drawCells(vertices []float32, glyphsTexture uint32) {
+func (c *Context) drawVertices(vertexAttributes []vertexAttribute, texture uint32, vertices []float32) {
 	// gl.BufferData panics if the length of the data is 0
 	if len(vertices) == 0 {
 		return
@@ -81,36 +74,33 @@ func (c *Context) drawCells(vertices []float32, glyphsTexture uint32) {
 	gl.GenBuffers(1, &vbo)
 	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
 
-	c.configureVertexAttributes()
-	c.configureTextureUniform(glyphsTexture)
+	c.configureVertexAttributes(vertexAttributes)
+	c.configureTextureUniform(texture)
 
 	gl.BufferData(gl.ARRAY_BUFFER, len(vertices)*sizeofGlFloat, gl.Ptr(vertices), gl.STREAM_DRAW)
-
-	// render quads (each of which is 2 triangles)
 	gl.DrawArrays(gl.TRIANGLES, 0, int32(len(vertices)/4))
 
 	gl.DeleteBuffers(1, &vbo)
 	gl.DeleteVertexArrays(1, &vao)
 }
 
-func (c *Context) configureTextureUniform(glyphsTexture uint32) {
+func (c *Context) configureTextureUniform(texture uint32) {
 	textureUniform := gl.GetUniformLocation(c.program, gl.Str("textur\x00"))
 	gl.Uniform1ui(textureUniform, 0)
-	gl.BindTexture(gl.TEXTURE_2D, glyphsTexture)
+	gl.BindTexture(gl.TEXTURE_2D, texture)
 }
 
-func (c *Context) configureVertexAttributes() {
-	positionCount := 2
-	texCoordCount := 2
-	colourCount := 4
-	vertexAttribStride := int32(
-		sizeofGlFloat * (positionCount + texCoordCount + colourCount))
+func (c *Context) configureVertexAttributes(attributes []vertexAttribute) {
+	attributeStride := 0
+	for _, attr := range attributes {
+		attributeStride += attr.count
+	}
+	attributeStride *= sizeofGlFloat
 
 	attribOffset := 0
-
-	c.configureVertexAttribute("position", positionCount, vertexAttribStride, &attribOffset)
-	c.configureVertexAttribute("texCoords", texCoordCount, vertexAttribStride, &attribOffset)
-	c.configureVertexAttribute("color", colourCount, vertexAttribStride, &attribOffset)
+	for _, attr := range attributes {
+		c.configureVertexAttribute(attr.name, attr.count, int32(attributeStride), &attribOffset)
+	}
 }
 
 func (c *Context) configureVertexAttribute(
