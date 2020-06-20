@@ -2,7 +2,6 @@ package dull
 
 import (
 	"image"
-	"log"
 	"time"
 	"unsafe"
 
@@ -33,10 +32,6 @@ func (w *Window) draw() {
 	startTime := time.Now()
 
 	w.glfwWindow.MakeContextCurrent()
-	err := gl.Init()
-	if err != nil {
-		log.Fatalf("Failed to initialise OpenGL : %s", err.Error())
-	}
 
 	gl.BindFramebuffer(gl.FRAMEBUFFER, w.framebuffer)
 	gl.UseProgram(w.program)
