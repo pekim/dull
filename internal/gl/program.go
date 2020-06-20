@@ -7,14 +7,6 @@ import (
 	"github.com/go-gl/gl/v3.3-core/gl"
 )
 
-func newRenderProgram() (uint32, error) {
-	return newProgram(renderVertexShaderSource, renderFragmentShaderSource)
-}
-
-func newGammaProgram() (uint32, error) {
-	return newProgram(gammaVertexShaderSource, gammaFragmentShaderSource)
-}
-
 func newProgram(vertexShaderSource string, fragmentShaderSource string) (uint32, error) {
 	vertexShader, err := compileShader(vertexShaderSource, gl.VERTEX_SHADER)
 	if err != nil {

@@ -25,12 +25,12 @@ func (c *Context) Init(glfwWindow *glfw.Window) error {
 		return errors.Wrap(err, "Failed to initialise OpenGL")
 	}
 
-	c.program, err = newRenderProgram()
+	err = c.createPrograms()
 	if err != nil {
 		return err
 	}
 
-	c.gammaProgram, err = newGammaProgram()
+	err = c.createFrameBuffer()
 	if err != nil {
 		return err
 	}
@@ -38,19 +38,41 @@ func (c *Context) Init(glfwWindow *glfw.Window) error {
 	gl.Enable(gl.BLEND)
 	gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
 
-	gl.GenFramebuffers(1, &c.framebuffer)
-	gl.BindFramebuffer(gl.FRAMEBUFFER, c.framebuffer)
+	return nil
+}
 
+func (c *Context) createPrograms() error {
+	var err error
+
+	c.program, err = newProgram(renderVertexShaderSource, renderFragmentShaderSource)
+	if err != nil {
+		return err
+	}
+
+	c.gammaProgram, err = newProgram(gammaVertexShaderSource, gammaFragmentShaderSource)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (c *Context) createFrameBuffer() error {
+	// create texture for the framebuffer
 	gl.GenTextures(1, &c.framebufferTexture)
 	gl.BindTexture(gl.TEXTURE_2D, c.framebufferTexture)
 	gl.TexImage2D(gl.TEXTURE_2D, 0, gl.RGB, 0, 0, 0, gl.RGB, gl.UNSIGNED_BYTE, nil)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
-	gl.FramebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, c.framebufferTexture, 0)
-
 	gl.BindTexture(gl.TEXTURE_2D, 0)
+
+	// create framebuffer object, and set its texture
+	gl.GenFramebuffers(1, &c.framebuffer)
+	gl.BindFramebuffer(gl.FRAMEBUFFER, c.framebuffer)
+	gl.FramebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, c.framebufferTexture, 0)
 	gl.BindFramebuffer(gl.FRAMEBUFFER, 0)
 
+	// verify the framebuffer object is valid
 	fbStatus := gl.CheckFramebufferStatus(gl.FRAMEBUFFER)
 	if fbStatus != gl.FRAMEBUFFER_COMPLETE {
 		return fmt.Errorf("Framebuffer not complete, %d", fbStatus)
