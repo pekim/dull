@@ -9,6 +9,8 @@ import (
 const sizeofGlFloat = 4
 
 func (c *Context) Draw(bg color.Color, glyphsTexture uint32, vertices []float32) {
+	c.glfwWindow.MakeContextCurrent()
+
 	gl.BindFramebuffer(gl.FRAMEBUFFER, c.framebuffer)
 	gl.UseProgram(c.program)
 

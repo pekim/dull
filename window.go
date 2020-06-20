@@ -181,14 +181,16 @@ func (w *Window) createWindow(options *WindowOptions) error {
 }
 
 func (w *Window) glInit() error {
-	w.glfwWindow.MakeContextCurrent()
+	err := w.glContext.Init(w.glfwWindow)
+	if err != nil {
+		return err
+	}
 
 	// Swap buffers immediately when requested.
 	// Avoids flickering and jumping of content, such as when resizing the window.
 	glfw.SwapInterval(0)
 
-	err := w.glContext.Init()
-	return err
+	return nil
 }
 
 func (w *Window) SetFontSize(fontsize float64) {
@@ -274,7 +276,6 @@ func (w *Window) resized() {
 		return
 	}
 
-	w.glfwWindow.MakeContextCurrent()
 	w.glContext.SetWindowSize(w.width, w.height)
 
 	w.viewportCellWidthPixel = w.fontFamily.CellWidth

@@ -4,17 +4,22 @@ import (
 	"fmt"
 
 	"github.com/go-gl/gl/v3.3-core/gl"
+	"github.com/go-gl/glfw/v3.3/glfw"
 	"github.com/pkg/errors"
 )
 
 type Context struct {
+	glfwWindow         *glfw.Window
 	program            uint32
 	gammaProgram       uint32
 	framebuffer        uint32
 	framebufferTexture uint32
 }
 
-func (c *Context) Init() error {
+func (c *Context) Init(glfwWindow *glfw.Window) error {
+	c.glfwWindow = glfwWindow
+	c.glfwWindow.MakeContextCurrent()
+
 	err := gl.Init()
 	if err != nil {
 		return errors.Wrap(err, "Failed to initialise OpenGL")
@@ -55,8 +60,11 @@ func (c *Context) Init() error {
 }
 
 func (c *Context) SetWindowSize(width, height int) {
+	c.glfwWindow.MakeContextCurrent()
+
 	gl.Viewport(0, 0, int32(width), int32(height))
 
+	// Size the framebuffer texture.
 	gl.BindTexture(gl.TEXTURE_2D, c.framebufferTexture)
 	gl.TexImage2D(gl.TEXTURE_2D, 0, gl.RGB, int32(width), int32(height), 0, gl.RGB, gl.UNSIGNED_BYTE, nil)
 	gl.BindTexture(gl.TEXTURE_2D, 0)
