@@ -6,6 +6,7 @@ import (
 
 	"github.com/pekim/dull/color"
 	"github.com/pekim/dull/geometry"
+	gl2 "github.com/pekim/dull/internal/gl"
 	"github.com/pekim/dull/internal/textureatlas"
 
 	"github.com/go-gl/gl/v3.3-core/gl"
@@ -195,12 +196,12 @@ func (w *Window) glInit() error {
 	// Avoids flickering and jumping of content, such as when resizing the window.
 	glfw.SwapInterval(0)
 
-	w.program, err = newProgram(renderVertexShaderSource, renderFragmentShaderSource)
+	w.program, err = gl2.NewRenderProgram()
 	if err != nil {
 		return err
 	}
 
-	w.gammaProgram, err = newProgram(gammaVertexShaderSource, gammaFragmentShaderSource)
+	w.gammaProgram, err = gl2.NewGammaProgram()
 	if err != nil {
 		return err
 	}

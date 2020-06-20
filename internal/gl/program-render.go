@@ -1,4 +1,4 @@
-package dull
+package gl
 
 var renderVertexShaderSource = `
 	#version 330 core

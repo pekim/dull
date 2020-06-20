@@ -1,4 +1,4 @@
-package dull
+package gl
 
 var gammaVertexShaderSource = `
 	#version 330 core
