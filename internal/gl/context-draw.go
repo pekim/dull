@@ -1,12 +1,15 @@
 package gl
 
+// typedef float GLfloat;
+import "C"
+
 import (
 	"github.com/go-gl/gl/v3.3-core/gl"
 
 	"github.com/pekim/dull/color"
 )
 
-const sizeofGlFloat = 4
+const sizeofGlFloat = C.sizeof_GLfloat
 
 type vertexAttribute struct {
 	name  string
