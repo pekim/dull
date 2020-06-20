@@ -23,13 +23,13 @@ var gammaFragmentShaderSource = `
 	out vec4 color;
 
 	uniform sampler2D textur;
+	uniform float gamma;
 
 	void main()
 	{
 		color = texture(textur, TexCoords);
 
 		// Apply gamma correction.
-		float gamma = 1 / 1.8;
-		color = pow(color, vec4(vec3(gamma), 1.0));
+		color = pow(color, vec4(vec3(1 / gamma), 1.0));
 	}
 `

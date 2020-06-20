@@ -32,7 +32,7 @@ func (c *Context) drawCells(bg color.Color, vertices []float32, glyphsTexture ui
 	gl.BindFramebuffer(gl.FRAMEBUFFER, c.framebuffer)
 	gl.UseProgram(c.program)
 
-	c.configureTextureUniform(glyphsTexture)
+	c.setTextureUniform(glyphsTexture)
 
 	// clear to background colour
 	gl.ClearColor(bg.R, bg.G, bg.B, bg.A)
@@ -61,7 +61,8 @@ func (c *Context) gammaCorrect() {
 	gl.BindFramebuffer(gl.FRAMEBUFFER, 0)
 	gl.UseProgram(c.gammaProgram)
 
-	c.configureTextureUniform(c.framebufferTexture)
+	c.setTextureUniform(c.framebufferTexture)
+	c.setGammaUniform(1.8)
 
 	vertexAttributes := []vertexAttribute{vertexAttrPosition, vertexAttrTextureCoords}
 	c.drawVertices(vertexAttributes, vertices)
@@ -90,10 +91,15 @@ func (c *Context) drawVertices(vertexAttributes []vertexAttribute, vertices []fl
 	gl.DeleteVertexArrays(1, &vao)
 }
 
-func (c *Context) configureTextureUniform(texture uint32) {
+func (c *Context) setTextureUniform(texture uint32) {
 	textureUniform := gl.GetUniformLocation(c.program, gl.Str("textur\x00"))
 	gl.Uniform1ui(textureUniform, 0)
 	gl.BindTexture(gl.TEXTURE_2D, texture)
+}
+
+func (c *Context) setGammaUniform(value float32) {
+	gammaUniform := gl.GetUniformLocation(c.gammaProgram, gl.Str("gamma\x00"))
+	gl.Uniform1f(gammaUniform, value)
 }
 
 func (c *Context) configureVertexAttributes(attributes []vertexAttribute) {
