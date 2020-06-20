@@ -2,6 +2,7 @@ package dull
 
 import (
 	"image"
+	"log"
 	"time"
 	"unsafe"
 
@@ -32,6 +33,12 @@ func (w *Window) draw() {
 	startTime := time.Now()
 
 	w.glfwWindow.MakeContextCurrent()
+	err := gl.Init()
+	if err != nil {
+		log.Fatalf("Failed to initialise OpenGL : %s", err.Error())
+	}
+
+	gl.BindFramebuffer(gl.FRAMEBUFFER, w.framebuffer)
 	gl.UseProgram(w.program)
 
 	// clear to background colour
@@ -39,6 +46,54 @@ func (w *Window) draw() {
 	gl.Clear(gl.COLOR_BUFFER_BIT)
 
 	w.drawCells()
+
+	// Post-processing; apply gamma correction.
+	// Make default framebuffer active again.
+	gl.BindFramebuffer(gl.FRAMEBUFFER, 0)
+	quadVertices := []float32{
+		// triangle 1
+		-1.0, 1.0, 0.0, 1.0,
+		-1.0, -1.0, 0.0, 0.0,
+		1.0, -1.0, 1.0, 0.0,
+
+		// triangle 2
+		-1.0, 1.0, 0.0, 1.0,
+		1.0, -1.0, 1.0, 0.0,
+		1.0, 1.0, 1.0, 1.0,
+	}
+	//gl.ClearColor(1.0, 0.0, 0.0, 1.0)
+	//gl.Clear(gl.COLOR_BUFFER_BIT)
+	gl.UseProgram(w.gammaProgram)
+
+	gl.BindTexture(gl.TEXTURE_2D, w.framebufferTexture)
+
+	var vao uint32
+	gl.GenVertexArrays(1, &vao)
+	gl.BindVertexArray(vao)
+
+	var vbo uint32
+	gl.GenBuffers(1, &vbo)
+	gl.BindBuffer(gl.ARRAY_BUFFER, vbo)
+
+	positionCount := 2
+	texCoordCount := 2
+	vertexAttribStride := int32(
+		sizeofGlFloat * (positionCount + texCoordCount))
+
+	attribOffset := 0
+
+	w.configureVertexAttribute("position", positionCount, vertexAttribStride, &attribOffset)
+	w.configureVertexAttribute("texCoords", texCoordCount, vertexAttribStride, &attribOffset)
+
+	textureUniform := gl.GetUniformLocation(w.program, gl.Str("textur\x00"))
+	gl.Uniform1ui(textureUniform, 0)
+	gl.BindTexture(gl.TEXTURE_2D, w.framebufferTexture)
+
+	gl.BufferData(gl.ARRAY_BUFFER, len(quadVertices)*sizeofGlFloat, gl.Ptr(quadVertices), gl.STREAM_DRAW)
+	gl.DrawArrays(gl.TRIANGLES, 0, int32(len(quadVertices)/4))
+
+	gl.DeleteBuffers(1, &vbo)
+	gl.DeleteVertexArrays(1, &vao)
 
 	w.glfwWindow.SwapBuffers()
 

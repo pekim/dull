@@ -44,7 +44,7 @@ var fragmentShaderSource = `
 	}
 `
 
-func newProgram() (uint32, error) {
+func newProgram(vertexShaderSource string, fragmentShaderSource string) (uint32, error) {
 	vertexShader, err := compileShader(vertexShaderSource, gl.VERTEX_SHADER)
 	if err != nil {
 		return 0, err
@@ -96,7 +96,7 @@ func compileShader(source string, shaderType uint32) (uint32, error) {
 		log := strings.Repeat("\x00", int(logLength+1))
 		gl.GetShaderInfoLog(shader, logLength, nil, gl.Str(log))
 
-		return 0, fmt.Errorf("failed to compile %v: %v", source, log)
+		return 0, fmt.Errorf("failed to compile shader\n%v\n%v", source, log)
 	}
 
 	return shader, nil
