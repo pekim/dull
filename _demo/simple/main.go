@@ -1,8 +1,11 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/pekim/dull"
 	"github.com/pekim/dull/color"
+	"github.com/pekim/dull/geometry"
 )
 
 func initialise(app *dull.Application, err error) {
@@ -13,6 +16,7 @@ func initialise(app *dull.Application, err error) {
 	// green := dull.New(0.4, 1.0, 0.0, 1.0)
 	white := color.New(1.0, 1.0, 1.0, 1.0)
 	black := color.New(0.0, 0.0, 0.0, 1.0)
+	darkGrey := color.New(0.1, 0.1, 0.1, 1.0)
 	red := color.New(1.0, 0.0, 0.0, 1.0)
 	green := color.New(0.0, 1.0, 0.0, 1.0)
 	window, err := app.NewWindow(&dull.WindowOptions{
@@ -65,6 +69,17 @@ func initialise(app *dull.Application, err error) {
 			d.DrawCell(&dull.Cell{Rune: r, Fg: black, Bg: white}, col, 10)
 			d.DrawCell(&dull.Cell{Rune: r, Fg: black, Bg: white}, col, 11)
 		}
+
+		// Will change with gamma changes.
+		d.DrawCellsRect(
+			geometry.RectFloat{
+				Top:    1,
+				Bottom: 3,
+				Left:   20,
+				Right:  22,
+			},
+			darkGrey,
+		)
 	})
 
 	//ticker := time.NewTicker(1 * time.Second)
@@ -84,6 +99,35 @@ func initialise(app *dull.Application, err error) {
 
 	//columns, rows := window.Grid().Size()
 	//renderAll(columns, rows)
+
+	initialGamma := window.Gamma()
+	gammaDelta := float32(0.1)
+
+	window.SetKeyCallback(func(key dull.Key, action dull.Action, mods dull.ModifierKey) bool {
+		setGamma := func(gamma float32) {
+			fmt.Println("gamma", gamma)
+			window.SetGamma(gamma)
+		}
+
+		if action != dull.Press && action != dull.Repeat {
+			return false
+		}
+
+		if key == dull.KeyF {
+			setGamma(window.Gamma() - gammaDelta)
+			return true
+		}
+		if key == dull.KeyG {
+			setGamma(window.Gamma() + gammaDelta)
+			return true
+		}
+		if key == dull.KeyH {
+			setGamma(initialGamma)
+			return true
+		}
+
+		return false
+	})
 
 	// window.SetKeyCallback(func(key dull.Key, action dull.Action, mods dull.ModifierKey) {
 	// 	fmt.Println(key,
