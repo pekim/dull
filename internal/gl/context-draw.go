@@ -60,7 +60,7 @@ func (c *Context) gammaCorrect() {
 	gl.UseProgram(c.gammaProgram)
 
 	c.setTextureUniform(c.framebufferTexture)
-	c.setGammaUniform(1.8)
+	c.setGammaUniform(c.gamma)
 
 	vertexAttributes := []vertexAttribute{vertexAttrPosition, vertexAttrTextureCoords}
 	c.drawVertices(vertexAttributes, vertices)
