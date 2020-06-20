@@ -100,12 +100,12 @@ func (o *WindowOptions) applyDefaults() {
 		o.Height = 600
 	}
 	if o.Bg == nil {
-		color := color.Black
-		o.Bg = &color
+		bg := color.Black
+		o.Bg = &bg
 	}
 	if o.Fg == nil {
-		color := color.White
-		o.Fg = &color
+		fg := color.White
+		o.Fg = &fg
 	}
 }
 
@@ -117,12 +117,12 @@ func newWindow(application *Application, options *WindowOptions) (*Window, error
 
 	w := &Window{
 		Application: application,
-		bg:          *options.Bg,
 		fg:          *options.Fg,
 		bgDirty:     true,
 		fontSize:    defaultFontSize,
 	}
 
+	w.SetBg(*options.Bg)
 	w.setKeybindings()
 
 	err := w.createWindow(options)
@@ -196,6 +196,7 @@ func (w *Window) glInit() error {
 func (w *Window) SetFontSize(fontsize float64) {
 	w.fontSize = fontsize
 	w.fontFamily = font.NewFamily(w.Application.fontRenderer.new(), int(w.dpi), w.scale*w.fontSize)
+	w.glContext.SetGlyphsTexture(w.fontFamily.TextureAtlas.Texture)
 	w.solidTextureItem = w.fontFamily.Regular.GetGlyph(textureatlas.Solid)
 	w.setResizeIncrement()
 	w.resized()
@@ -251,6 +252,7 @@ func (w *Window) SetTitle(title string) {
 // This function may only be called from the main thread.
 func (w *Window) SetBg(color color.Color) {
 	w.bg = color
+	w.glContext.SetBg(w.bg)
 }
 
 // SetFg changes the window's foreground color.

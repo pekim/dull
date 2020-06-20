@@ -5,8 +5,6 @@ import "C"
 
 import (
 	"github.com/go-gl/gl/v3.3-core/gl"
-
-	"github.com/pekim/dull/color"
 )
 
 const sizeofGlFloat = C.sizeof_GLfloat
@@ -20,22 +18,22 @@ var vertexAttrPosition = vertexAttribute{name: "position", count: 2}
 var vertexAttrTextureCoords = vertexAttribute{name: "texCoords", count: 2}
 var vertexAttrColor = vertexAttribute{name: "color", count: 4}
 
-func (c *Context) Draw(bg color.Color, glyphsTexture uint32, vertices []float32) {
+func (c *Context) Draw(vertices []float32) {
 	c.glfwWindow.MakeContextCurrent()
 
-	c.drawCells(bg, vertices, glyphsTexture)
+	c.drawCells(vertices)
 	c.gammaCorrect()
 }
 
 // drawCells draws the vertices to the FBO's texture.
-func (c *Context) drawCells(bg color.Color, vertices []float32, glyphsTexture uint32) {
+func (c *Context) drawCells(vertices []float32) {
 	gl.BindFramebuffer(gl.FRAMEBUFFER, c.framebuffer)
 	gl.UseProgram(c.program)
 
-	c.setTextureUniform(glyphsTexture)
+	c.setTextureUniform(c.glyphsTexture)
 
 	// clear to background colour
-	gl.ClearColor(bg.R, bg.G, bg.B, bg.A)
+	gl.ClearColor(c.bg.R, c.bg.G, c.bg.B, c.bg.A)
 	gl.Clear(gl.COLOR_BUFFER_BIT)
 
 	vertexAttributes := []vertexAttribute{vertexAttrPosition, vertexAttrTextureCoords, vertexAttrColor}

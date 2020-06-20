@@ -6,6 +6,8 @@ import (
 	"github.com/go-gl/gl/v3.3-core/gl"
 	"github.com/go-gl/glfw/v3.3/glfw"
 	"github.com/pkg/errors"
+
+	"github.com/pekim/dull/color"
 )
 
 type Context struct {
@@ -14,6 +16,8 @@ type Context struct {
 	gammaProgram       uint32
 	framebuffer        uint32
 	framebufferTexture uint32
+	glyphsTexture      uint32
+	bg                 color.Color
 }
 
 func (c *Context) Init(glfwWindow *glfw.Window) error {
@@ -90,4 +94,12 @@ func (c *Context) SetWindowSize(width, height int) {
 	gl.BindTexture(gl.TEXTURE_2D, c.framebufferTexture)
 	gl.TexImage2D(gl.TEXTURE_2D, 0, gl.RGB, int32(width), int32(height), 0, gl.RGB, gl.UNSIGNED_BYTE, nil)
 	gl.BindTexture(gl.TEXTURE_2D, 0)
+}
+
+func (c *Context) SetBg(bg color.Color) {
+	c.bg = bg
+}
+
+func (c *Context) SetGlyphsTexture(texture uint32) {
+	c.glyphsTexture = texture
 }
