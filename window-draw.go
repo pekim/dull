@@ -25,7 +25,7 @@ func (w *Window) draw() {
 
 	startTime := time.Now()
 
-	w.glContext.Draw(color.New(w.bg.R, w.bg.G, w.bg.B, 1.0), w.fontFamily.TextureAtlas.Texture, w.vertices)
+	w.glContext.Draw(w.bg, w.fontFamily.TextureAtlas.Texture, w.vertices)
 	w.glfwWindow.SwapBuffers()
 
 	w.lastRenderDuration = time.Now().Sub(startTime)
