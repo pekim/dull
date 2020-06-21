@@ -27,7 +27,13 @@ func initialise(app *dull.Application, err error) {
 		panic(err)
 	}
 
+	showLastRenderDuration := false
+
 	window.SetDrawCallback(func(d dull.Drawer, columns, rows int) {
+		if showLastRenderDuration {
+			fmt.Printf("%.1fms\n", window.LastRenderDuration().Seconds()*1000)
+		}
+
 		// draw := func(columns, rows int) {
 		d.DrawCell(&dull.Cell{
 			Rune: 'A',
@@ -111,6 +117,15 @@ func initialise(app *dull.Application, err error) {
 
 		if action != dull.Press && action != dull.Repeat {
 			return false
+		}
+
+		if key == dull.KeyD {
+			// force draw
+			return true
+		}
+		if key == dull.KeyR {
+			showLastRenderDuration = !showLastRenderDuration
+			return true
 		}
 
 		if key == dull.KeyF {
