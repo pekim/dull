@@ -30,6 +30,6 @@ var gammaFragmentShaderSource = `
 		color = texture(textur, TexCoords);
 
 		// Apply gamma correction.
-		color = pow(color, vec4(vec3(1 / gamma), 1.0));
+		color = pow(color, vec4(vec3(1.0 / gamma), 1.0));
 	}
 `

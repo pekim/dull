@@ -12,7 +12,7 @@ import (
 
 type Context struct {
 	glfwWindow         *glfw.Window
-	program            uint32
+	renderProgram      uint32
 	gammaProgram       uint32
 	framebuffer        uint32
 	framebufferTexture uint32
@@ -49,7 +49,7 @@ func (c *Context) Init(glfwWindow *glfw.Window) error {
 func (c *Context) createPrograms() error {
 	var err error
 
-	c.program, err = newProgram(renderVertexShaderSource, renderFragmentShaderSource)
+	c.renderProgram, err = newProgram(renderVertexShaderSource, renderFragmentShaderSource)
 	if err != nil {
 		return err
 	}
