@@ -1,7 +1,6 @@
 package dull
 
 import (
-	"bytes"
 	"fmt"
 	"image"
 	"image/png"
@@ -11,6 +10,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 )
+
+var visualTestAllowedPixelDifference = 0
 
 func normaliseImageIfRequired(img image.Image) {
 	if img == nil {
@@ -53,8 +54,7 @@ func assertTestImage(t *testing.T, name string, w *Window) {
 		return
 	}
 
-	// verify that newly generated image is identical to the
-	// reference image
+	// Get the reference image's pixels.
 	var referencePix []uint8
 	switch referenceImage2 := referenceImage.(type) {
 	case *image.RGBA:
@@ -63,10 +63,31 @@ func assertTestImage(t *testing.T, name string, w *Window) {
 		referencePix = referenceImage2.Pix
 	}
 
+	// Get the generated image's pixels.
 	generatedPix := generatedImage.(*image.RGBA).Pix
 
-	imagesIdentical := bytes.Compare(generatedPix, referencePix) == 0
-	assert.True(t, imagesIdentical, "image differs from reference image")
+	// Compare the generated image's pixels with those from the
+	// reference image.
+	//
+	// If configured, allow for small differences.
+	// That's necessary when headless.
+	differences := 0
+	for i, b := range generatedPix {
+		generated := int(b)
+		reference := int(referencePix[i])
+
+		difference := reference - generated
+		if difference < 0 {
+			difference = -difference
+		}
+
+		if difference > visualTestAllowedPixelDifference {
+			fmt.Printf("pixel difference : index=%d reference=%d generated=%d\n", i, reference, generated)
+			differences++
+		}
+	}
+
+	assert.Zero(t, differences, "image differs from reference image")
 }
 
 func writeTestImageFile(name, suffix string, img image.Image) {
