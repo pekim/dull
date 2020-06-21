@@ -11,7 +11,7 @@ type Color struct {
 
 // New creates a color.
 func New(r, g, b, a float32) Color {
-	return Color{r, g, b, a}
+	return Color{R: r, G: g, B: b, A: a}
 }
 
 // NewRGB creates a color from a 6 hex character RGB string.
@@ -25,7 +25,7 @@ func NewRGB(rgb string) Color {
 	bInt, _ := strconv.ParseUint(rgb[4:6], 16, 32)
 	b := float32(bInt) / 255
 
-	return Color{r, g, b, 1.0}
+	return Color{R: r, G: g, B: b, A: 1.0}
 }
 
 // NewRGBA creates a color from an 8 hex character RGBA string.
@@ -42,7 +42,7 @@ func NewRGBA(rgba string) Color {
 	aInt, _ := strconv.ParseUint(rgba[6:8], 16, 32)
 	a := float32(aInt) / 255
 
-	return Color{r, g, b, a}
+	return Color{R: r, G: g, B: b, A: a}
 }
 
 func (c Color) SetA(a float32) Color {
