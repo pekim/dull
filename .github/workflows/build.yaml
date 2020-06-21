@@ -3,19 +3,24 @@ on: [push]
 
 jobs:
   build:
-    name: test
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        go: [ '1.13', '1.14' ]
+    name: Go ${{ matrix.go }}
+
     steps:
       - name: Install sytem dependencies
         run: sudo apt install -y libgl1-mesa-dev xorg-dev xvfb
 
-      - name: Setup Go
-        uses: actions/setup-go@v1
-        with:
-          go-version: "1.13"
-
       - name: Checkout repo
         uses: actions/checkout@master
+
+      - name: Setup Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.go }}
 
       - name: Run tests
         run: |
