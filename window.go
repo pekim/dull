@@ -205,7 +205,14 @@ func (w *Window) Gamma() float32 {
 
 // SetGamma sets the gamma correction value to apply at the
 // end of the rendering pipeline.
+//
+// Gamma must be >= 1.0 .
+// If the value is less than 1.0, gamma will be set to 1.0 .
 func (w *Window) SetGamma(gamma float32) {
+	if gamma < 1 {
+		gamma = 1
+	}
+
 	w.gamma = gamma
 	w.glContext.SetGamma(w.gamma)
 }

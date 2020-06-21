@@ -111,8 +111,8 @@ func initialise(app *dull.Application, err error) {
 
 	window.SetKeyCallback(func(key dull.Key, action dull.Action, mods dull.ModifierKey) bool {
 		setGamma := func(gamma float32) {
-			fmt.Println("gamma", gamma)
 			window.SetGamma(gamma)
+			fmt.Println("gamma", window.Gamma())
 		}
 
 		if action != dull.Press && action != dull.Repeat {
