@@ -31,9 +31,10 @@ func (c *Context) drawCells(vertices []float32) {
 	gl.UseProgram(c.renderProgram)
 
 	c.setTextureUniform(c.renderProgram, c.glyphsTexture)
+	c.setGammaUniform(c.renderProgram, c.gamma)
 
 	// clear to background colour
-	gl.ClearColor(c.bg.R, c.bg.G, c.bg.B, c.bg.A)
+	gl.ClearColor(c.bgLinear.R, c.bgLinear.G, c.bgLinear.B, c.bgLinear.A)
 	gl.Clear(gl.COLOR_BUFFER_BIT)
 
 	vertexAttributes := []vertexAttribute{vertexAttrPosition, vertexAttrTextureCoords, vertexAttrColor}

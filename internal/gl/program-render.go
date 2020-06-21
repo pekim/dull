@@ -10,13 +10,16 @@ var renderVertexShaderSource = `
 	out vec2 TexCoords;
 	out vec4 Color;
 
+	uniform float gamma;
+
 	void main()
 	{
 		vec2 projection = vec2(1.0, -1.0); // Invert y-axis
 
 		gl_Position = vec4(projection * position, 0.0, 1.0);
 		TexCoords = texCoords;
-		Color = color;
+
+		Color = pow(color, vec4(vec3(gamma), 1.0));
 	}
 `
 

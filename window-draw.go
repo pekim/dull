@@ -19,6 +19,16 @@ func (w *Window) draw() {
 
 	w.clear()
 
+	// background
+	w.DrawCellsRect(geometry.RectFloat{
+		Top:    0,
+		Bottom: float64(w.rows),
+		Left:   0,
+		Right:  float64(w.columns),
+	},
+		w.bg,
+	)
+
 	if w.drawCallback != nil {
 		w.drawCallback(w, w.columns, w.rows)
 	}

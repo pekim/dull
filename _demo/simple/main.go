@@ -16,11 +16,12 @@ func initialise(app *dull.Application, err error) {
 	// green := dull.New(0.4, 1.0, 0.0, 1.0)
 	white := color.New(1.0, 1.0, 1.0, 1.0)
 	black := color.New(0.0, 0.0, 0.0, 1.0)
-	darkGrey := color.New(0.1, 0.1, 0.1, 1.0)
+	almostBlack := color.New(0.063, 0.063, 0.063, 1.0)
+	darkGrey := color.New(0.125, 0.125, 0.125, 1.0)
 	red := color.New(1.0, 0.0, 0.0, 1.0)
 	green := color.New(0.0, 1.0, 0.0, 1.0)
 	window, err := app.NewWindow(&dull.WindowOptions{
-		Bg: &white,
+		Bg: &almostBlack,
 		Fg: &black,
 	})
 	if err != nil {
@@ -83,6 +84,15 @@ func initialise(app *dull.Application, err error) {
 				Bottom: 3,
 				Left:   20,
 				Right:  22,
+			},
+			darkGrey,
+		)
+		d.DrawCellsRect(
+			geometry.RectFloat{
+				Top:    0,
+				Bottom: 20,
+				Left:   30,
+				Right:  50,
 			},
 			darkGrey,
 		)
