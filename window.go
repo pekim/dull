@@ -276,7 +276,6 @@ func (w *Window) SetTitle(title string) {
 // This function may only be called from the main thread.
 func (w *Window) SetBg(color color.Color) {
 	w.bg = color
-	w.glContext.SetBg(w.bg)
 }
 
 // SetFg changes the window's foreground color.

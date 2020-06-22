@@ -22,9 +22,9 @@ func (w *Window) draw() {
 	// background
 	w.DrawCellsRect(geometry.RectFloat{
 		Top:    0,
-		Bottom: float64(w.rows),
+		Bottom: float64(w.rows + 1),
 		Left:   0,
-		Right:  float64(w.columns),
+		Right:  float64(w.columns + 1),
 	},
 		w.bg,
 	)

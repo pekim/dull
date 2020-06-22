@@ -2,13 +2,10 @@ package gl
 
 import (
 	"fmt"
-	"math"
 
 	"github.com/go-gl/gl/v3.3-core/gl"
 	"github.com/go-gl/glfw/v3.3/glfw"
 	"github.com/pkg/errors"
-
-	"github.com/pekim/dull/color"
 )
 
 type Context struct {
@@ -18,8 +15,6 @@ type Context struct {
 	framebuffer        uint32
 	framebufferTexture uint32
 	glyphsTexture      uint32
-	bg                 color.Color
-	bgLinear           color.Color
 	gamma              float32
 }
 
@@ -99,20 +94,10 @@ func (c *Context) SetWindowSize(width, height int) {
 	gl.BindTexture(gl.TEXTURE_2D, 0)
 }
 
-func (c *Context) SetBg(bg color.Color) {
-	c.bg = bg
-
-	c.bgLinear.R = float32(math.Pow(float64(bg.R), float64(c.gamma)))
-	c.bgLinear.G = float32(math.Pow(float64(bg.G), float64(c.gamma)))
-	c.bgLinear.B = float32(math.Pow(float64(bg.B), float64(c.gamma)))
-	c.bgLinear.A = bg.A
-}
-
 func (c *Context) SetGlyphsTexture(texture uint32) {
 	c.glyphsTexture = texture
 }
 
 func (c *Context) SetGamma(gamma float32) {
 	c.gamma = gamma
-	c.SetBg(c.bg)
 }
