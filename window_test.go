@@ -8,18 +8,24 @@ import (
 )
 
 func TestWindowVisualRegression(t *testing.T) {
+	grey := color.New(0.5, 0.5, 0.5, 1.0)
+	cyan := color.New(0.5, 0.9, 0.9, 1.0)
+
 	tests := []struct {
-		name        string
-		width       int
-		height      int
-		scale       float64
-		setupWindow func(*Window)
+		name          string
+		windowOptions WindowOptions
+		scale         float64
+		setupWindow   func(*Window)
 	}{
 		{
-			name:   "text",
-			width:  200,
-			height: 500,
-			scale:  1.2,
+			name: "text",
+			windowOptions: WindowOptions{
+				Width:  200,
+				Height: 500,
+				Bg:     &color.White,
+				Fg:     &color.Black,
+			},
+			scale: 1.2,
 			setupWindow: func(window *Window) {
 				window.SetDrawCallback(func(drawer Drawer, columns, rows int) {
 					drawText := func(text string, x, y int, cell *Cell) {
@@ -59,29 +65,35 @@ func TestWindowVisualRegression(t *testing.T) {
 				window.Draw()
 			},
 		},
-		//{
-		//	name:   "outline-rectangle-inside",
-		//	width:  200,
-		//	height: 200,
-		//	scale:  2.0,
-		//	setupWindow: func(window *Window) {
-		//		window.SetDrawCallback(func(drawer Drawer, columns, rows int) {
-		//			drawer.DrawCellsRect(geometry.RectFloat{
-		//				Top:    2,
-		//				Bottom: 4,
-		//				Left:   2,
-		//				Right:  6,
-		//			}, color.Gray4)
-		//		})
-		//
-		//		window.Draw()
-		//	},
-		//},
 		{
-			name:   "greyscale",
-			width:  1200,
-			height: 150,
-			scale:  2.0,
+			name: "background",
+			windowOptions: WindowOptions{
+				Width:  200,
+				Height: 200,
+				Bg:     &cyan,
+			},
+			scale: 2.0,
+			setupWindow: func(window *Window) {
+				window.SetDrawCallback(func(drawer Drawer, columns, rows int) {
+					drawer.DrawCellsRect(geometry.RectFloat{
+						Top:    2,
+						Bottom: 4,
+						Left:   2,
+						Right:  6,
+					}, grey)
+				})
+
+				window.Draw()
+			},
+		},
+		{
+			name: "greyscale",
+			windowOptions: WindowOptions{
+				Width:  1200,
+				Height: 150,
+				Bg:     &color.White,
+			},
+			scale: 2.0,
 			setupWindow: func(window *Window) {
 				window.SetDrawCallback(func(drawer Drawer, columns, rows int) {
 					step := 2.0
@@ -131,12 +143,7 @@ func TestWindowVisualRegression(t *testing.T) {
 
 		for _, test := range tests {
 			t.Run(test.name, func(t *testing.T) {
-				w, err := app.NewWindow(&WindowOptions{
-					Width:  test.width,
-					Height: test.height,
-					Bg:     &color.White,
-					Fg:     &color.Black,
-				})
+				w, err := app.NewWindow(&test.windowOptions)
 				if err != nil {
 					t.Fatal(err)
 				}
