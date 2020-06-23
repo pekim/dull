@@ -63,7 +63,7 @@ func (c *Context) createFrameBuffer() error {
 	// create texture for the framebuffer
 	gl.GenTextures(1, &c.framebufferTexture)
 	gl.BindTexture(gl.TEXTURE_2D, c.framebufferTexture)
-	gl.TexImage2D(gl.TEXTURE_2D, 0, gl.RGB, 0, 0, 0, gl.RGB, gl.UNSIGNED_BYTE, nil)
+	gl.TexImage2D(gl.TEXTURE_2D, 0, gl.RGB16_SNORM, 0, 0, 0, gl.RGB, gl.UNSIGNED_BYTE, nil)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
 	gl.BindTexture(gl.TEXTURE_2D, 0)
@@ -90,7 +90,7 @@ func (c *Context) SetWindowSize(width, height int) {
 
 	// Size the framebuffer texture.
 	gl.BindTexture(gl.TEXTURE_2D, c.framebufferTexture)
-	gl.TexImage2D(gl.TEXTURE_2D, 0, gl.RGB, int32(width), int32(height), 0, gl.RGB, gl.UNSIGNED_BYTE, nil)
+	gl.TexImage2D(gl.TEXTURE_2D, 0, gl.RGB16_SNORM, int32(width), int32(height), 0, gl.RGB, gl.UNSIGNED_BYTE, nil)
 	gl.BindTexture(gl.TEXTURE_2D, 0)
 }
 

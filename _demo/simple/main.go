@@ -16,7 +16,7 @@ func initialise(app *dull.Application, err error) {
 	// green := dull.New(0.4, 1.0, 0.0, 1.0)
 	white := color.New(1.0, 1.0, 1.0, 1.0)
 	black := color.New(0.0, 0.0, 0.0, 1.0)
-	almostBlack := color.New(0.063, 0.063, 0.063, 1.0)
+	almostBlack := color.New(0.04, 0.04, 0.04, 1.0)
 	darkGrey := color.New(0.125, 0.125, 0.125, 1.0)
 	red := color.New(1.0, 0.0, 0.0, 1.0)
 	green := color.New(0.0, 1.0, 0.0, 1.0)
