@@ -44,13 +44,16 @@ func assertTestImage(t *testing.T, name string, w *Window) {
 	generatedImage := w.Capture()
 	normaliseImageIfRequired(generatedImage)
 
-	// write generated image; will no be committed
-	writeTestImageFile(name, "generated", generatedImage)
+	generatedFilepath := testImageFilepath(name, "generated")
+	referenceFilepath := testImageFilepath(name, "reference")
 
-	referenceImage, err := readTestImageFile(name, "reference")
+	// write generated image; will not be committed
+	writeTestImageFile(generatedFilepath, generatedImage)
+
+	referenceImage, err := readTestImageFile(referenceFilepath)
 	// write reference image if it doesn't exist
 	if os.IsNotExist(err) {
-		writeTestImageFile(name, "reference", generatedImage)
+		writeTestImageFile(referenceFilepath, generatedImage)
 		return
 	}
 
@@ -90,8 +93,8 @@ func assertTestImage(t *testing.T, name string, w *Window) {
 	assert.Zero(t, differences, "image differs from reference image")
 }
 
-func writeTestImageFile(name, suffix string, img image.Image) {
-	outputFile, err := os.Create(testImageFilepath(name + "--" + suffix))
+func writeTestImageFile(filepath string, img image.Image) {
+	outputFile, err := os.Create(filepath)
 	if err != nil {
 		panic(err)
 	}
@@ -105,10 +108,8 @@ func writeTestImageFile(name, suffix string, img image.Image) {
 	}
 }
 
-func readTestImageFile(name, suffix string) (image.Image, error) {
-	filePath := testImageFilepath(name + "--" + suffix)
-
-	file, err := os.Open(filePath)
+func readTestImageFile(filepath string) (image.Image, error) {
+	file, err := os.Open(filepath)
 	if err != nil {
 		if os.IsNotExist(err) {
 			return nil, err
@@ -125,10 +126,12 @@ func readTestImageFile(name, suffix string) (image.Image, error) {
 	return img, nil
 }
 
-func testImageFilepath(name string) string {
+func testImageFilepath(testName string, imageType string) string {
+	filename := testName + "--" + imageType + ".png"
+
 	pathParts := []string{
 		"test-images",
-		name + ".png",
+		filename,
 	}
 
 	return path.Join(pathParts...)
