@@ -5,6 +5,7 @@ import (
 	"image"
 	"image/png"
 	"os"
+	"os/exec"
 	"path"
 	"testing"
 
@@ -44,16 +45,17 @@ func assertTestImage(t *testing.T, name string, w *Window) {
 	generatedImage := w.Capture()
 	normaliseImageIfRequired(generatedImage)
 
-	generatedFilepath := testImageFilepath(name, "generated")
-	referenceFilepath := testImageFilepath(name, "reference")
+	generatedImageFilepath := testImageFilepath(name, "generated")
+	referenceImageFilepath := testImageFilepath(name, "reference")
+	diffImageFilepath := testImageFilepath(name, "diff")
 
 	// write generated image; will not be committed
-	writeTestImageFile(generatedFilepath, generatedImage)
+	writeTestImageFile(generatedImageFilepath, generatedImage)
 
-	referenceImage, err := readTestImageFile(referenceFilepath)
+	referenceImage, err := readTestImageFile(referenceImageFilepath)
 	// write reference image if it doesn't exist
 	if os.IsNotExist(err) {
-		writeTestImageFile(referenceFilepath, generatedImage)
+		writeTestImageFile(referenceImageFilepath, generatedImage)
 		return
 	}
 
@@ -89,8 +91,11 @@ func assertTestImage(t *testing.T, name string, w *Window) {
 			differences++
 		}
 	}
+	isDifferent := differences > 0
 
-	assert.Zero(t, differences, "image differs from reference image")
+	updateDiffImage(isDifferent, referenceImageFilepath, generatedImageFilepath, diffImageFilepath)
+
+	assert.False(t, isDifferent, "image differs from reference image")
 }
 
 func writeTestImageFile(filepath string, img image.Image) {
@@ -124,6 +129,45 @@ func readTestImageFile(filepath string) (image.Image, error) {
 	}
 
 	return img, nil
+}
+
+func updateDiffImage(
+	isDifferent bool,
+	referenceImageFilepath string,
+	generatedImageFilepath string,
+	diffImageFilepath string,
+) {
+	// If no differences, remove any existing diff file.
+	if !isDifferent {
+		err := os.Remove(diffImageFilepath)
+		if os.IsNotExist(err) {
+			return
+		}
+		if err != nil {
+			panic(err)
+		}
+
+		return
+	}
+
+	// Generate a diff file.
+	stdout, err := exec.Command(
+		"compare",
+		referenceImageFilepath,
+		generatedImageFilepath,
+		"-compose", "src",
+		diffImageFilepath,
+	).Output()
+	fmt.Println(stdout)
+
+	if exitError, isExitError := err.(*exec.ExitError); isExitError {
+		if exitError.ExitCode() > 1 {
+			panic(string(exitError.Stderr))
+		}
+	}
+	if err != nil {
+		panic(err)
+	}
 }
 
 func testImageFilepath(testName string, imageType string) string {
