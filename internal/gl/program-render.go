@@ -10,7 +10,13 @@ var renderVertexShaderSource = `
 	out vec2 TexCoords;
 	out vec4 Color;
 
-	uniform float gamma;
+	// https://chilliant.blogspot.com/2012/08/srgb-approximations-for-hlsl.html
+	float to_linear(float srgb) {
+		if (srgb <= 0.04045)
+			return srgb / 12.92;
+		else
+			return pow((srgb + 0.055) / 1.055, 2.4);
+	}
 
 	void main()
 	{
@@ -19,7 +25,11 @@ var renderVertexShaderSource = `
 		gl_Position = vec4(projection * position, 0.0, 1.0);
 		TexCoords = texCoords;
 
-		Color = pow(color, vec4(vec3(gamma), 1.0));
+		// Convert from sRGB to linear.
+		Color.r = to_linear(color.r);
+		Color.g = to_linear(color.g);
+		Color.b = to_linear(color.b);
+		Color.a = color.a;
 	}
 `
 

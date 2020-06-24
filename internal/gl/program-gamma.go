@@ -23,13 +23,23 @@ var gammaFragmentShaderSource = `
 	out vec4 color;
 
 	uniform sampler2D textur;
-	uniform float gamma;
+
+	// https://chilliant.blogspot.com/2012/08/srgb-approximations-for-hlsl.html
+	float to_srgb(float linear) {
+		 if (linear <= 0.0031308)
+			return linear * 12.92;
+		 else
+			return 1.055 * pow(linear, 1.0 / 2.4) - 0.055;
+	}
 
 	void main()
 	{
-		color = texture(textur, TexCoords);
+		vec4 colorLinear = texture(textur, TexCoords);
 
-		// Apply gamma correction.
-		color = pow(color, vec4(vec3(1.0 / gamma), 1.0));
+		// Convert back to sRGB.
+		color.r = to_srgb(colorLinear.r);
+		color.g = to_srgb(colorLinear.g);
+		color.b = to_srgb(colorLinear.b);
+		color.a = colorLinear.a;
 	}
 `

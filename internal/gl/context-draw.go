@@ -31,7 +31,6 @@ func (c *Context) drawCells(vertices []float32) {
 	gl.UseProgram(c.renderProgram)
 
 	c.setTextureUniform(c.renderProgram, c.glyphsTexture)
-	c.setGammaUniform(c.renderProgram, c.gamma)
 
 	vertexAttributes := []vertexAttribute{vertexAttrPosition, vertexAttrTextureCoords, vertexAttrColor}
 	c.drawVertices(c.renderProgram, vertexAttributes, vertices)
@@ -57,7 +56,6 @@ func (c *Context) gammaCorrect() {
 	gl.UseProgram(c.gammaProgram)
 
 	c.setTextureUniform(c.gammaProgram, c.framebufferTexture)
-	c.setGammaUniform(c.gammaProgram, c.gamma)
 
 	vertexAttributes := []vertexAttribute{vertexAttrPosition, vertexAttrTextureCoords}
 	c.drawVertices(c.gammaProgram, vertexAttributes, vertices)
@@ -94,15 +92,6 @@ func (c *Context) setTextureUniform(program uint32, texture uint32) {
 
 	gl.Uniform1ui(textureUniform, 0)
 	gl.BindTexture(gl.TEXTURE_2D, texture)
-}
-
-func (c *Context) setGammaUniform(program uint32, value float32) {
-	gammaUniform := gl.GetUniformLocation(program, gl.Str("gamma\x00"))
-	if gammaUniform == -1 {
-		panic("Failed to get uniform for gamma")
-	}
-
-	gl.Uniform1f(gammaUniform, value)
 }
 
 func (c *Context) configureVertexAttributes(program uint32, attributes []vertexAttribute) {

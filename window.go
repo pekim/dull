@@ -33,7 +33,6 @@ type Window struct {
 	scale              float64
 	fontSize           float64
 	fontFamily         *font.Family
-	gamma              float32
 	solidTextureItem   *textureatlas.TextureItem
 	glfwWindow         *glfw.Window
 	glTerminated       bool
@@ -124,7 +123,6 @@ func newWindow(application *Application, options *WindowOptions) (*Window, error
 	}
 
 	w.SetBg(*options.Bg)
-	w.SetGamma(1.8)
 	w.setKeybindings()
 
 	err := w.createWindow(options)
@@ -193,28 +191,6 @@ func (w *Window) glInit() error {
 	glfw.SwapInterval(0)
 
 	return nil
-}
-
-// Gamma returns the gamma correction value applied at the
-// end of the rendering pipeline.
-//
-// The default initial value for a window is 1.8.
-func (w *Window) Gamma() float32 {
-	return w.gamma
-}
-
-// SetGamma sets the gamma correction value to apply at the
-// end of the rendering pipeline.
-//
-// Gamma must be >= 1.0 .
-// If the value is less than 1.0, gamma will be set to 1.0 .
-func (w *Window) SetGamma(gamma float32) {
-	if gamma < 1 {
-		gamma = 1
-	}
-
-	w.gamma = gamma
-	w.glContext.SetGamma(w.gamma)
 }
 
 func (w *Window) SetFontSize(fontsize float64) {

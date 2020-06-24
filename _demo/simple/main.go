@@ -77,7 +77,6 @@ func initialise(app *dull.Application, err error) {
 			d.DrawCell(&dull.Cell{Rune: r, Fg: black, Bg: white}, col, 11)
 		}
 
-		// Will change with gamma changes.
 		d.DrawCellsRect(
 			geometry.RectFloat{
 				Top:    1,
@@ -116,15 +115,7 @@ func initialise(app *dull.Application, err error) {
 	//columns, rows := window.Grid().Size()
 	//renderAll(columns, rows)
 
-	initialGamma := window.Gamma()
-	gammaDelta := float32(0.1)
-
 	window.SetKeyCallback(func(key dull.Key, action dull.Action, mods dull.ModifierKey) bool {
-		setGamma := func(gamma float32) {
-			window.SetGamma(gamma)
-			fmt.Println("gamma", window.Gamma())
-		}
-
 		if action != dull.Press && action != dull.Repeat {
 			return false
 		}
@@ -135,19 +126,6 @@ func initialise(app *dull.Application, err error) {
 		}
 		if key == dull.KeyR {
 			showLastRenderDuration = !showLastRenderDuration
-			return true
-		}
-
-		if key == dull.KeyF {
-			setGamma(window.Gamma() - gammaDelta)
-			return true
-		}
-		if key == dull.KeyG {
-			setGamma(window.Gamma() + gammaDelta)
-			return true
-		}
-		if key == dull.KeyH {
-			setGamma(initialGamma)
 			return true
 		}
 

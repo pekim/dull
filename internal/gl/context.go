@@ -15,7 +15,6 @@ type Context struct {
 	framebuffer        uint32
 	framebufferTexture uint32
 	glyphsTexture      uint32
-	gamma              float32
 }
 
 func (c *Context) Init(glfwWindow *glfw.Window) error {
@@ -96,8 +95,4 @@ func (c *Context) SetWindowSize(width, height int) {
 
 func (c *Context) SetGlyphsTexture(texture uint32) {
 	c.glyphsTexture = texture
-}
-
-func (c *Context) SetGamma(gamma float32) {
-	c.gamma = gamma
 }

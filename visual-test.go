@@ -164,6 +164,7 @@ func updateDiffImage(
 		if exitError.ExitCode() > 1 {
 			panic(string(exitError.Stderr))
 		}
+		return
 	}
 	if err != nil {
 		panic(err)
