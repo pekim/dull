@@ -76,7 +76,8 @@ func assertTestImage(t *testing.T, name string, w *Window) {
 	//
 	// If configured, allow for small differences.
 	// That's necessary when headless.
-	differences := 0
+	differencesCount := 0
+	differencesTotal := 0
 	for i, b := range generatedPix {
 		generated := int(b)
 		reference := int(referencePix[i])
@@ -87,11 +88,19 @@ func assertTestImage(t *testing.T, name string, w *Window) {
 		}
 
 		if difference > visualTestAllowedPixelDifference {
-			fmt.Printf("pixel difference : index=%d reference=%d generated=%d\n", i, reference, generated)
-			differences++
+			differencesCount++
+			differencesTotal += difference
 		}
 	}
-	isDifferent := differences > 0
+
+	isDifferent := differencesCount > 0
+	if isDifferent {
+		fmt.Println("image differs from reference image")
+		fmt.Printf("  # of pixels that are different  %10d\n", differencesCount)
+		fmt.Printf("  cumulative difference           %10d\n", differencesTotal)
+		fmt.Printf("  average difference per pixel    %10.1f\n", float64(differencesTotal)/float64(differencesCount))
+		fmt.Println()
+	}
 
 	updateDiffImage(isDifferent, referenceImageFilepath, generatedImageFilepath, diffImageFilepath)
 
@@ -158,7 +167,7 @@ func updateDiffImage(
 		"-compose", "src",
 		diffImageFilepath,
 	).Output()
-	fmt.Println(stdout)
+	fmt.Println(string(stdout))
 
 	if exitError, isExitError := err.(*exec.ExitError); isExitError {
 		if exitError.ExitCode() > 1 {
