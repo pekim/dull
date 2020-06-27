@@ -16,8 +16,8 @@ func TestTextureDimensionForGlyphs(t *testing.T) {
 
 	ta.setTextureDimension()
 
-	assert.Equal(t, int32(63), ta.width, "texture width")
-	assert.Equal(t, int32(63), ta.height, "texture height")
+	assert.Equal(t, int32(64), ta.width, "texture width")
+	assert.Equal(t, int32(64), ta.height, "texture height")
 }
 func TestTextureDimensionForGlyphsCapped(t *testing.T) {
 	ta := TextureAtlas{
@@ -29,6 +29,6 @@ func TestTextureDimensionForGlyphsCapped(t *testing.T) {
 
 	ta.setTextureDimension()
 
-	assert.Equal(t, int32(60), ta.width, "texture width")
-	assert.Equal(t, int32(60), ta.height, "texture height")
+	assert.Equal(t, int32(64), ta.width, "texture width")
+	assert.Equal(t, int32(64), ta.height, "texture height")
 }

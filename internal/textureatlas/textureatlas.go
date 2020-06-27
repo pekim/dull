@@ -30,6 +30,10 @@ type TextureAtlas struct {
 func NewTextureAtlas(maxGlyphWidth, maxGlyphHeight int) *TextureAtlas {
 	var maxTextureSize int32
 	gl.GetIntegerv(gl.MAX_TEXTURE_SIZE, &maxTextureSize)
+	if maxTextureSize == 0 {
+		// 0 makes no sense
+		maxTextureSize = 1024
+	}
 
 	ta := &TextureAtlas{
 		maxTextureSize:                maxTextureSize,
@@ -165,8 +169,20 @@ func (ta *TextureAtlas) AddItem(
 // If the space in the texture is exhausted a new, larger, texture will be created.
 func (ta *TextureAtlas) setTextureDimension() {
 	areaInPixels := ta.approxNumberOfGlyphsToSupport * ta.maxGlyphWidth * ta.maxGlyphHeight
-	size := math.Sqrt(float64(areaInPixels))
-	size = math.Min(float64(ta.maxTextureSize), size)
+	fSize := math.Sqrt(float64(areaInPixels))
+	fSize = math.Min(float64(ta.maxTextureSize), fSize)
+	size := int32(fSize)
+
+	// Powers of 2 are preferred for texture sizes.
+	// Round up to the next nearest power of 2.
+	// http://graphics.stanford.edu/~seander/bithacks.html#RoundUpPowerOf2
+	size--
+	size |= size >> 1
+	size |= size >> 2
+	size |= size >> 4
+	size |= size >> 8
+	size |= size >> 16
+	size++
 
 	ta.width = int32(size)
 	ta.height = int32(size)
