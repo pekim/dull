@@ -7,6 +7,9 @@ import (
 	"os"
 	"os/exec"
 	"path"
+	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 var visualTestAllowedPixelDifference = 0
@@ -37,7 +40,7 @@ func normaliseImageIfRequired(img image.Image) {
 	}
 }
 
-func assertTestImage(name string, w *Window) bool {
+func assertTestImage(t *testing.T, name string, w *Window) {
 	// capture
 	generatedImage := w.Capture()
 	normaliseImageIfRequired(generatedImage)
@@ -53,7 +56,7 @@ func assertTestImage(name string, w *Window) bool {
 	// write reference image if it doesn't exist
 	if os.IsNotExist(err) {
 		writeTestImageFile(referenceImageFilepath, generatedImage)
-		return false
+		return
 	}
 
 	// Get the reference image's pixels.
@@ -73,8 +76,7 @@ func assertTestImage(name string, w *Window) bool {
 	//
 	// If configured, allow for small differences.
 	// That's necessary when headless.
-	differencesCount := 0
-	differencesTotal := 0
+	differences := 0
 	for i, b := range generatedPix {
 		generated := int(b)
 		reference := int(referencePix[i])
@@ -85,23 +87,15 @@ func assertTestImage(name string, w *Window) bool {
 		}
 
 		if difference > visualTestAllowedPixelDifference {
-			differencesCount++
-			differencesTotal += difference
+			fmt.Printf("pixel difference : index=%d reference=%d generated=%d\n", i, reference, generated)
+			differences++
 		}
 	}
-	isDifferent := differencesCount > 0
-
-	if isDifferent {
-		fmt.Println("image differs from reference image")
-		fmt.Printf("  # of pixels that are different  %10d\n", differencesCount)
-		fmt.Printf("  cumulative difference           %10d\n", differencesTotal)
-		fmt.Printf("  average difference per pixel    %10.1f\n", float64(differencesTotal)/float64(differencesCount))
-		fmt.Println()
-	}
+	isDifferent := differences > 0
 
 	updateDiffImage(isDifferent, referenceImageFilepath, generatedImageFilepath, diffImageFilepath)
 
-	return isDifferent
+	assert.False(t, isDifferent, "image differs from reference image")
 }
 
 func writeTestImageFile(filepath string, img image.Image) {
@@ -164,7 +158,7 @@ func updateDiffImage(
 		"-compose", "src",
 		diffImageFilepath,
 	).Output()
-	fmt.Println(string(stdout))
+	fmt.Println(stdout)
 
 	if exitError, isExitError := err.(*exec.ExitError); isExitError {
 		if exitError.ExitCode() > 1 {

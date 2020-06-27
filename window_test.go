@@ -3,8 +3,6 @@ package dull
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-
 	"github.com/pekim/dull/color"
 	"github.com/pekim/dull/geometry"
 )
@@ -128,14 +126,6 @@ func TestWindowVisualRegression(t *testing.T) {
 		},
 	}
 
-	type result struct {
-		t         *testing.T
-		testName  string
-		different bool
-	}
-
-	results := make(chan result, len(tests))
-
 	Run(func(app *Application, err error) {
 		if err != nil {
 			t.Fatal(err)
@@ -172,16 +162,10 @@ func TestWindowVisualRegression(t *testing.T) {
 				//
 				// So capture the images in a later execution of the event loop.
 				// (A closure is used to close over the test name and its window.)
-				go func(name string, w *Window) {
+				func(name string, w *Window) {
 					w.Do(func() {
-						different := assertTestImage(name, w)
+						assertTestImage(t, name, w)
 						w.Destroy()
-
-						results <- result{
-							t:         t,
-							testName:  name,
-							different: different,
-						}
 					})
 				}(test.name, w)
 			})
@@ -191,9 +175,4 @@ func TestWindowVisualRegression(t *testing.T) {
 			wDummy.Destroy()
 		})
 	})
-
-	for range tests {
-		result := <-results
-		assert.False(result.t, result.different, "image differs from reference image")
-	}
 }
