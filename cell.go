@@ -16,6 +16,7 @@ type CellOptions struct {
 type Cell struct {
 	// Rune is the Rune to be rendered.
 	Rune rune
+
 	// Fg is the foreground colour, used to render the Rune.
 	Fg color.Color
 	// Bg is the background colour, used to fill the cell's background.
@@ -33,6 +34,7 @@ type Cell struct {
 	// UnderlineColor is the colour of the underline.
 	// It is ignored unless Underline is true
 	UnderlineColor color.Color
+
 	// Strikethrough denotes whether the Rune should be struckthrough.
 	Strikethrough bool
 	// StrikethroughColor is the colour of the strikethrough

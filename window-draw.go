@@ -101,29 +101,6 @@ func (w *Window) drawRune(
 	w.drawTextureItemToQuad(destination, textureItem, colour)
 }
 
-func (w *Window) DrawCellRect(column, row float64, rect geometry.RectFloat, colour color.Color) {
-	column32 := float32(column)
-	row32 := float32(row)
-	rect32 := geometry.RectFloat32From64(rect)
-
-	cellWidth := w.viewportCellWidth
-	cellHeight := w.viewportCellHeight
-
-	width := cellWidth
-	height := cellHeight
-
-	left := -1.0 + (column32+rect32.Left)*cellWidth
-	top := -1.0 + (row32+rect32.Top)*cellHeight
-	destination := geometry.RectFloat32{
-		Left:   left,
-		Top:    top,
-		Right:  left + (width * (rect32.Right - rect32.Left)),
-		Bottom: top + (height * (rect32.Bottom - rect32.Top)),
-	}
-
-	w.drawSolidQuad(destination, colour)
-}
-
 // DrawCellsRect draws a rectangle of solid colour spanning some
 // or all of some cells.
 func (w *Window) DrawCellsRect(rect geometry.RectFloat, colour color.Color) {
@@ -216,6 +193,16 @@ func (w *Window) DrawOutlineRect(rect geometry.RectFloat, thickness float32,
 	}, colour)
 }
 
-func (w *Window) drawCellBackground(column, row int, colour color.Color) {
-	w.DrawCellRect(float64(column), float64(row), geometry.RectFloat{0, 1.0, 0, 1.0}, colour)
+func (w *Window) drawCellBackground(x, y int, colour color.Color) {
+	left := float64(x)
+	top := float64(y)
+
+	w.DrawCellsRect(geometry.RectFloat{
+		Top:    top,
+		Bottom: top + 1.0,
+		Left:   left,
+		Right:  left + 1.0,
+	},
+		colour,
+	)
 }
