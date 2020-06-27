@@ -7,9 +7,6 @@ import (
 	"os"
 	"os/exec"
 	"path"
-	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
 var visualTestAllowedPixelDifference = 0
@@ -40,7 +37,7 @@ func normaliseImageIfRequired(img image.Image) {
 	}
 }
 
-func assertTestImage(t *testing.T, name string, w *Window) {
+func testImageMatchesReference(name string, w *Window) bool {
 	// capture
 	generatedImage := w.Capture()
 	normaliseImageIfRequired(generatedImage)
@@ -56,7 +53,7 @@ func assertTestImage(t *testing.T, name string, w *Window) {
 	// write reference image if it doesn't exist
 	if os.IsNotExist(err) {
 		writeTestImageFile(referenceImageFilepath, generatedImage)
-		return
+		return true
 	}
 
 	// Get the reference image's pixels.
@@ -104,7 +101,7 @@ func assertTestImage(t *testing.T, name string, w *Window) {
 
 	updateDiffImage(isDifferent, referenceImageFilepath, generatedImageFilepath, diffImageFilepath)
 
-	assert.False(t, isDifferent, "image differs from reference image")
+	return !isDifferent
 }
 
 func writeTestImageFile(filepath string, img image.Image) {

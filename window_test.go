@@ -3,6 +3,8 @@ package dull
 import (
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+
 	"github.com/pekim/dull/color"
 	"github.com/pekim/dull/geometry"
 )
@@ -164,7 +166,9 @@ func TestWindowVisualRegression(t *testing.T) {
 				// (A closure is used to close over the test name and its window.)
 				func(name string, w *Window) {
 					w.Do(func() {
-						assertTestImage(t, name, w)
+						matches := testImageMatchesReference(name, w)
+						assert.True(t, matches, "image differs from reference image")
+
 						w.Destroy()
 					})
 				}(test.name, w)
