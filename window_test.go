@@ -2,6 +2,7 @@ package dull
 
 import (
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 
@@ -166,7 +167,17 @@ func TestWindowVisualRegression(t *testing.T) {
 				// (A closure is used to close over the test name and its window.)
 				func(name string, w *Window) {
 					w.Do(func() {
-						matches := testImageMatchesReference(name, w)
+						matches := false
+						// The captured image is sometimes corrupt.
+						// The reason is not (yet) clear.
+						// As a crude workaround, try a number of times.
+						for i := 0; !matches && i < 20; i++ {
+							matches = testImageMatchesReference(name, w)
+							if !matches {
+								time.Sleep(time.Second / 10)
+							}
+						}
+
 						assert.True(t, matches, "image differs from reference image")
 
 						w.Destroy()
