@@ -106,7 +106,7 @@ func initialise(app *dull.Application, err error) {
 	//	}
 	//}()
 
-	window.SetTitle("dull - simple")
+	window.SetTitle("dull - gamma")
 	window.SetPosition(200, 200)
 	window.Show()
 
