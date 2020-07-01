@@ -19,18 +19,29 @@ func initialise(app *dull.Application, err error) {
 	}
 
 	window.SetDrawCallback(func(d dull.Drawer, columns, rows int) {
-		drawText(d, 1, false, "Qaz qwerty - Hello world!")
-		drawText(d, 2, false, "WiWiW WWWWW iiiii AAAAA eeeee")
-		drawText(d, 3, true, "WiWiW WWWWW iiiii AAAAA eeeee")
+		drawTitle(d, 0, "Alternating cell backgrounds, to see glyph position in cell")
+		drawTextWithAlternatingCellBackground(d, 1, false, "Qaz qwerty - Hello world!")
+		drawTextWithAlternatingCellBackground(d, 2, false, "WiWiW WWWWW iiiii AAAAA eeeee")
+		drawTextWithAlternatingCellBackground(d, 3, true, "WiWiW WWWWW iiiii AAAAA eeeee")
 	})
 
 	window.SetTitle("dull - text")
 	window.SetPosition(200, 200)
-	window.SetFontSize(20)
+	window.SetFontSize(17)
 	window.Show()
 }
 
-func drawText(d dull.Drawer, row int, italic bool, text string) {
+func drawTitle(d dull.Drawer, row int, text string) {
+	for i, c := range text {
+		d.DrawCell(&dull.Cell{
+			Rune: c,
+			Bold: true,
+			Fg:   color.Black,
+		}, i, row)
+	}
+}
+
+func drawTextWithAlternatingCellBackground(d dull.Drawer, row int, italic bool, text string) {
 	grey1 := color.New(0.9, 0.9, 0.9, 0.7)
 	grey2 := color.New(0.8, 0.8, 0.8, 0.7)
 
@@ -45,7 +56,7 @@ func drawText(d dull.Drawer, row int, italic bool, text string) {
 			Italic: italic,
 			Fg:     color.Black,
 			Bg:     bg,
-		}, 1+i, row)
+		}, 2+i, row)
 	}
 }
 
