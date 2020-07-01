@@ -15,7 +15,7 @@ import (
 	"github.com/pekim/dull/internal/font"
 )
 
-const defaultFontSize = 15.5
+const defaultFontSize = 17.0
 const fontZoomDelta = 0.75
 
 type keybinding struct {

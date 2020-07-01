@@ -82,7 +82,6 @@ func initialise(app *dull.Application, err error) {
 
 	window.SetTitle("dull - text")
 	window.SetPosition(200, 200)
-	window.SetFontSize(17)
 	window.Show()
 }
 
