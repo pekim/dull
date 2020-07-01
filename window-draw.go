@@ -75,6 +75,15 @@ func (w *Window) drawRune(
 	colour color.Color,
 	font *font.FontTextureAtlas,
 ) {
+	if colour.R == 0.0 && colour.G == 0.0 && colour.B == 0.0 && colour.A == 0.0 {
+		// no colour provided
+		// default to window's foreground colour
+		colour = w.fg
+	} else if colour.A == 0.0 {
+		// transparent, so don't bother rendering
+		return
+	}
+
 	cellWidth := w.viewportCellWidth
 	cellHeight := w.viewportCellHeight
 
@@ -194,6 +203,11 @@ func (w *Window) DrawOutlineRect(rect geometry.RectFloat, thickness float32,
 }
 
 func (w *Window) drawCellBackground(x, y int, colour color.Color) {
+	if colour.A == 0.0 {
+		// transparent, so don't bother rendering
+		return
+	}
+
 	left := float64(x)
 	top := float64(y)
 
