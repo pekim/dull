@@ -100,9 +100,18 @@ func drawTextWithAlternatingCellBackground(d dull.Drawer, row *int, cell dull.Ce
 	grey2 := color.New(0.8, 0.8, 0.8, 0.7)
 
 	for i, c := range text + " : Qaz qwerty - Hello world! - WiWiW WWWWW iiiii AAAAA eeeee" {
-		cell.Bg = grey1
-		if i%2 == 0 {
-			cell.Bg = grey2
+		if *row%2 == 0 {
+			if i%2 == 0 {
+				cell.Bg = grey2
+			} else {
+				cell.Bg = grey1
+			}
+		} else {
+			if i%2 == 0 {
+				cell.Bg = grey1
+			} else {
+				cell.Bg = grey2
+			}
 		}
 
 		cell.Rune = c
