@@ -18,8 +18,13 @@ type Cell struct {
 	Rune rune
 
 	// Fg is the foreground colour, used to render the Rune.
+	//
+	// If it is the zero value (R, G, B, and A all 0.0) then
+	// the Window's default foreground color is used.
 	Fg color.Color
 	// Bg is the background colour, used to fill the cell's background.
+	//
+	// If the alpha value (A) is 0.0, then no background will be rendered.
 	Bg color.Color
 
 	// Bold denotes whether the Rune is rendered in Bold.
