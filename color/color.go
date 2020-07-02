@@ -2,7 +2,7 @@ package color
 
 import "strconv"
 
-// color represents an alpha-premultiplied color.
+// Color represents a straight RGBA color.
 //
 // For each value of R, G, B, and A the range is from 0.0 to 1.0 .
 type Color struct {
