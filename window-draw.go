@@ -110,6 +110,13 @@ func (w *Window) drawRune(
 	w.drawTextureItemToQuad(destination, textureItem, colour)
 }
 
+func (w *Window) DrawText(cell *Cell, column, row int, text string) {
+	for i, c := range text {
+		cell.Rune = c
+		w.DrawCell(cell, column+i, row)
+	}
+}
+
 // DrawCellsRect draws a rectangle of solid colour spanning some
 // or all of some cells.
 func (w *Window) DrawCellsRect(rect geometry.RectFloat, colour color.Color) {

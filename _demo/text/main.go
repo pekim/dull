@@ -91,11 +91,7 @@ func drawTitle(d dull.Drawer, row *int, text string) {
 }
 
 func drawText(d dull.Drawer, column int, row *int, cell dull.Cell, text string) {
-	for i, c := range text {
-		cell.Rune = c
-		d.DrawCell(&cell, column+i, *row)
-	}
-
+	d.DrawText(&cell, column, *row, text)
 	*row++
 }
 

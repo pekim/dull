@@ -22,6 +22,13 @@ type Drawer interface {
 	DrawCell(cell *Cell, column, row int)
 
 	/*
+		DrawText draws a string of text, starting at column/row.
+
+		The Rune field in the Cell is ignored.
+	*/
+	DrawText(cell *Cell, column, row int, text string)
+
+	/*
 		DrawCellsRect draws a rectangle of colour spanning some
 		or all of the cells.
 
