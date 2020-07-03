@@ -2,6 +2,7 @@ package geometry
 
 import "math"
 
+// RectFloat is a rectangle expressed with float64.
 type RectFloat struct {
 	Top    float64
 	Bottom float64
@@ -9,20 +10,24 @@ type RectFloat struct {
 	Right  float64
 }
 
+// Width returns the RectFloat's width.
 func (r RectFloat) Width() float64 {
 	return r.Right - r.Left
 }
 
+// Height returns the RectFloat's height.
 func (r RectFloat) Height() float64 {
 	return r.Bottom - r.Top
 }
 
-func (r RectFloat) Child(other RectFloat) RectFloat {
+// View gets a new rectangle that represents another
+// rectangle in the coordinates of this rectangle.
+func (r RectFloat) View(other RectFloat) RectFloat {
 	top := r.Top + other.Top
 	top = math.Max(top, r.Top)
 	top = math.Min(top, r.Bottom)
 
-	bottom := top + other.Height()
+	bottom := other.Bottom
 	bottom = math.Min(bottom, r.Bottom)
 	bottom = math.Max(bottom, r.Top)
 
@@ -30,7 +35,7 @@ func (r RectFloat) Child(other RectFloat) RectFloat {
 	left = math.Max(left, r.Left)
 	left = math.Min(left, r.Right)
 
-	right := left + other.Width()
+	right := other.Right
 	right = math.Min(right, r.Right)
 	right = math.Max(right, r.Left)
 
@@ -42,6 +47,7 @@ func (r RectFloat) Child(other RectFloat) RectFloat {
 	}
 }
 
+// Translate translates the rectangle by the x and y deltas.
 func (r *RectFloat) Translate(x, y float64) {
 	r.Top += x
 	r.Bottom += x

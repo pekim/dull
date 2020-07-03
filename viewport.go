@@ -48,7 +48,7 @@ func (v *Viewport) Dim() (float64, float64) {
 func (v *Viewport) View(rect geometry.RectFloat) *Viewport {
 	return &Viewport{
 		drawer: v.drawer,
-		rect:   v.rect.Child(rect),
+		rect:   v.rect.View(rect),
 	}
 }
 
