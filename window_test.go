@@ -11,8 +11,8 @@ import (
 )
 
 func TestWindowVisualRegression(t *testing.T) {
-	grey := color.New(0.5, 0.5, 0.5, 1.0)
-	cyan := color.New(0.5, 0.9, 0.9, 1.0)
+	grey := color.RGB(0.5, 0.5, 0.5)
+	cyan := color.RGB(0.5, 0.9, 0.9)
 
 	tests := []struct {
 		name          string
@@ -38,8 +38,10 @@ func TestWindowVisualRegression(t *testing.T) {
 						}
 					}
 
+					translucentRed, _ := color.FromHexRGBA("A00000A0")
+
 					drawText("Qwerty", 0, 0, &Cell{Fg: color.Green4})
-					drawText("Qwerty", 0, 1, &Cell{Fg: color.NewRGBA("A00000A0")})
+					drawText("Qwerty", 0, 1, &Cell{Fg: translucentRed})
 					drawText("Qwerty", 0, 2, &Cell{Fg: color.Green4, Bg: color.Black})
 
 					drawText("Qwerty", 0, 4, &Cell{Fg: color.Black})

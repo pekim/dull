@@ -13,13 +13,13 @@ func initialise(app *dull.Application, err error) {
 		panic(err)
 	}
 
-	// green := dull.New(0.4, 1.0, 0.0, 1.0)
-	white := color.New(1.0, 1.0, 1.0, 1.0)
-	black := color.New(0.0, 0.0, 0.0, 1.0)
-	almostBlack := color.New(0.04, 0.04, 0.04, 1.0)
-	darkGrey := color.New(0.125, 0.125, 0.125, 1.0)
-	red := color.New(1.0, 0.0, 0.0, 1.0)
-	green := color.New(0.0, 1.0, 0.0, 1.0)
+	// green := dull.RGB(0.4, 1.0, 0.0, 1.0)
+	white := color.RGB(1.0, 1.0, 1.0)
+	black := color.RGB(0.0, 0.0, 0.0)
+	almostBlack := color.RGB(0.04, 0.04, 0.04)
+	darkGrey := color.RGB(0.125, 0.125, 0.125)
+	red := color.RGB(1.0, 0.0, 0.0)
+	green := color.RGB(0.0, 1.0, 0.0)
 	window, err := app.NewWindow(&dull.WindowOptions{
 		Bg: &almostBlack,
 		Fg: &black,

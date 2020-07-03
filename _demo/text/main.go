@@ -66,9 +66,11 @@ func initialise(app *dull.Application, err error) {
 		y += 2
 
 		drawTitle(d, &y, "Backgrounds")
+		translucentColor, _ := color.FromHexRGBA("2020C080")
+		transparentColor, _ := color.FromHexRGBA("2020C000")
 		drawText(d, 2, &y, dull.Cell{Fg: color.Black}, " no background")
-		drawText(d, 2, &y, dull.Cell{Fg: color.Black, Bg: color.NewRGBA("2020C080")}, " translucent background ")
-		drawText(d, 2, &y, dull.Cell{Fg: color.Black, Bg: color.NewRGBA("2020C000")}, " transparent background ")
+		drawText(d, 2, &y, dull.Cell{Fg: color.Black, Bg: translucentColor}, " translucent background ")
+		drawText(d, 2, &y, dull.Cell{Fg: color.Black, Bg: transparentColor}, " transparent background ")
 		drawText(d, 2, &y, dull.Cell{Fg: color.White, Bg: color.Darkgreen}, " solid background ")
 		y += 2
 
@@ -96,8 +98,8 @@ func drawText(d dull.Drawer, column int, row *int, cell dull.Cell, text string) 
 }
 
 func drawTextWithAlternatingCellBackground(d dull.Drawer, row *int, cell dull.Cell, text string) {
-	grey1 := color.New(0.9, 0.9, 0.9, 0.7)
-	grey2 := color.New(0.8, 0.8, 0.8, 0.7)
+	grey1 := color.RGBA(0.9, 0.9, 0.9, 0.7)
+	grey2 := color.RGBA(0.8, 0.8, 0.8, 0.7)
 
 	for i, c := range text + " : Qaz qwerty - Hello world! - WiWiW WWWWW iiiii AAAAA eeeee" {
 		if *row%2 == 0 {

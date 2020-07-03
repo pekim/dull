@@ -11,9 +11,9 @@ func initialise(app *dull.Application, err error) {
 		panic(err)
 	}
 
-	white := color.New(1.0, 1.0, 1.0, 1.0)
-	black := color.New(0.0, 0.0, 0.0, 1.0)
-	transparent := color.New(0.0, 0.0, 0.0, 0.0)
+	white := color.RGB(1.0, 1.0, 1.0, 1.0)
+	black := color.RGB(0.0, 0.0, 0.0, 1.0)
+	transparent := color.RGB(0.0, 0.0, 0.0, 0.0)
 
 	window, err := app.NewWindow(&dull.WindowOptions{
 		Bg: &white,

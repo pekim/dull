@@ -1,53 +1,85 @@
 package color
 
-import "strconv"
+import (
+	"fmt"
+	"strconv"
+)
 
 // Color represents a straight RGBA color.
 //
-// For each value of R, G, B, and A the range is from 0.0 to 1.0 .
+// For each value of R, G, B, and A the valid range is from 0.0 to 1.0 .
 type Color struct {
 	R, G, B, A float32
 }
 
-// New creates a Color.
-func New(r, g, b, a float32) Color {
-	return Color{R: r, G: g, B: b, A: a}
-}
-
-/*
-	FromString creates a C
-*/
-func FromString(s string) {
-
-}
-
-// NewRGB creates a Color from a 6 hex character RGB string.
-func NewRGB(rgb string) Color {
-	rInt, _ := strconv.ParseUint(rgb[0:2], 16, 32)
-	r := float32(rInt) / 255
-
-	gInt, _ := strconv.ParseUint(rgb[2:4], 16, 32)
-	g := float32(gInt) / 255
-
-	bInt, _ := strconv.ParseUint(rgb[4:6], 16, 32)
-	b := float32(bInt) / 255
-
+// RGB creates a Color.
+func RGB(r, g, b float32) Color {
 	return Color{R: r, G: g, B: b, A: 1.0}
 }
 
-// NewRGBA creates a Color from an 8 hex character RGBA string.
-func NewRGBA(rgba string) Color {
-	rInt, _ := strconv.ParseUint(rgba[0:2], 16, 32)
-	r := float32(rInt) / 255
-
-	gInt, _ := strconv.ParseUint(rgba[2:4], 16, 32)
-	g := float32(gInt) / 255
-
-	bInt, _ := strconv.ParseUint(rgba[4:6], 16, 32)
-	b := float32(bInt) / 255
-
-	aInt, _ := strconv.ParseUint(rgba[6:8], 16, 32)
-	a := float32(aInt) / 255
-
+// RGBA creates a Color.
+func RGBA(r, g, b, a float32) Color {
 	return Color{R: r, G: g, B: b, A: a}
+}
+
+// FromHexRGB creates exA Color from exA 6 hex character RGB string.
+func FromHexRGB(rgb string) (Color, error) {
+	if len(rgb) != 6 {
+		return Color{}, fmt.Errorf("Expected %s to be 6 digits, but is %d digits", rgb, len(rgb))
+	}
+
+	r, err := parseHexPair(rgb, 0, 2)
+	if err != nil {
+		return Color{}, err
+	}
+
+	g, err := parseHexPair(rgb, 2, 4)
+	if err != nil {
+		return Color{}, err
+	}
+
+	b, err := parseHexPair(rgb, 4, 6)
+	if err != nil {
+		return Color{}, err
+	}
+
+	return Color{R: r, G: g, B: b, A: 1.0}, nil
+}
+
+// FromHexRGBA creates a Color from an 8 hex character RGBA string.
+func FromHexRGBA(rgba string) (Color, error) {
+	if len(rgba) != 8 {
+		return Color{}, fmt.Errorf("Expected %s to be 8 digits, but is %d digits", rgba, len(rgba))
+	}
+
+	r, err := parseHexPair(rgba, 0, 2)
+	if err != nil {
+		return Color{}, err
+	}
+
+	g, err := parseHexPair(rgba, 2, 4)
+	if err != nil {
+		return Color{}, err
+	}
+
+	b, err := parseHexPair(rgba, 4, 6)
+	if err != nil {
+		return Color{}, err
+	}
+
+	a, err := parseHexPair(rgba, 6, 8)
+	if err != nil {
+		return Color{}, err
+	}
+
+	return Color{R: r, G: g, B: b, A: a}, nil
+}
+
+func parseHexPair(input string, start int, end int) (float32, error) {
+	i, err := strconv.ParseUint(input[start:end], 16, 32)
+	if err != nil {
+		return 0, fmt.Errorf("Failed to parse \"%s\" as a color", input)
+	}
+
+	return float32(i) / 0xFF, nil
 }
