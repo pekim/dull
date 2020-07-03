@@ -36,7 +36,7 @@ func initialise(app *dull.Application, err error) {
 
 		middle := float64((int(vp.Height()) + 1) / 2)
 
-		vp21 := vp.Child(geometry.RectFloat{
+		vp21 := vp.View(geometry.RectFloat{
 			Top:    0,
 			Bottom: middle,
 			Left:   1,
@@ -54,7 +54,7 @@ func initialise(app *dull.Application, err error) {
 		)
 		vp21.DrawText(&dull.Cell{}, 10, 0, "vp 2 1")
 
-		vp22 := vp.Child(geometry.RectFloat{
+		vp22 := vp.View(geometry.RectFloat{
 			Top:    middle,
 			Bottom: vp.Height(),
 			Left:   1,

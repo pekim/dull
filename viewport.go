@@ -27,25 +27,32 @@ func ViewportForWindow(window *Window, drawer Drawer) *Viewport {
 	}
 }
 
+// Height returns the Viewport's height.
 func (v *Viewport) Height() float64 {
 	return v.rect.Height()
 }
 
+// Width returns the Viewport's width.
 func (v *Viewport) Width() float64 {
 	return v.rect.Width()
 }
 
+//Dim returns the Viewport's dimensions, it's
+// width and height.
 func (v *Viewport) Dim() (float64, float64) {
 	return v.Width(), v.Height()
 }
 
-func (v *Viewport) Child(rect geometry.RectFloat) *Viewport {
+// View gets a new Viewport that is a view on an
+// existing Viewport.
+func (v *Viewport) View(rect geometry.RectFloat) *Viewport {
 	return &Viewport{
 		drawer: v.drawer,
 		rect:   v.rect.Child(rect),
 	}
 }
 
+// DrawCell implements Drawer's DrawCell method.
 func (v *Viewport) DrawCell(cell *Cell, column, row int) {
 	column += int(v.rect.Left)
 	row += int(v.rect.Top)
@@ -53,6 +60,7 @@ func (v *Viewport) DrawCell(cell *Cell, column, row int) {
 	v.drawer.DrawCell(cell, column, row)
 }
 
+// DrawText implements Drawer's DrawText method.
 func (v *Viewport) DrawText(cell *Cell, column, row int, text string) {
 	column += int(v.rect.Left)
 	row += int(v.rect.Top)
@@ -60,12 +68,14 @@ func (v *Viewport) DrawText(cell *Cell, column, row int, text string) {
 	v.drawer.DrawText(cell, column, row, text)
 }
 
+// DrawCellsRect implements Drawer's DrawCellsRect method.
 func (v *Viewport) DrawCellsRect(rect geometry.RectFloat, colour color.Color) {
 	(&rect).Translate(v.rect.Top, v.rect.Left)
 
 	v.drawer.DrawCellsRect(rect, colour)
 }
 
+// DrawOutlineRect implements Drawer's DrawOutlineRect method.
 func (v *Viewport) DrawOutlineRect(
 	rect geometry.RectFloat,
 	thickness float32,
@@ -77,6 +87,7 @@ func (v *Viewport) DrawOutlineRect(
 	v.drawer.DrawOutlineRect(rect, thickness, position, colour)
 }
 
+// Bell implements Drawer's Bell method.
 func (v *Viewport) Bell() {
 	v.drawer.Bell()
 }
