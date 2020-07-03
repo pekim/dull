@@ -5,15 +5,25 @@ import (
 	"github.com/pekim/dull/geometry"
 )
 
+// Viewport represents a rectangular view on a Window.
+//
+// Viewport implements the Drawer interface.
 type Viewport struct {
 	drawer Drawer
 	rect   geometry.RectFloat
 }
 
-func NewViewport(drawer Drawer, rect geometry.RectFloat) *Viewport {
+// ViewportForWindow creates a Viewport for the whole
+// area of a Window.
+func ViewportForWindow(window *Window, drawer Drawer) *Viewport {
 	return &Viewport{
 		drawer: drawer,
-		rect:   rect,
+		rect: geometry.RectFloat{
+			Top:    0,
+			Bottom: float64(window.rows),
+			Left:   0,
+			Right:  float64(window.columns),
+		},
 	}
 }
 

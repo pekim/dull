@@ -20,12 +20,7 @@ func initialise(app *dull.Application, err error) {
 	}
 
 	window.SetDrawCallback(func(d dull.Drawer, columns, rows int) {
-		vp := dull.NewViewport(d, geometry.RectFloat{
-			Top:    0,
-			Bottom: float64(rows),
-			Left:   0,
-			Right:  float64(columns),
-		})
+		vp := dull.ViewportForWindow(window, d)
 
 		vp.DrawOutlineRect(geometry.RectFloat{
 			Top:    0,
