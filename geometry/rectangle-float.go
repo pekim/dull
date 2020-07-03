@@ -15,6 +15,13 @@ func (r RectFloat) Height() float64 {
 	return r.Bottom - r.Top
 }
 
+func (r *RectFloat) Translate(x, y float64) {
+	r.Top += x
+	r.Bottom += x
+	r.Left += y
+	r.Right += y
+}
+
 type RectFloat32 struct {
 	Top    float32
 	Bottom float32
