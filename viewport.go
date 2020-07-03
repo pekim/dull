@@ -10,6 +10,13 @@ type Viewport struct {
 	rect   geometry.RectFloat
 }
 
+func NewViewport(drawer Drawer, rect geometry.RectFloat) *Viewport {
+	return &Viewport{
+		drawer: drawer,
+		rect:   rect,
+	}
+}
+
 func (v *Viewport) Height() float64 {
 	return v.rect.Height()
 }
@@ -49,7 +56,12 @@ func (v *Viewport) DrawCellsRect(rect geometry.RectFloat, colour color.Color) {
 	v.drawer.DrawCellsRect(rect, colour)
 }
 
-func (v *Viewport) DrawOutlineRect(rect geometry.RectFloat, thickness float32, position OutlinePosition, colour color.Color) {
+func (v *Viewport) DrawOutlineRect(
+	rect geometry.RectFloat,
+	thickness float32,
+	position OutlinePosition,
+	colour color.Color,
+) {
 	(&rect).Translate(v.rect.Top, v.rect.Left)
 
 	v.drawer.DrawOutlineRect(rect, thickness, position, colour)
