@@ -22,8 +22,11 @@ func (v *Viewport) Dim() (float64, float64) {
 	return v.Width(), v.Height()
 }
 
-func (v *Viewport) Intersection() *Viewport {
-	return nil
+func (v *Viewport) Child(rect geometry.RectFloat) *Viewport {
+	return &Viewport{
+		drawer: v.drawer,
+		rect:   v.rect.Child(rect),
+	}
 }
 
 func (v *Viewport) DrawCell(cell *Cell, column, row int) {
