@@ -54,6 +54,14 @@ func (v *Viewport) View(rect geometry.RectFloat) *Viewport {
 
 // DrawCell implements Drawer's DrawCell method.
 func (v *Viewport) DrawCell(cell *Cell, column, row int) {
+	// Perform clipping
+	if row < 0 || row >= int(v.Height()) {
+		return
+	}
+	if column < 0 || column >= int(v.rect.Width()) {
+		return
+	}
+
 	column += int(v.rect.Left)
 	row += int(v.rect.Top)
 
@@ -62,6 +70,18 @@ func (v *Viewport) DrawCell(cell *Cell, column, row int) {
 
 // DrawText implements Drawer's DrawText method.
 func (v *Viewport) DrawText(cell *Cell, column, row int, text string) {
+	// Perform clipping.
+	if row < 0 || row >= int(v.Height()) {
+		return
+	}
+	if column < 0 {
+		text = text[-column:]
+		column = 0
+	}
+	if column+len(text) > int(v.Width()) {
+		text = text[:int(v.Width())-column]
+	}
+
 	column += int(v.rect.Left)
 	row += int(v.rect.Top)
 
@@ -76,6 +96,9 @@ func (v *Viewport) DrawCellsRect(rect geometry.RectFloat, colour color.Color) {
 }
 
 // DrawOutlineRect implements Drawer's DrawOutlineRect method.
+//
+// Unlike other ViewPort draw methods, clipping is not performed
+// for DrawOutlineRect.
 func (v *Viewport) DrawOutlineRect(
 	rect geometry.RectFloat,
 	thickness float32,
