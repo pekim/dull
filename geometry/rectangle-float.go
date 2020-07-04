@@ -27,7 +27,7 @@ func (r RectFloat) View(other RectFloat) RectFloat {
 	top = math.Max(top, r.Top)
 	top = math.Min(top, r.Bottom)
 
-	bottom := other.Bottom
+	bottom := r.Top + other.Top + other.Height()
 	bottom = math.Min(bottom, r.Bottom)
 	bottom = math.Max(bottom, r.Top)
 
@@ -35,7 +35,7 @@ func (r RectFloat) View(other RectFloat) RectFloat {
 	left = math.Max(left, r.Left)
 	left = math.Min(left, r.Right)
 
-	right := other.Right
+	right := r.Left + other.Left + other.Width()
 	right = math.Min(right, r.Right)
 	right = math.Max(right, r.Left)
 
