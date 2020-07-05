@@ -93,9 +93,16 @@ func (v *Viewport) DrawText(cell *Cell, column, row int, text string) {
 
 // DrawCellsRect implements Drawer's DrawCellsRect method.
 func (v *Viewport) DrawCellsRect(rect geometry.RectFloat, colour color.Color) {
-	(&rect).Translate(v.rect.Top, v.rect.Left)
+	rect.Translate(v.rect.Top, v.rect.Left)
 
-	v.drawer.DrawCellsRect(rect, colour)
+	// Perform clipping.
+	intersection := rect.Intersection(v.rect)
+	if intersection == nil {
+		// No intersection, so nothing to draw.
+		return
+	}
+
+	v.drawer.DrawCellsRect(*intersection, colour)
 }
 
 // DrawOutlineRect implements Drawer's DrawOutlineRect method.

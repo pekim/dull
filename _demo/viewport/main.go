@@ -54,6 +54,27 @@ func initialise(app *dull.Application, err error) {
 		)
 		vp21.DrawText(&dull.Cell{}, 10, 0, "vp 2 1")
 
+		vp221 := vp21.View(geometry.RectFloat{
+			Top:    5,
+			Bottom: 10,
+			Left:   5,
+			Right:  10,
+		})
+		vp221.DrawOutlineRect(geometry.RectFloat{
+			Top:    0,
+			Bottom: vp221.Height(),
+			Left:   0,
+			Right:  vp221.Width(),
+		},
+			0.5,
+			dull.OutlineInside,
+			color.RGBA(0.0, 0.0, 0.0, 0.5),
+		)
+		vp221.DrawCellsRect(
+			geometry.RectFloat{-2, 2, -2, 2},
+			color.RGBA(0.8, 0.0, 0.0, 0.5),
+		)
+
 		vp22 := vp.View(geometry.RectFloat{
 			Top:    middle,
 			Bottom: vp.Height(),
@@ -64,7 +85,7 @@ func initialise(app *dull.Application, err error) {
 			Top:    0,
 			Bottom: vp22.Height(),
 			Left:   0,
-			Right:  vp21.Width(),
+			Right:  vp22.Width(),
 		},
 			0.5,
 			dull.OutlineInside,

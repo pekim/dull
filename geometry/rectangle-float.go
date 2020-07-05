@@ -23,28 +23,14 @@ func (r RectFloat) Height() float64 {
 // View gets a new rectangle that represents another
 // rectangle in the coordinates of this rectangle.
 func (r RectFloat) View(other RectFloat) RectFloat {
-	top := r.Top + other.Top
-	top = math.Max(top, r.Top)
-	top = math.Min(top, r.Bottom)
+	other.Translate(r.Top, r.Left)
+	intersection := r.Intersection(other)
 
-	bottom := r.Top + other.Top + other.Height()
-	bottom = math.Min(bottom, r.Bottom)
-	bottom = math.Max(bottom, r.Top)
-
-	left := r.Left + other.Left
-	left = math.Max(left, r.Left)
-	left = math.Min(left, r.Right)
-
-	right := r.Left + other.Left + other.Width()
-	right = math.Min(right, r.Right)
-	right = math.Max(right, r.Left)
-
-	return RectFloat{
-		Top:    top,
-		Bottom: bottom,
-		Left:   left,
-		Right:  right,
+	if intersection == nil {
+		return RectFloat{0, 0, 0, 0}
 	}
+
+	return *intersection
 }
 
 // Translate translates the rectangle by the x and y deltas.
@@ -53,6 +39,26 @@ func (r *RectFloat) Translate(x, y float64) {
 	r.Bottom += x
 	r.Left += y
 	r.Right += y
+}
+
+// Intersection returns the intersection of this rectangle and
+// another rectangle. If they do not intersect, nil is returned
+func (r *RectFloat) Intersection(other RectFloat) *RectFloat {
+	if r.Top >= other.Bottom ||
+		r.Bottom <= other.Top ||
+		r.Left >= other.Right ||
+		r.Right <= other.Left {
+
+		// There is no intersection.
+		return nil
+	}
+
+	return &RectFloat{
+		Top:    math.Max(r.Top, other.Top),
+		Bottom: math.Min(r.Bottom, other.Bottom),
+		Left:   math.Max(r.Left, other.Left),
+		Right:  math.Min(r.Right, other.Right),
+	}
 }
 
 type RectFloat32 struct {
