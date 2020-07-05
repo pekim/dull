@@ -72,13 +72,16 @@ func (v *Viewport) DrawCell(cell *Cell, column, row int) {
 func (v *Viewport) DrawText(cell *Cell, column, row int, text string) {
 	// Perform clipping.
 	if row < 0 || row >= int(v.Height()) {
+		// Clip above/below.
 		return
 	}
 	if column < 0 {
+		// Clip left.
 		text = text[-column:]
 		column = 0
 	}
 	if column+len(text) > int(v.Width()) {
+		// Clip right.
 		text = text[:int(v.Width())-column]
 	}
 
