@@ -1,4 +1,4 @@
-package widget
+package ui
 
 import (
 	"math"
@@ -31,12 +31,12 @@ func (w *BaseWidget) Draw(viewport dull.Viewport) {
 	}
 }
 
-func (w *BaseWidget) MaxSize() (int, int) {
-	return math.MaxUint32, math.MaxUint32
-}
-
 func (w *BaseWidget) MinSize() (int, int) {
 	return 0, 0
+}
+
+func (w *BaseWidget) MaxSize() (int, int) {
+	return math.MaxUint32, math.MaxUint32
 }
 
 func (w *BaseWidget) PreferredSize() (int, int) {

@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/pekim/dull"
 	"github.com/pekim/dull/color"
-	"github.com/pekim/dull/widget"
+	"github.com/pekim/dull/ui/widget"
 )
 
 func initialise(app *dull.Application, err error) {
