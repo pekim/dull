@@ -8,6 +8,7 @@ import (
 
 type HBox struct {
 	ui.BaseWidget
+
 	alignment     Alignment
 	justification Justification
 	space         int
@@ -29,8 +30,9 @@ func (l *HBox) SetSpace(space int) {
 }
 
 func (l *HBox) Draw(viewport *dull.Viewport) {
-	rects := l.layout(int(viewport.Width()), int(viewport.Height()))
+	l.DrawBackground(viewport)
 
+	rects := l.layout(int(viewport.Width()), int(viewport.Height()))
 	for i, widget := range l.Children {
 		rect := rects[i]
 		widget.Draw(viewport.View(rect))

@@ -4,21 +4,29 @@ import (
 	"math"
 
 	"github.com/pekim/dull"
+	"github.com/pekim/dull/color"
+	"github.com/pekim/dull/geometry"
 )
 
-// Widget respresents something that can be drawn,
-// and can respond to events/
-type Widget interface {
-	// Draw draws the widget to a viewport.
-	Draw(viewport *dull.Viewport)
-
-	MaxSize() (int, int)
-	MinSize() (int, int)
-	PreferredSize() (int, int)
+type BaseWidget struct {
+	Bg       *color.Color
+	Children []Widget
 }
 
-type BaseWidget struct {
-	Children []Widget
+func (w *BaseWidget) DrawBackground(viewport *dull.Viewport) {
+	if w.Bg == nil {
+		return
+	}
+
+	viewport.DrawCellsRect(
+		geometry.RectFloat{
+			Top:    0,
+			Bottom: viewport.Height(),
+			Left:   0,
+			Right:  viewport.Width(),
+		},
+		*w.Bg,
+	)
 }
 
 func (w *BaseWidget) MinSize() (int, int) {
