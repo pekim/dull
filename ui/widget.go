@@ -8,9 +8,19 @@ import (
 	"github.com/pekim/dull/geometry"
 )
 
+// BaseWidget is a minimal Widget implementation.
+// It does little more than draw its own background,
+// and provide default size methods.
+//
+// It can be used as a base for a Widget, typically
+// by embedding it in another type.
 type BaseWidget struct {
 	Bg       *color.Color
 	Children []Widget
+}
+
+func (w *BaseWidget) Draw(viewport *dull.Viewport) {
+	w.DrawBackground(viewport)
 }
 
 func (w *BaseWidget) DrawBackground(viewport *dull.Viewport) {
