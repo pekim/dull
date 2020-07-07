@@ -10,7 +10,7 @@ import (
 // and can respond to events/
 type Widget interface {
 	// Draw draws the widget to a viewport.
-	Draw(viewport dull.Viewport)
+	Draw(viewport *dull.Viewport)
 
 	MaxSize() (int, int)
 	MinSize() (int, int)
@@ -18,17 +18,7 @@ type Widget interface {
 }
 
 type BaseWidget struct {
-	Layout   Layout
 	Children []Widget
-}
-
-func (w *BaseWidget) Draw(viewport dull.Viewport) {
-	rects := w.Layout.Arrange(w.Children, viewport.Width(), viewport.Height())
-
-	for i, child := range w.Children {
-		viewport := viewport.View(rects[i])
-		child.Draw(*viewport)
-	}
 }
 
 func (w *BaseWidget) MinSize() (int, int) {
