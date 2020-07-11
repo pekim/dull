@@ -1,16 +1,52 @@
 package ui
 
 import (
+	"math"
+
 	"github.com/pekim/dull"
+	"github.com/pekim/dull/color"
+	"github.com/pekim/dull/geometry"
 )
 
-// Widget respresents something that can be drawn,
-// and can respond to events/
-type Widget interface {
-	// Draw draws the widget to a viewport.
-	Draw(viewport *dull.Viewport)
+// BaseWidget is a minimal Widget implementation.
+// It does little more than draw its own background,
+// and provide default size methods.
+//
+// It can be used as a base for a Widget, typically
+// by embedding it in another type.
+type BaseWidget struct {
+	Bg       *color.Color
+	Children []Widget
+}
 
-	MaxSize() (int, int)
-	MinSize() (int, int)
-	PreferredSize() (int, int)
+func (w *BaseWidget) Draw(viewport *dull.Viewport) {
+	w.DrawBackground(viewport)
+}
+
+func (w *BaseWidget) DrawBackground(viewport *dull.Viewport) {
+	if w.Bg == nil {
+		return
+	}
+
+	viewport.DrawCellsRect(
+		geometry.RectFloat{
+			Top:    0,
+			Bottom: viewport.Height(),
+			Left:   0,
+			Right:  viewport.Width(),
+		},
+		*w.Bg,
+	)
+}
+
+func (w *BaseWidget) MinSize() (int, int) {
+	return 0, 0
+}
+
+func (w *BaseWidget) MaxSize() (int, int) {
+	return math.MaxUint32, math.MaxUint32
+}
+
+func (w *BaseWidget) PreferredSize() (int, int) {
+	return math.MaxUint32, math.MaxUint32
 }
