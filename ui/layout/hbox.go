@@ -39,8 +39,63 @@ func (l *HBox) Draw(viewport *dull.Viewport) {
 	}
 }
 
-func (l *HBox) layout(width, heigh int) []geometry.RectFloat {
+func (l *HBox) layout(width, height int) []geometry.RectFloat {
+	// Total the min width of all widgets.
+	minWidth := 0
+	for _, child := range l.Children {
+		w, _ := child.MinSize()
+		minWidth += w
+	}
+
+	extraSpaceFirst := 0
+	extraSpaceOthers := 0
+	if minWidth < width {
+		expandableWidgetCount := 0
+		availableSpace := width
+		for _, child := range l.Children {
+			prefW, _ := child.PreferredSize()
+			if prefW == ui.WidgetSizeUnlimited {
+				continue
+			}
+
+			expandableWidgetCount++
+			availableSpace -= prefW
+		}
+
+		extraSpaceOthers = availableSpace / expandableWidgetCount
+		extraSpaceFirst = extraSpaceOthers + (availableSpace % expandableWidgetCount)
+	}
+
 	rects := make([]geometry.RectFloat, len(l.Children), len(l.Children))
+
+	usedFirstExtraSpace := false
+	x := float64(0)
+	for i, child := range l.Children {
+		prefW, prefH := child.PreferredSize()
+
+		if prefW == ui.WidgetSizeUnlimited {
+			if !usedFirstExtraSpace {
+				prefW = extraSpaceFirst
+				usedFirstExtraSpace = true
+			} else {
+				prefW = extraSpaceOthers
+			}
+		}
+
+		if prefH == ui.WidgetSizeUnlimited {
+			prefH = height
+		}
+
+		rect := geometry.RectFloat{
+			Top:    0,
+			Bottom: float64(prefH),
+			Left:   x,
+			Right:  x + float64(prefW),
+		}
+
+		rects[i] = rect
+		x = rect.Right
+	}
 
 	return rects
 }

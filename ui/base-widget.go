@@ -1,8 +1,6 @@
 package ui
 
 import (
-	"math"
-
 	"github.com/pekim/dull"
 	"github.com/pekim/dull/color"
 	"github.com/pekim/dull/geometry"
@@ -44,9 +42,9 @@ func (w *BaseWidget) MinSize() (int, int) {
 }
 
 func (w *BaseWidget) MaxSize() (int, int) {
-	return math.MaxUint32, math.MaxUint32
+	return WidgetSizeUnlimited, WidgetSizeUnlimited
 }
 
 func (w *BaseWidget) PreferredSize() (int, int) {
-	return math.MaxUint32, math.MaxUint32
+	return WidgetSizeUnlimited, WidgetSizeUnlimited
 }

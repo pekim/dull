@@ -1,7 +1,6 @@
 package layout
 
 import (
-	"math"
 	"strconv"
 	"testing"
 
@@ -29,8 +28,16 @@ func (w *testWidget) PreferredSize() (int, int) {
 }
 
 func TestHBox_layout(t *testing.T) {
-	wFixed15 := testWidget{minW: 15, minH: 15, maxW: 15, maxH: 15, prefW: 15, prefH: 15}
-	wMin15 := testWidget{minW: 15, minH: 15, maxW: math.MaxUint32, maxH: math.MaxUint32, prefW: math.MaxUint32, prefH: math.MaxUint32}
+	wFixed15 := testWidget{
+		minW: 15, minH: 15,
+		maxW: 15, maxH: 15,
+		prefW: 15, prefH: 15,
+	}
+	wMin15 := testWidget{
+		minW: 15, minH: 15,
+		maxW: ui.WidgetSizeUnlimited, maxH: ui.WidgetSizeUnlimited,
+		prefW: ui.WidgetSizeUnlimited, prefH: ui.WidgetSizeUnlimited,
+	}
 
 	tests := []struct {
 		w, h          int
@@ -42,7 +49,7 @@ func TestHBox_layout(t *testing.T) {
 		{100, 100, JStart, AStart,
 			[]ui.Widget{&wFixed15, &wMin15},
 			[]geometry.RectFloat{
-				{0, 100, 0, 15},
+				{0, 15, 0, 15},
 				{0, 100, 15, 100},
 			}},
 	}
