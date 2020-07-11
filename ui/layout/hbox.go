@@ -40,5 +40,7 @@ func (l *HBox) Draw(viewport *dull.Viewport) {
 }
 
 func (l *HBox) layout(width, heigh int) []geometry.RectFloat {
-	return nil
+	rects := make([]geometry.RectFloat, len(l.Children), len(l.Children))
+
+	return rects
 }
