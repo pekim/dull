@@ -33,8 +33,18 @@ func TestHBox_layout(t *testing.T) {
 		maxW: 15, maxH: 15,
 		prefW: 15, prefH: 15,
 	}
+	wFixed20 := testWidget{
+		minW: 20, minH: 20,
+		maxW: 20, maxH: 20,
+		prefW: 20, prefH: 20,
+	}
 	wMin15 := testWidget{
 		minW: 15, minH: 15,
+		maxW: ui.WidgetSizeUnlimited, maxH: ui.WidgetSizeUnlimited,
+		prefW: ui.WidgetSizeUnlimited, prefH: ui.WidgetSizeUnlimited,
+	}
+	wMin90 := testWidget{
+		minW: 90, minH: 90,
 		maxW: ui.WidgetSizeUnlimited, maxH: ui.WidgetSizeUnlimited,
 		prefW: ui.WidgetSizeUnlimited, prefH: ui.WidgetSizeUnlimited,
 	}
@@ -51,6 +61,23 @@ func TestHBox_layout(t *testing.T) {
 			[]geometry.RectFloat{
 				{0, 15, 0, 15},
 				{0, 100, 15, 100},
+			}},
+
+		{100, 100, JStart, AStart,
+			[]ui.Widget{&wFixed15, &wMin90},
+			[]geometry.RectFloat{
+				{0, 15, 0, 15},
+				{0, 100, 15, 105},
+			}},
+
+		// unevenly distributed space
+		{100, 100, JStart, AStart,
+			[]ui.Widget{&wFixed20, &wMin15, &wMin15, &wMin15},
+			[]geometry.RectFloat{
+				{0, 20, 0, 20},
+				{0, 100, 20, 48},
+				{0, 100, 48, 74},
+				{0, 100, 74, 100},
 			}},
 	}
 

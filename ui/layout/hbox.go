@@ -53,13 +53,13 @@ func (l *HBox) layout(width, height int) []geometry.RectFloat {
 		expandableWidgetCount := 0
 		availableSpace := width
 		for _, child := range l.Children {
+			minW, _ := child.MinSize()
+			availableSpace -= minW
+
 			prefW, _ := child.PreferredSize()
 			if prefW == ui.WidgetSizeUnlimited {
-				continue
+				expandableWidgetCount++
 			}
-
-			expandableWidgetCount++
-			availableSpace -= prefW
 		}
 
 		extraSpaceOthers = availableSpace / expandableWidgetCount
@@ -71,14 +71,15 @@ func (l *HBox) layout(width, height int) []geometry.RectFloat {
 	usedFirstExtraSpace := false
 	x := float64(0)
 	for i, child := range l.Children {
+		w, _ := child.MinSize()
 		prefW, prefH := child.PreferredSize()
 
 		if prefW == ui.WidgetSizeUnlimited {
 			if !usedFirstExtraSpace {
-				prefW = extraSpaceFirst
+				w += extraSpaceFirst
 				usedFirstExtraSpace = true
 			} else {
-				prefW = extraSpaceOthers
+				w += extraSpaceOthers
 			}
 		}
 
@@ -90,7 +91,7 @@ func (l *HBox) layout(width, height int) []geometry.RectFloat {
 			Top:    0,
 			Bottom: float64(prefH),
 			Left:   x,
-			Right:  x + float64(prefW),
+			Right:  x + float64(w),
 		}
 
 		rects[i] = rect
