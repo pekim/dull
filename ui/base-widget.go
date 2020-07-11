@@ -17,6 +17,13 @@ type BaseWidget struct {
 	Children []Widget
 }
 
+func (w *BaseWidget) InsertWidget(widget Widget, index int) {
+	children := w.Children
+	// https://github.com/golang/go/wiki/SliceTricks
+	children = append(children[:index], append([]Widget{widget}, children[index:]...)...)
+	w.Children = children
+}
+
 func (w *BaseWidget) Draw(viewport *dull.Viewport) {
 	w.DrawBackground(viewport)
 }
@@ -37,14 +44,14 @@ func (w *BaseWidget) DrawBackground(viewport *dull.Viewport) {
 	)
 }
 
-func (w *BaseWidget) MinSize() (int, int) {
-	return 0, 0
-}
-
-func (w *BaseWidget) MaxSize() (int, int) {
-	return WidgetSizeUnlimited, WidgetSizeUnlimited
-}
-
-func (w *BaseWidget) PreferredSize() (int, int) {
-	return WidgetSizeUnlimited, WidgetSizeUnlimited
-}
+//func (w *BaseWidget) MinSize() (int, int) {
+//	return 0, 0
+//}
+//
+//func (w *BaseWidget) MaxSize() (int, int) {
+//	return WidgetSizeUnlimited, WidgetSizeUnlimited
+//}
+//
+//func (w *BaseWidget) PreferredSize() (int, int) {
+//	return WidgetSizeUnlimited, WidgetSizeUnlimited
+//}

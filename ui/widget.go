@@ -14,7 +14,7 @@ type Widget interface {
 	// Draw draws the widget to a viewport.
 	Draw(viewport *dull.Viewport)
 
-	MaxSize() (int, int)
-	MinSize() (int, int)
-	PreferredSize() (int, int)
+	//MaxSize() (int, int)
+	//MinSize() (int, int)
+	//PreferredSize() (int, int)
 }

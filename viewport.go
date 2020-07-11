@@ -27,6 +27,13 @@ func ViewportForWindow(window *Window, drawer Drawer) *Viewport {
 	}
 }
 
+// ViewportForDebug is for internal use by dull, for testing.
+func ViewportForDebug(rect geometry.RectFloat) *Viewport {
+	return &Viewport{
+		rect: rect,
+	}
+}
+
 // Height returns the Viewport's height.
 func (v *Viewport) Height() float64 {
 	return v.rect.Height()
@@ -35,6 +42,14 @@ func (v *Viewport) Height() float64 {
 // Width returns the Viewport's width.
 func (v *Viewport) Width() float64 {
 	return v.rect.Width()
+}
+
+// DebugRect returns the Viewport's rectangle relative to the root.
+//
+// NOTE: This method is for debug or test purposes only.
+// Applications should use the  Height() and Width() methods/
+func (v *Viewport) DebugRect() geometry.RectFloat {
+	return v.rect
 }
 
 //Dim returns the Viewport's dimensions, it's

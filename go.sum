@@ -6,6 +6,8 @@ github.com/go-gl/gl v0.0.0-20190320180904-bf2b1f2f34d7 h1:SCYMcCJ89LjRGwEa0tRluN
 github.com/go-gl/gl v0.0.0-20190320180904-bf2b1f2f34d7/go.mod h1:482civXOzJJCPzJ4ZOX/pwvXBWSnzD4OKMdH4ClKGbk=
 github.com/go-gl/glfw/v3.3/glfw v0.0.0-20200420212212-258d9bec320e h1:8ywu4ELC/6owgOZlZx75CyYS5AYwUT2L+hzPModKvag=
 github.com/go-gl/glfw/v3.3/glfw v0.0.0-20200420212212-258d9bec320e/go.mod h1:tQ2UAYgL5IevRw8kRxooKSPJfGvJ9fJQFa0TUsXzTg8=
+github.com/kjk/flex v0.0.0-20171203210503-ed34d6b6a425 h1:Iibr/k2MalRurqlsZszaaQNCqrztmz/sMHHXDwz5mN0=
+github.com/kjk/flex v0.0.0-20171203210503-ed34d6b6a425/go.mod h1:Tj+9AXmPMed68pFV4Ssetmk4Q8rNfBIKfoBCY5WUPCE=
 github.com/pkg/errors v0.9.1 h1:FEBLx1zS214owpjy7qsBeixbURkuhQAwrK5UwLGTwt4=
 github.com/pkg/errors v0.9.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
