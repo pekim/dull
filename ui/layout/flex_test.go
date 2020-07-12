@@ -1,7 +1,6 @@
 package layout
 
 import (
-	"strconv"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -20,40 +19,36 @@ func (w *testWidget) Draw(viewport *dull.Viewport) {
 	w.drawRect = viewport.DebugRect()
 }
 
+// There's no need to extensively test flex layout,
+// as the github.com/kjk/flex library has comprehensive
+// tests.
+//
+// There's relatively little logic in the wrapping of
+// the library. But a test to make sure that it appears
+// to broadly work is prudent.
 func TestHBox_layout(t *testing.T) {
-	tests := []struct {
-		w, h float64
-		dir  FlexDirection
-	}{
-		{200, 100, FlexDirectionRow},
-	}
+	box := NewFlex(FlexDirectionRow)
 
-	for i, test := range tests {
-		t.Run(strconv.Itoa(i), func(t *testing.T) {
-			box := NewFlex(test.dir)
+	w1 := testWidget{}
+	ws1 := box.InsertWidget(&w1, 0)
+	ws1.SetGrow(4)
 
-			w1 := testWidget{}
-			ws1 := box.InsertWidget(&w1, 0)
-			ws1.SetGrow(4)
+	w2 := testWidget{}
+	ws2 := box.InsertWidget(&w2, 1)
+	ws2.SetWidth(16)
 
-			w2 := testWidget{}
-			ws2 := box.InsertWidget(&w2, 1)
-			ws2.SetWidth(16)
+	w3 := testWidget{}
+	ws3 := box.InsertWidget(&w3, 2)
+	ws3.SetGrow(1)
 
-			w3 := testWidget{}
-			ws3 := box.InsertWidget(&w3, 2)
-			ws3.SetGrow(1)
+	box.Draw(dull.ViewportForDebug(geometry.RectFloat{
+		Top:    0,
+		Bottom: 100,
+		Left:   0,
+		Right:  200,
+	}))
 
-			box.Draw(dull.ViewportForDebug(geometry.RectFloat{
-				Top:    0,
-				Bottom: test.h,
-				Left:   0,
-				Right:  test.w,
-			}))
-
-			assert.Equal(t, geometry.RectFloat{Top: 0, Bottom: 100, Left: 0, Right: 147}, w1.drawRect)
-			assert.Equal(t, geometry.RectFloat{Top: 0, Bottom: 100, Left: 147, Right: 163}, w2.drawRect)
-			assert.Equal(t, geometry.RectFloat{Top: 0, Bottom: 100, Left: 163, Right: 200}, w3.drawRect)
-		})
-	}
+	assert.Equal(t, geometry.RectFloat{Top: 0, Bottom: 100, Left: 0, Right: 147}, w1.drawRect)
+	assert.Equal(t, geometry.RectFloat{Top: 0, Bottom: 100, Left: 147, Right: 163}, w2.drawRect)
+	assert.Equal(t, geometry.RectFloat{Top: 0, Bottom: 100, Left: 163, Right: 200}, w3.drawRect)
 }
