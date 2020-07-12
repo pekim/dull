@@ -11,8 +11,10 @@ import (
 type FlexDirection flex.FlexDirection
 
 const (
-	FlexDirectionColumn = FlexDirection(flex.FlexDirectionColumn)
-	FlexDirectionRow    = FlexDirection(flex.FlexDirectionRow)
+	FlexDirectionColumn        = FlexDirection(flex.FlexDirectionColumn)
+	FlexDirectionColumnReverse = FlexDirection(flex.FlexDirectionColumnReverse)
+	FlexDirectionRow           = FlexDirection(flex.FlexDirectionRow)
+	FlexDirectionRowReverse    = FlexDirection(flex.FlexDirectionRowReverse)
 )
 
 type FlexAlign flex.Align

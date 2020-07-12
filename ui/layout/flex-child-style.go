@@ -6,32 +6,78 @@ type FlexChildStyle struct {
 	node *flex.Node
 }
 
-func (c *FlexChildStyle) SetGrow(grow float32) {
-	c.node.StyleSetFlexGrow(grow)
+func (s *FlexChildStyle) SetAlignSelf(align FlexAlign) {
+	s.node.StyleSetAlignSelf(flex.Align(align))
 }
 
-func (c *FlexChildStyle) SetWidth(width float32) {
-	c.node.StyleSetWidth(width)
-
+func (s *FlexChildStyle) SetAspectRatio(aspectRatio float32) {
+	s.node.StyleSetAspectRatio(aspectRatio)
 }
 
-//func (node *Node) StyleSetAlignSelf(alignSelf Align)
-//func (node *Node) StyleSetAspectRatio(aspectRatio float32)
-//func (node *Node) StyleSetFlexBasis(flexBasis float32)
-//func (node *Node) StyleSetFlexBasisPercent(flexBasis float32)
-//func (node *Node) StyleSetFlexDirection(flexDirection FlexDirection)
-//func (node *Node) StyleSetFlexGrow(flexGrow float32)
-//func (node *Node) StyleSetFlexShrink(flexShrink float32)
-//func (node *Node) StyleSetHeight(height float32)
-//func (node *Node) StyleSetHeightPercent(height float32)
-//func (node *Node) StyleSetMaxHeight(maxHeight float32)
-//func (node *Node) StyleSetMaxHeightPercent(maxHeight float32)
-//func (node *Node) StyleSetMaxWidth(maxWidth float32)
-//func (node *Node) StyleSetMaxWidthPercent(maxWidth float32)
-//func (node *Node) StyleSetMinHeight(minHeight float32)
-//func (node *Node) StyleSetMinHeightPercent(minHeight float32)
-//func (node *Node) StyleSetMinWidth(minWidth float32)
-//func (node *Node) StyleSetMinWidthPercent(minWidth float32)
-//func (node *Node) StyleSetWidth(width float32)
-//func (node *Node) StyleSetWidthAuto()
-//func (node *Node) StyleSetWidthPercent(width float32)
+func (s *FlexChildStyle) SetBasis(flexBasis float32) {
+	s.node.StyleSetFlexBasis(flexBasis)
+}
+
+func (s *FlexChildStyle) SetBasisPercent(flexBasis float32) {
+	s.node.StyleSetFlexBasisPercent(flexBasis)
+}
+
+func (s *FlexChildStyle) SetGrow(flexGrow float32) {
+	s.node.StyleSetFlexGrow(flexGrow)
+}
+
+func (s *FlexChildStyle) SetShrink(flexShrink float32) {
+	s.node.StyleSetFlexShrink(flexShrink)
+}
+
+func (s *FlexChildStyle) SetHeight(height float32) {
+	s.node.StyleSetHeight(height)
+}
+
+func (s *FlexChildStyle) SetHeightPercent(height float32) {
+	s.node.StyleSetHeightPercent(height)
+}
+
+func (s *FlexChildStyle) SetMaxHeight(maxHeight float32) {
+	s.node.StyleSetMaxHeight(maxHeight)
+}
+
+func (s *FlexChildStyle) SetMaxHeightPercent(maxHeight float32) {
+	s.node.StyleSetMaxHeightPercent(maxHeight)
+}
+
+func (s *FlexChildStyle) SetMaxWidth(maxWidth float32) {
+	s.node.StyleSetMaxWidth(maxWidth)
+}
+
+func (s *FlexChildStyle) SetMaxWidthPercent(maxWidth float32) {
+	s.node.StyleSetMaxWidthPercent(maxWidth)
+}
+
+func (s *FlexChildStyle) SetMinHeight(minHeight float32) {
+	s.node.StyleSetMinHeight(minHeight)
+}
+
+func (s *FlexChildStyle) SetMinHeightPercent(minHeight float32) {
+	s.node.StyleSetMinHeightPercent(minHeight)
+}
+
+func (s *FlexChildStyle) SetMinWidth(minWidth float32) {
+	s.node.StyleSetMinWidth(minWidth)
+}
+
+func (s *FlexChildStyle) SetMinWidthPercent(minWidth float32) {
+	s.node.StyleSetMinWidthPercent(minWidth)
+}
+
+func (s *FlexChildStyle) SetWidth(width float32) {
+	s.node.StyleSetWidth(width)
+}
+
+func (s *FlexChildStyle) SetWidthAuto() {
+	s.node.StyleSetWidthAuto()
+}
+
+func (s *FlexChildStyle) SetWidthPercent(width float32) {
+	s.node.StyleSetWidthPercent(width)
+}
