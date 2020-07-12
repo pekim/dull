@@ -4,8 +4,6 @@ import (
 	"github.com/pekim/dull"
 	"github.com/pekim/dull/color"
 	"github.com/pekim/dull/geometry"
-	"github.com/pekim/dull/ui"
-	"github.com/pekim/dull/ui/layout"
 )
 
 func initialise(app *dull.Application, err error) {
@@ -94,9 +92,6 @@ func initialise(app *dull.Application, err error) {
 			color.RGBA(0.0, 0.0, 0.9, 0.5),
 		)
 		vp22.DrawText(&dull.Cell{}, 10, 0, "vp 2 2")
-
-		lo := layout.NewFlex(layout.JStart, layout.AStretch)
-		lo.Children = []ui.Widget{}
 	})
 
 	window.Show()

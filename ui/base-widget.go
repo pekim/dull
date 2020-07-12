@@ -14,14 +14,18 @@ import (
 // by embedding it in another type.
 type BaseWidget struct {
 	Bg       *color.Color
-	Children []Widget
+	children []Widget
+}
+
+func (w *BaseWidget) Children() []Widget {
+	return w.children
 }
 
 func (w *BaseWidget) InsertWidget(widget Widget, index int) {
-	children := w.Children
+	children := w.children
 	// https://github.com/golang/go/wiki/SliceTricks
 	children = append(children[:index], append([]Widget{widget}, children[index:]...)...)
-	w.Children = children
+	w.children = children
 }
 
 func (w *BaseWidget) Draw(viewport *dull.Viewport) {
@@ -43,15 +47,3 @@ func (w *BaseWidget) DrawBackground(viewport *dull.Viewport) {
 		*w.Bg,
 	)
 }
-
-//func (w *BaseWidget) MinSize() (int, int) {
-//	return 0, 0
-//}
-//
-//func (w *BaseWidget) MaxSize() (int, int) {
-//	return WidgetSizeUnlimited, WidgetSizeUnlimited
-//}
-//
-//func (w *BaseWidget) PreferredSize() (int, int) {
-//	return WidgetSizeUnlimited, WidgetSizeUnlimited
-//}

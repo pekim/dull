@@ -33,9 +33,9 @@ const (
 type FlexJustify flex.Justify
 
 const (
-	FlexJustifyFlexStart    = FlexJustify(flex.JustifyFlexStart)
+	FlexJustifyStart        = FlexJustify(flex.JustifyFlexStart)
 	FlexJustifyCenter       = FlexJustify(flex.JustifyCenter)
-	FlexJustifyFlexEnd      = FlexJustify(flex.JustifyFlexEnd)
+	FlexJustifyEnd          = FlexJustify(flex.JustifyFlexEnd)
 	FlexJustifySpaceBetween = FlexJustify(flex.JustifySpaceBetween)
 	FlexJustifySpaceAround  = FlexJustify(flex.JustifySpaceAround)
 )
@@ -93,7 +93,7 @@ func (f *Flex) Draw(viewport *dull.Viewport) {
 		flex.DirectionLTR,
 	)
 
-	for i, widget := range f.Children {
+	for i, widget := range f.Children() {
 		node := f.root.Children[i]
 		rect := geometry.RectFloat{
 			Top:    float64(node.LayoutGetTop()),
