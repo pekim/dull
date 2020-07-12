@@ -95,7 +95,7 @@ func initialise(app *dull.Application, err error) {
 		)
 		vp22.DrawText(&dull.Cell{}, 10, 0, "vp 2 2")
 
-		lo := layout.NewHBox(layout.JStart, layout.AStretch)
+		lo := layout.NewFlex(layout.JStart, layout.AStretch)
 		lo.Children = []ui.Widget{}
 	})
 

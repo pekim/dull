@@ -23,14 +23,14 @@ func (w *testWidget) Draw(viewport *dull.Viewport) {
 func TestHBox_layout(t *testing.T) {
 	tests := []struct {
 		w, h float64
-		dir  BoxDirection
+		dir  FlexDirection
 	}{
-		{200, 100, BoxDirectionRow},
+		{200, 100, FlexDirectionRow},
 	}
 
 	for i, test := range tests {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
-			box := NewHBox(test.dir)
+			box := NewFlex(test.dir)
 
 			w1 := testWidget{}
 			ws1 := box.InsertWidget(&w1, 0)
