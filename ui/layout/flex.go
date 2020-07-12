@@ -15,43 +15,36 @@ const (
 	FlexDirectionRow    = FlexDirection(flex.FlexDirectionRow)
 )
 
-type FlexChildStyle struct {
-	node *flex.Node
-}
+type FlexAlign flex.Align
 
-func (c *FlexChildStyle) SetGrow(grow float32) {
-	c.node.StyleSetFlexGrow(grow)
-}
+const (
+	FlexAlignAuto         = FlexAlign(flex.AlignAuto)
+	FlexAlignFlexStart    = FlexAlign(flex.AlignFlexStart)
+	FlexAlignCenter       = FlexAlign(flex.AlignCenter)
+	FlexAlignFlexEnd      = FlexAlign(flex.AlignFlexEnd)
+	FlexAlignStretch      = FlexAlign(flex.AlignStretch)
+	FlexAlignBaseline     = FlexAlign(flex.AlignBaseline)
+	FlexAlignSpaceBetween = FlexAlign(flex.AlignSpaceBetween)
+	FlexAlignSpaceAround  = FlexAlign(flex.AlignSpaceAround)
+)
 
-func (c *FlexChildStyle) SetWidth(width float32) {
-	c.node.StyleSetWidth(width)
+type FlexJustify flex.Justify
 
-}
+const (
+	FlexJustifyFlexStart    = FlexJustify(flex.JustifyFlexStart)
+	FlexJustifyCenter       = FlexJustify(flex.JustifyCenter)
+	FlexJustifyFlexEnd      = FlexJustify(flex.JustifyFlexEnd)
+	FlexJustifySpaceBetween = FlexJustify(flex.JustifySpaceBetween)
+	FlexJustifySpaceAround  = FlexJustify(flex.JustifySpaceAround)
+)
 
-//func (node *Node) StyleSetAlignItems(alignItems Align)
-//func (node *Node) StyleSetJustifyContent(justifyContent Justify)
-//func (node *Node) StyleSetFlexWrap(flexWrap Wrap)
+type FlexWrap flex.Wrap
 
-//func (node *Node) StyleSetAlignSelf(alignSelf Align)
-//func (node *Node) StyleSetAspectRatio(aspectRatio float32)
-//func (node *Node) StyleSetFlexBasis(flexBasis float32)
-//func (node *Node) StyleSetFlexBasisPercent(flexBasis float32)
-//func (node *Node) StyleSetFlexDirection(flexDirection FlexDirection)
-//func (node *Node) StyleSetFlexGrow(flexGrow float32)
-//func (node *Node) StyleSetFlexShrink(flexShrink float32)
-//func (node *Node) StyleSetHeight(height float32)
-//func (node *Node) StyleSetHeightPercent(height float32)
-//func (node *Node) StyleSetMaxHeight(maxHeight float32)
-//func (node *Node) StyleSetMaxHeightPercent(maxHeight float32)
-//func (node *Node) StyleSetMaxWidth(maxWidth float32)
-//func (node *Node) StyleSetMaxWidthPercent(maxWidth float32)
-//func (node *Node) StyleSetMinHeight(minHeight float32)
-//func (node *Node) StyleSetMinHeightPercent(minHeight float32)
-//func (node *Node) StyleSetMinWidth(minWidth float32)
-//func (node *Node) StyleSetMinWidthPercent(minWidth float32)
-//func (node *Node) StyleSetWidth(width float32)
-//func (node *Node) StyleSetWidthAuto()
-//func (node *Node) StyleSetWidthPercent(width float32)
+const (
+	FlexWrapNoWrap      = flex.WrapNoWrap
+	FlexWrapWrap        = flex.WrapWrap
+	FlexWrapWrapReverse = flex.WrapWrapReverse
+)
 
 type Flex struct {
 	ui.BaseWidget
@@ -67,6 +60,18 @@ func NewFlex(direction FlexDirection) *Flex {
 	return &Flex{
 		root: root,
 	}
+}
+
+func (f *Flex) SetAlignItems(align FlexAlign) {
+	f.root.StyleSetAlignItems(flex.Align(align))
+}
+
+func (f *Flex) SetJustifyContent(justify FlexJustify) {
+	f.root.StyleSetJustifyContent(flex.Justify(justify))
+}
+
+func (f *Flex) SetWrap(wrap FlexWrap) {
+	f.root.StyleSetFlexWrap(flex.Wrap(wrap))
 }
 
 func (f *Flex) InsertWidget(widget ui.Widget, index int) *FlexChildStyle {
