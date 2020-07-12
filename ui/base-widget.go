@@ -7,8 +7,7 @@ import (
 )
 
 // BaseWidget is a minimal Widget implementation.
-// It does little more than draw its own background,
-// and provide default size methods.
+// It does little more than draw its own background.
 //
 // It can be used as a base for a Widget, typically
 // by embedding it in another type.
