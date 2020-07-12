@@ -12,8 +12,12 @@ import (
 // It can be used as a base for a Widget, typically
 // by embedding it in another type.
 type BaseWidget struct {
-	Bg       *color.Color
+	bg       *color.Color
 	children []Widget
+}
+
+func (w *BaseWidget) SetBg(color color.Color) {
+	w.bg = &color
 }
 
 func (w *BaseWidget) Children() []Widget {
@@ -32,7 +36,7 @@ func (w *BaseWidget) Draw(viewport *dull.Viewport) {
 }
 
 func (w *BaseWidget) DrawBackground(viewport *dull.Viewport) {
-	if w.Bg == nil {
+	if w.bg == nil {
 		return
 	}
 
@@ -43,6 +47,6 @@ func (w *BaseWidget) DrawBackground(viewport *dull.Viewport) {
 			Left:   0,
 			Right:  viewport.Width(),
 		},
-		*w.Bg,
+		*w.bg,
 	)
 }

@@ -18,19 +18,23 @@ func initialise(app *dull.Application, err error) {
 	flexColumnStyle := flexRow.InsertWidget(flexColumn, 0)
 	flexColumnStyle.SetGrow(1)
 
-	columnChild1 := &ui.BaseWidget{Bg: &color.Green1}
+	columnChild1 := &ui.BaseWidget{}
+	columnChild1.SetBg(color.Green1)
 	columnChild1Style := flexColumn.InsertWidget(columnChild1, 0)
 	columnChild1Style.SetGrow(1)
 
-	columnChild2 := &ui.BaseWidget{Bg: &color.Gray}
+	columnChild2 := &ui.BaseWidget{}
+	columnChild2.SetBg(color.Gray)
 	columnChild2Style := flexColumn.InsertWidget(columnChild2, 1)
 	columnChild2Style.SetHeight(6)
 
-	columnChild3 := &ui.BaseWidget{Bg: &color.Yellow1}
+	columnChild3 := &ui.BaseWidget{}
+	columnChild3.SetBg(color.Yellow1)
 	columnChild3Style := flexColumn.InsertWidget(columnChild3, 2)
 	columnChild3Style.SetGrow(1)
 
-	rowChild := &ui.BaseWidget{Bg: &color.Red1}
+	rowChild := &ui.BaseWidget{}
+	rowChild.SetBg(color.Red1)
 	rowChildStyle := flexRow.InsertWidget(rowChild, 1)
 	rowChildStyle.SetGrow(3)
 
