@@ -14,95 +14,86 @@ func initialise(app *dull.Application, err error) {
 	}
 
 	window, err := app.NewWindow(&dull.WindowOptions{
-		Bg: &color.White,
-		Fg: &color.Black,
+		Bg:     &color.White,
+		Fg:     &color.Black,
+		Width:  700,
+		Height: 700,
 	})
 	if err != nil {
 		panic(err)
 	}
 
-	label1 := widget.NewLabel("Left top")
-	label1.SetBg(color.Blue1)
-	label1.SetColor(color.White)
+	type label struct {
+		label  *widget.Label
+		row    int
+		column int
+	}
 
-	label2 := widget.NewLabel("Centre top")
-	label2.SetHAlign(ui.HAlignCentre)
-	label2.SetBg(color.Lightgray)
-	label2.SetColor(color.Black)
+	backgrounds := []color.Color{color.Blue1, color.Lightgray, color.Brown}
+	foregrounds := []color.Color{color.White, color.Black, color.White}
 
-	label3 := widget.NewLabel("Right top")
-	label3.SetHAlign(ui.HAlignRight)
-	label3.SetBg(color.Brown)
-	label3.SetColor(color.White)
+	labels := []label{}
 
-	labelClipped1 := widget.NewLabel("Left top -------------")
-	labelClipped1.SetBg(color.Blue1)
-	labelClipped1.SetColor(color.White)
+	addLabel := func(
+		text string,
+		halign ui.HAlign,
+		valign ui.VAlign,
+		row int, column int,
+	) {
+		l := widget.NewLabel(text)
+		l.SetHAlign(halign)
+		l.SetVAlign(valign)
+		l.SetBg(backgrounds[column])
+		l.SetColor(foregrounds[column])
 
-	labelClipped2 := widget.NewLabel("----- Centre top -----")
-	labelClipped2.SetHAlign(ui.HAlignCentre)
-	labelClipped2.SetBg(color.Lightgray)
-	labelClipped2.SetColor(color.Black)
+		labels = append(labels, label{
+			label:  l,
+			row:    row,
+			column: column,
+		})
+	}
 
-	labelClipped3 := widget.NewLabel("------------- Right top")
-	labelClipped3.SetHAlign(ui.HAlignRight)
-	labelClipped3.SetBg(color.Brown)
-	labelClipped3.SetColor(color.White)
+	row := 0
 
-	labelValign1 := widget.NewLabel("Left centre")
-	labelValign1.SetHAlign(ui.HAlignLeft)
-	labelValign1.SetVAlign(ui.VAlignCentre)
-	labelValign1.SetBg(color.Blue1)
-	labelValign1.SetColor(color.White)
+	addLabel("left, top", ui.HAlignLeft, ui.VAlignTop, row, 0)
+	addLabel("centre, top", ui.HAlignCentre, ui.VAlignTop, row, 1)
+	addLabel("right, top", ui.HAlignRight, ui.VAlignTop, row, 2)
+	row++
 
-	labelValign2 := widget.NewLabel("Centre centre")
-	labelValign2.SetHAlign(ui.HAlignCentre)
-	labelValign2.SetVAlign(ui.VAlignCentre)
-	labelValign2.SetBg(color.Lightgray)
-	labelValign2.SetColor(color.Black)
+	addLabel("clipped -----------------", ui.HAlignLeft, ui.VAlignTop, row, 0)
+	addLabel("-------- clipped --------", ui.HAlignCentre, ui.VAlignTop, row, 1)
+	addLabel("----------------- clipped", ui.HAlignRight, ui.VAlignTop, row, 2)
+	row++
 
-	labelValign3 := widget.NewLabel("Right centre")
-	labelValign3.SetHAlign(ui.HAlignRight)
-	labelValign3.SetVAlign(ui.VAlignCentre)
-	labelValign3.SetBg(color.Brown)
-	labelValign3.SetColor(color.White)
+	addLabel("left, centre", ui.HAlignLeft, ui.VAlignCentre, row, 0)
+	addLabel("centre, centre", ui.HAlignCentre, ui.VAlignCentre, row, 1)
+	addLabel("right, centre", ui.HAlignRight, ui.VAlignCentre, row, 2)
+	row++
 
-	labelValignBottom1 := widget.NewLabel("Left bottom")
-	labelValignBottom1.SetHAlign(ui.HAlignLeft)
-	labelValignBottom1.SetVAlign(ui.VAlignBottom)
-	labelValignBottom1.SetBg(color.Blue1)
-	labelValignBottom1.SetColor(color.White)
-
-	labelValignBottom2 := widget.NewLabel("Centre bottom")
-	labelValignBottom2.SetHAlign(ui.HAlignCentre)
-	labelValignBottom2.SetVAlign(ui.VAlignBottom)
-	labelValignBottom2.SetBg(color.Lightgray)
-	labelValignBottom2.SetColor(color.Black)
-
-	labelValignBottom3 := widget.NewLabel("Right bottom")
-	labelValignBottom3.SetHAlign(ui.HAlignRight)
-	labelValignBottom3.SetVAlign(ui.VAlignBottom)
-	labelValignBottom3.SetBg(color.Brown)
-	labelValignBottom3.SetColor(color.White)
+	addLabel("left, bottom", ui.HAlignLeft, ui.VAlignBottom, row, 0)
+	addLabel("centre, bottom", ui.HAlignCentre, ui.VAlignBottom, row, 1)
+	addLabel("right, bottom", ui.HAlignRight, ui.VAlignBottom, row, 2)
+	row++
 
 	window.SetDrawCallback(func(d dull.Drawer, columns, rows int) {
 		vp := dull.ViewportForWindow(window, d)
 
-		label1.Draw(vp.View(geometry.RectFloat{0, 6, 0, 20}))
-		label2.Draw(vp.View(geometry.RectFloat{0, 6, 20, 40}))
-		label3.Draw(vp.View(geometry.RectFloat{0, 6, 40, 60}))
+		itemWidth := 20
+		itemHeight := 6
+		columnGap := 2
+		rowGap := 1
 
-		labelClipped1.Draw(vp.View(geometry.RectFloat{8, 14, 0, 20}))
-		labelClipped2.Draw(vp.View(geometry.RectFloat{8, 14, 20, 40}))
-		labelClipped3.Draw(vp.View(geometry.RectFloat{8, 14, 40, 60}))
+		for _, label := range labels {
+			top := label.row * (itemHeight + rowGap)
+			left := label.column * (itemWidth + columnGap)
 
-		labelValign1.Draw(vp.View(geometry.RectFloat{16, 22, 0, 20}))
-		labelValign2.Draw(vp.View(geometry.RectFloat{16, 22, 20, 40}))
-		labelValign3.Draw(vp.View(geometry.RectFloat{16, 22, 40, 60}))
-
-		labelValignBottom1.Draw(vp.View(geometry.RectFloat{24, 30, 0, 20}))
-		labelValignBottom2.Draw(vp.View(geometry.RectFloat{24, 30, 20, 40}))
-		labelValignBottom3.Draw(vp.View(geometry.RectFloat{24, 30, 40, 60}))
+			label.label.Draw(vp.View(geometry.RectFloat{
+				Top:    float64(top),
+				Bottom: float64(top + itemHeight),
+				Left:   float64(left),
+				Right:  float64(left + itemWidth),
+			}))
+		}
 	})
 
 	window.Show()
