@@ -1,6 +1,8 @@
 package widget
 
 import (
+	"unicode/utf8"
+
 	"github.com/pekim/dull"
 	"github.com/pekim/dull/color"
 	"github.com/pekim/dull/ui"
@@ -8,18 +10,23 @@ import (
 
 type Label struct {
 	ui.BaseWidget
-	text   string
-	cell   dull.Cell
-	hAlign ui.HAlign
-	vAlign ui.VAlign
+	text      string
+	runeCount int
+	cell      dull.Cell
+	hAlign    ui.HAlign
+	vAlign    ui.VAlign
 }
 
 func NewLabel(text string) *Label {
-	return &Label{text: text}
+	l := &Label{}
+	l.SetText(text)
+
+	return l
 }
 
 func (l *Label) SetText(text string) {
 	l.text = text
+	l.runeCount = utf8.RuneCountInString(text)
 }
 
 func (l *Label) SetCell(cell dull.Cell) {
@@ -46,5 +53,15 @@ func (l *Label) Draw(viewport *dull.Viewport) {
 	l.BaseWidget.SetBg(l.cell.Bg)
 	l.BaseWidget.DrawBackground(viewport)
 
-	viewport.DrawText(&l.cell, 0, 0, l.text)
+	var x int
+	switch l.hAlign {
+	case ui.HAlignLeft:
+		x = 0
+	case ui.HAlignCentre:
+		x = (int(viewport.Width()) - l.runeCount) / 2
+	case ui.HAlignRight:
+		x = int(viewport.Width()) - l.runeCount
+	}
+
+	viewport.DrawText(&l.cell, x, 0, l.text)
 }
