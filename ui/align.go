@@ -11,7 +11,7 @@ const (
 type VAlign int
 
 const (
-	VAlignTop HAlign = iota
+	VAlignTop VAlign = iota
 	VAlignCentre
 	VAlignBottom
 )

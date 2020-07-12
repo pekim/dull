@@ -63,5 +63,15 @@ func (l *Label) Draw(viewport *dull.Viewport) {
 		x = int(viewport.Width()) - l.runeCount
 	}
 
-	viewport.DrawText(&l.cell, x, 0, l.text)
+	var y int
+	switch l.vAlign {
+	case ui.VAlignTop:
+		y = 0
+	case ui.VAlignCentre:
+		y = int(viewport.Height()+1)/2 - 1
+	case ui.VAlignBottom:
+		y = int(viewport.Height()) - 1
+	}
+
+	viewport.DrawText(&l.cell, x, y, l.text)
 }
