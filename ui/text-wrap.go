@@ -6,8 +6,8 @@ import (
 )
 
 type TextLine struct {
-	text      string
-	runeCount int
+	Text      string
+	RuneCount int
 }
 
 type TextWrap struct {
@@ -18,7 +18,7 @@ type TextWrap struct {
 	dirty           bool
 }
 
-func (w *TextWrap) setText(text string) {
+func (w *TextWrap) SetText(text string) {
 	w.fields = strings.Fields(text)
 	w.fieldRuneCounts = make([]int, len(w.fields), len(w.fields))
 
@@ -29,7 +29,7 @@ func (w *TextWrap) setText(text string) {
 	w.dirty = true
 }
 
-func (w *TextWrap) linesForWidth(width int) []TextLine {
+func (w *TextWrap) LinesForWidth(width int) []TextLine {
 	if width == w.width && !w.dirty {
 		// Nothing's changed, so nothing to do.
 		return w.lines
@@ -61,8 +61,8 @@ func (w *TextWrap) linesForWidth(width int) []TextLine {
 
 			// create a new line
 			w.lines = append(w.lines, TextLine{
-				text:      line.String(),
-				runeCount: line.Len(),
+				Text:      line.String(),
+				RuneCount: line.Len(),
 			})
 
 			// start a new line
@@ -74,8 +74,8 @@ func (w *TextWrap) linesForWidth(width int) []TextLine {
 	// Create a last line if there is anything left.
 	if line.Len() > 0 {
 		w.lines = append(w.lines, TextLine{
-			text:      line.String(),
-			runeCount: line.Len(),
+			Text:      line.String(),
+			RuneCount: line.Len(),
 		})
 	}
 

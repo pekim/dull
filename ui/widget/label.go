@@ -10,23 +10,43 @@ import (
 
 type Label struct {
 	ui.BaseWidget
-	text      string
-	runeCount int
-	cell      dull.Cell
-	hAlign    ui.HAlign
-	vAlign    ui.VAlign
+	cell   dull.Cell
+	hAlign ui.HAlign
+	vAlign ui.VAlign
+	wrap   bool
+
+	text           string
+	unwrappedLines []ui.TextLine
+	textWrap       *ui.TextWrap
 }
 
 func NewLabel(text string) *Label {
-	l := &Label{}
+	l := &Label{
+		textWrap: &ui.TextWrap{},
+	}
 	l.SetText(text)
 
 	return l
 }
 
+func (l *Label) SetWrap(wrap bool) {
+	l.wrap = wrap
+	l.SetText(l.text)
+}
+
 func (l *Label) SetText(text string) {
 	l.text = text
-	l.runeCount = utf8.RuneCountInString(text)
+
+	if l.wrap {
+		l.textWrap.SetText(text)
+	} else {
+		l.unwrappedLines = []ui.TextLine{
+			{
+				Text:      text,
+				RuneCount: utf8.RuneCountInString(text),
+			},
+		}
+	}
 }
 
 func (l *Label) SetCell(cell dull.Cell) {
@@ -50,17 +70,16 @@ func (l *Label) SetVAlign(align ui.VAlign) {
 }
 
 func (l *Label) Draw(viewport *dull.Viewport) {
+	width := int(viewport.Width())
+
 	l.BaseWidget.SetBg(l.cell.Bg)
 	l.BaseWidget.DrawBackground(viewport)
 
-	var x int
-	switch l.hAlign {
-	case ui.HAlignLeft:
-		x = 0
-	case ui.HAlignCentre:
-		x = (int(viewport.Width()) - l.runeCount) / 2
-	case ui.HAlignRight:
-		x = int(viewport.Width()) - l.runeCount
+	var lines []ui.TextLine
+	if l.wrap {
+		lines = l.textWrap.LinesForWidth(width)
+	} else {
+		lines = l.unwrappedLines
 	}
 
 	var y int
@@ -68,10 +87,23 @@ func (l *Label) Draw(viewport *dull.Viewport) {
 	case ui.VAlignTop:
 		y = 0
 	case ui.VAlignCentre:
-		y = int(viewport.Height()+1)/2 - 1
+		y = (int(viewport.Height())-len(lines))/2 + 0
 	case ui.VAlignBottom:
-		y = int(viewport.Height()) - 1
+		y = int(viewport.Height()) - len(lines)
 	}
 
-	viewport.DrawText(&l.cell, x, y, l.text)
+	for _, line := range lines {
+		var x int
+		switch l.hAlign {
+		case ui.HAlignLeft:
+			x = 0
+		case ui.HAlignCentre:
+			x = (int(viewport.Width()) - line.RuneCount) / 2
+		case ui.HAlignRight:
+			x = int(viewport.Width()) - line.RuneCount
+		}
+
+		viewport.DrawText(&l.cell, x, y, line.Text)
+		y++
+	}
 }

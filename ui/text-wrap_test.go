@@ -43,16 +43,16 @@ func TestWrappedText(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			wrapped := &TextWrap{}
-			wrapped.setText(test.text)
-			lines := wrapped.linesForWidth(test.width)
+			wrapped.SetText(test.text)
+			lines := wrapped.LinesForWidth(test.width)
 
 			assert.Equal(t, len(test.expectedLines), len(lines))
 
 			for l, line := range lines {
 				expectedLine := test.expectedLines[l]
 
-				assert.Equal(t, expectedLine, line.text)
-				assert.Equal(t, utf8.RuneCountInString(expectedLine), line.runeCount)
+				assert.Equal(t, expectedLine, line.Text)
+				assert.Equal(t, utf8.RuneCountInString(expectedLine), line.RuneCount)
 			}
 		})
 	}
