@@ -1,5 +1,6 @@
 package ui
 
+// HAlign represent a horizontal alignment value
 type HAlign int
 
 const (
@@ -8,6 +9,7 @@ const (
 	HAlignRight
 )
 
+// HAlign represent a vertical alignment value
 type VAlign int
 
 const (
