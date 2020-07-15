@@ -5,11 +5,23 @@ import (
 	"unicode/utf8"
 )
 
+// TextLine represents a line of text in a TextWrap instance.
 type TextLine struct {
 	Text      string
 	RuneCount int
 }
 
+/*
+	TextWrap can be used to layout text across lines that
+	will all fit in a given width.
+
+	Text is wrapped at word breaks, where strings.Fields
+	is used to break the text in to 'words'.
+
+	Only when the text or the width changes is the text
+	layed out again. So much of the time calls to LinesForWidth
+	will be quick.
+*/
 type TextWrap struct {
 	fields          []string
 	fieldRuneCounts []int
@@ -18,6 +30,15 @@ type TextWrap struct {
 	dirty           bool
 }
 
+/*
+	SetText provides the text that will be used by
+	the LinesForWidth method.
+
+	Setting text will result in the next call to
+	LinesForWidth having to layout the text across
+	lines again, even if the width has not changed
+	since the last call.
+*/
 func (w *TextWrap) SetText(text string) {
 	w.fields = strings.Fields(text)
 	w.fieldRuneCounts = make([]int, len(w.fields), len(w.fields))
@@ -29,6 +50,15 @@ func (w *TextWrap) SetText(text string) {
 	w.dirty = true
 }
 
+/*
+	LinesForWidth returns the text distributed across
+    lines, such that no line is longer than width.
+
+	Calling LinesForWidth multiple times for the same
+	width will be fast, as long as the text has not changed.
+	If the width or the text changes, then the text will
+	be layed out again.
+*/
 func (w *TextWrap) LinesForWidth(width int) []TextLine {
 	if width == w.width && !w.dirty {
 		// Nothing's changed, so nothing to do.
