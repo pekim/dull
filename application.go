@@ -47,15 +47,17 @@ func (a *Application) NewWindow(options *WindowOptions) (*Window, error) {
 }
 
 func (a *Application) terminate() {
+	a.windowsMutex.Lock()
+
 	for _, window := range a.windows {
 		window.glTerminated = true
 	}
 
+	a.windowsMutex.Unlock()
 }
 
 func (a *Application) removeWindow(deadWindow *Window) {
 	a.windowsMutex.Lock()
-	defer a.windowsMutex.Unlock()
 
 	var i int
 	for index, window := range a.windows {
@@ -66,18 +68,29 @@ func (a *Application) removeWindow(deadWindow *Window) {
 	}
 
 	a.windows = append(a.windows[:i], a.windows[i+1:]...)
+
+	a.windowsMutex.Unlock()
 }
 
 func (a *Application) run() {
+	a.windowsMutex.Lock()
 	if len(a.windows) == 0 {
 		log.Fatal("No windows have been created.")
 	}
+	a.windowsMutex.Unlock()
 
 	a.runEventLoop()
 }
 
 func (a *Application) runEventLoop() {
-	for len(a.windows) > 0 {
+	for {
+		a.windowsMutex.Lock()
+		if len(a.windows) == 0 {
+			a.windowsMutex.Unlock()
+			break
+		}
+		a.windowsMutex.Unlock()
+
 		mainthread.Call(func() {
 			for _, window := range a.windows {
 				if window.glfwWindow.ShouldClose() {
