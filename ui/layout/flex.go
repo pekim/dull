@@ -40,6 +40,20 @@ const (
 	FlexJustifySpaceAround  = FlexJustify(flex.JustifySpaceAround)
 )
 
+type FlexEdge flex.Edge
+
+const (
+	FlexEdgeLeft       = FlexEdge(flex.EdgeLeft)
+	FlexEdgeTop        = FlexEdge(flex.EdgeTop)
+	FlexEdgeRight      = FlexEdge(flex.EdgeRight)
+	FlexEdgeBottom     = FlexEdge(flex.EdgeBottom)
+	FlexEdgeStart      = FlexEdge(flex.EdgeStart)
+	FlexEdgeEnd        = FlexEdge(flex.EdgeEnd)
+	FlexEdgeHorizontal = FlexEdge(flex.EdgeHorizontal)
+	FlexEdgeVertical   = FlexEdge(flex.EdgeVertical)
+	FlexEdgeAll        = FlexEdge(flex.EdgeAll)
+)
+
 type FlexWrap flex.Wrap
 
 const (

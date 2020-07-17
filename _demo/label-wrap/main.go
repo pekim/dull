@@ -35,7 +35,7 @@ func initialise(app *dull.Application, err error) {
 	foregroundsEvenRow := []color.Color{color.Black, color.White, color.White}
 
 	addLabel := func(
-		layout *layout.Flex,
+		flexLayout *layout.Flex,
 		row int,
 		column int,
 		text string,
@@ -56,8 +56,18 @@ func initialise(app *dull.Application, err error) {
 		l.SetColor(foregrounds[column])
 		l.SetWrap(true)
 
-		style := layout.InsertWidget(l, column)
+		style := flexLayout.InsertWidget(l, column)
+
 		style.SetGrow(1)
+
+		style.SetMargin(layout.FlexEdgeRight, 2)
+		style.SetMargin(layout.FlexEdgeBottom, 1)
+		if column == 0 {
+			style.SetMargin(layout.FlexEdgeLeft, 2)
+		}
+		if row == 0 {
+			style.SetMargin(layout.FlexEdgeTop, 1)
+		}
 	}
 
 	someLongeText := "some longer text, that will wrap across lines"

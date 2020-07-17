@@ -38,6 +38,18 @@ func (s *FlexChildStyle) SetHeightPercent(height float32) {
 	s.node.StyleSetHeightPercent(height)
 }
 
+func (s *FlexChildStyle) SetMargin(edge FlexEdge, margin float32) {
+	s.node.StyleSetMargin(flex.Edge(edge), margin)
+}
+
+func (s *FlexChildStyle) SetMarginAuto(edge FlexEdge) {
+	s.node.StyleSetMarginAuto(flex.Edge(edge))
+}
+
+func (s *FlexChildStyle) SetMarginPercent(edge FlexEdge, margin float32) {
+	s.node.StyleSetMarginPercent(flex.Edge(edge), margin)
+}
+
 func (s *FlexChildStyle) SetMaxHeight(maxHeight float32) {
 	s.node.StyleSetMaxHeight(maxHeight)
 }
