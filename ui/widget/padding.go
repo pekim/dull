@@ -21,7 +21,7 @@ type Padding struct {
 
 /*
 	SetChild sets the Padding's child widget.
-	If not child widget is set, none will be drawn.
+	If no child widget is set, none will be drawn.
 */
 func (p *Padding) SetChild(child ui.Widget) {
 	p.child = child

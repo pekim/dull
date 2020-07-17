@@ -117,7 +117,7 @@ func (l *Label) SetVAlign(align ui.VAlign) {
 }
 
 /*
-	Draw imlements the Widget.Draw method, and draws the label.
+	Draw implements the Widget.Draw method, and draws the label.
 
 	It should not need to be called by application code.
 */
