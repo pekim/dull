@@ -2,6 +2,23 @@ package layout
 
 import "github.com/kjk/flex"
 
+/*
+	FlexChildStyle is used to apply flex layout
+	rules to a child widget of Flex.
+
+	FlexChildStyle instances are returned when
+	adding a child widget to Flex.
+
+	The units for absolute size parameters are cells.
+	For example, if 5 is provide as the width to the SetWidth
+	method, that represents the width of 5 cells.
+
+	FlexChildStyle's methods directly correspond to their
+	CSS equivalent, and have no documentation.
+	Duplication of CSS flexbox documentation would
+	onerous and error prone.
+	Instead see https://www.w3.org/TR/css-flexbox-1/ for documentation.
+*/
 type FlexChildStyle struct {
 	node *flex.Node
 }

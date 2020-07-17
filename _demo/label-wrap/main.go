@@ -35,7 +35,7 @@ func initialise(app *dull.Application, err error) {
 	foregroundsEvenRow := []color.Color{color.Black, color.White, color.White}
 
 	addLabel := func(
-		flexLayout *layout.Flex,
+		rowLayout *layout.Flex,
 		row int,
 		column int,
 		text string,
@@ -56,7 +56,7 @@ func initialise(app *dull.Application, err error) {
 		l.SetColor(foregrounds[column])
 		l.SetWrap(true)
 
-		style := flexLayout.InsertWidget(l, column)
+		style := rowLayout.AppendWidget(l)
 
 		style.SetGrow(1)
 
