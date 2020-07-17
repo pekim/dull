@@ -138,7 +138,7 @@ func (f *Flex) AppendWidget(widget ui.Widget) *FlexChildStyle {
 }
 
 /*
-	Draw implements the Widget interface.
+	Draw implements the Widget interface's Draw method.
 */
 func (f *Flex) Draw(viewport *dull.Viewport) {
 	flex.CalculateLayout(
