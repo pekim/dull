@@ -41,3 +41,16 @@ it will be necessary to re-generate `internal/asset.go`.
 cd <this-directory>
 go generate
 ```
+## race detecton
+Go's race detection detects a problem in
+the `github.com/go-gl/gl` package.
+See https://github.com/go-gl/gl/issues/124 for details.
+
+Until the issue in gl is addressed,
+to use race detection on `dull` it's necessary to
+suppress `checkptr`.
+For example to run the tests with race detection
+use this command.
+```shell script
+go test -race -gcflags=all=-d=checkptr=0 ./...
+```
