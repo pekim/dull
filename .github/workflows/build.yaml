@@ -12,7 +12,9 @@ jobs:
 
     steps:
       - name: Install sytem dependencies
-        run: sudo apt install -y libgl1-mesa-dev xorg-dev xvfb
+        run: |
+          sudo apt update
+          sudo apt install -y libgl1-mesa-dev xorg-dev xvfb
 
       - name: Checkout repo
         uses: actions/checkout@master
