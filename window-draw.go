@@ -140,11 +140,11 @@ func (w *Window) DrawCellsRect(rect geometry.RectFloat, colour color.Color) {
 	w.drawSolidQuad(destination, colour)
 }
 
-func (w *Window) DrawOutlineRect(rect geometry.RectFloat, thickness float32,
+func (w *Window) DrawOutlineRect(rect geometry.RectFloat, thickness float64,
 	position OutlinePosition, colour color.Color,
 ) {
 	xThickness := thickness
-	yThickness := (float32(w.viewportCellWidthPixel) / float32(w.viewportCellHeightPixel)) * thickness
+	yThickness := (float64(w.viewportCellWidthPixel) / float64(w.viewportCellHeightPixel)) * thickness
 
 	var topTop float64
 	var topBottom float64

@@ -137,7 +137,7 @@ func (v *Viewport) DrawCellsRect(rect geometry.RectFloat, colour color.Color) {
 // for DrawOutlineRect.
 func (v *Viewport) DrawOutlineRect(
 	rect geometry.RectFloat,
-	thickness float32,
+	thickness float64,
 	position OutlinePosition,
 	colour color.Color,
 ) {

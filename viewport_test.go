@@ -28,7 +28,7 @@ func (d *mockDrawer) DrawText(cell *Cell, column, row int, text string) {
 }
 func (d *mockDrawer) DrawCellsRect(rect geometry.RectFloat, colour color.Color) {
 }
-func (d *mockDrawer) DrawOutlineRect(rect geometry.RectFloat, thickness float32, position OutlinePosition, colour color.Color) {
+func (d *mockDrawer) DrawOutlineRect(rect geometry.RectFloat, thickness float64, position OutlinePosition, colour color.Color) {
 }
 func (d *mockDrawer) Bell() {
 }
