@@ -9,8 +9,9 @@ import (
 //
 // Viewport implements the Drawer interface.
 type Viewport struct {
-	drawer Drawer
-	rect   geometry.RectFloat
+	drawer    Drawer
+	rect      geometry.RectFloat
+	cellRatio float64
 }
 
 // ViewportForWindow creates a Viewport for the whole
@@ -24,6 +25,7 @@ func ViewportForWindow(window *Window, drawer Drawer) *Viewport {
 			Left:   0,
 			Right:  float64(window.columns),
 		},
+		cellRatio: float64(window.viewportCellRatio),
 	}
 }
 
@@ -44,6 +46,14 @@ func (v *Viewport) Width() float64 {
 	return v.rect.Width()
 }
 
+// CellWidthHeightRatio returns the ratio of a cell's
+// width to its height.
+// For all except the most unusual of fonts the value
+// will be less than 1.
+func (v *Viewport) CellWidthHeightRatio() float64 {
+	return v.cellRatio
+}
+
 // DebugRect returns the Viewport's rectangle relative to the root.
 //
 // NOTE: This method is for debug or test purposes only.
@@ -62,8 +72,9 @@ func (v *Viewport) Dim() (float64, float64) {
 // existing Viewport.
 func (v *Viewport) View(rect geometry.RectFloat) *Viewport {
 	return &Viewport{
-		drawer: v.drawer,
-		rect:   v.rect.View(rect),
+		drawer:    v.drawer,
+		rect:      v.rect.View(rect),
+		cellRatio: v.cellRatio,
 	}
 }
 
