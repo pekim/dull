@@ -16,6 +16,10 @@ type BaseWidget struct {
 	children []Widget
 }
 
+func (w *BaseWidget) Bg() *color.Color {
+	return w.bg
+}
+
 func (w *BaseWidget) SetBg(color color.Color) {
 	w.bg = &color
 }
