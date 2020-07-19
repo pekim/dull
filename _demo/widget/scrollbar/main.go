@@ -22,18 +22,29 @@ func initialise(app *dull.Application, err error) {
 		panic(err)
 	}
 
-	sb := &widget.Scrollbar{}
-	sb.SetMin(0)
-	sb.SetMax(100)
-	sb.SetDisplaySize(20)
-	sb.SetValue(33)
-	sb.SetBg(color.Green1)
-	sb.SetColor(color.Darkgreen)
+	sbH := &widget.Scrollbar{}
+	sbH.SetOrientation(widget.Horizontal)
+	sbH.SetMin(0)
+	sbH.SetMax(100)
+	sbH.SetDisplaySize(20)
+	sbH.SetValue(33)
+	sbH.SetBg(color.Green1)
+	sbH.SetColor(color.Darkgreen)
+
+	sbV := &widget.Scrollbar{}
+	sbV.SetOrientation(widget.Vertical)
+	sbV.SetMin(0)
+	sbV.SetMax(100)
+	sbV.SetDisplaySize(20)
+	sbV.SetValue(33)
+	sbV.SetBg(color.Green1)
+	sbV.SetColor(color.Darkgreen)
 
 	window.SetDrawCallback(func(d dull.Drawer, columns, rows int) {
 		vp := dull.ViewportForWindow(window, d)
 
-		sb.Draw(vp.View(geometry.RectFloat{2, 30, 2, 3}))
+		sbH.Draw(vp.View(geometry.RectFloat{2, 3, 2, 60}))
+		sbV.Draw(vp.View(geometry.RectFloat{4, 30, 2, 3}))
 	})
 
 	window.Show()

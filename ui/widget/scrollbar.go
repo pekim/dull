@@ -9,13 +9,23 @@ import (
 	"github.com/pekim/dull/ui"
 )
 
+/*
+	Scrollbar is a widget that will draw a scrollbar.
+	The scrollbar may be vertical or horizontal.
+*/
 type Scrollbar struct {
 	ui.BaseWidget
+	orientation Orientation
 	color       color.Color
 	min         float64
 	max         float64
 	value       float64
 	displaySize float64
+}
+
+// SetOrientation sets the scrollbar's orientation.
+func (s *Scrollbar) SetOrientation(orientation Orientation) {
+	s.orientation = orientation
 }
 
 // SetColor sets the scrollbar's inidicator color.
@@ -56,56 +66,90 @@ func (s *Scrollbar) SetDisplaySize(displaySize float64) {
 	Draw implements the Widget interface's Draw method.
 */
 func (s *Scrollbar) Draw(viewport *dull.Viewport) {
-	const upArrow = '\u25B2'   // Black Up-Pointing Triangle
-	const downArrow = '\u25BC' // Black Down-Pointing Triangle
+	const upArrow = '\u25B2'    // Black Up-Pointing Triangle
+	const downArrow = '\u25BC'  // Black Down-Pointing Triangle
+	const leftArrow = '\u25C0'  // Black Left-Pointing Triangle
+	const rightArrow = '\u25B6' // Black Right-Pointing Triangle
 
 	width, height := viewport.Dim()
-	height = math.Max(height, 2)
-	availableHeight := height - 2
+
+	longDim, shortDim := width, height
+	if s.orientation == Vertical {
+		longDim, shortDim = shortDim, longDim
+	}
+
+	longDim = math.Max(longDim, 2)
+	availableLongDim := longDim - 2
 	totalSize := s.max - s.min
 
-	// height of the indicator
-	indicatorHeight := s.displaySize / totalSize * availableHeight
-	if indicatorHeight < 1 {
-		indicatorHeight = 1
+	// length of the indicator
+	indicatorLength := s.displaySize / totalSize * availableLongDim
+	if indicatorLength < 1 {
+		indicatorLength = 1
 	}
 
 	// position of the top of the indicator
 	scrollFraction := s.value / totalSize
-	indicatorTop := scrollFraction * (availableHeight - indicatorHeight)
-	maxIndicatorTop := availableHeight - indicatorHeight
-	indicatorTop = math.Min(indicatorTop, maxIndicatorTop)
-	indicatorTop = math.Max(indicatorTop, 0)
-	indicatorTop++
+	indicatorStart := scrollFraction * (availableLongDim - indicatorLength)
+	maxIndicatorTop := availableLongDim - indicatorLength
+	indicatorStart = math.Min(indicatorStart, maxIndicatorTop)
+	indicatorStart = math.Max(indicatorStart, 0)
+	indicatorStart++
 
 	// full bar
 	s.DrawBackground(viewport)
 
 	// indicator
-	if indicatorHeight >= height {
-		return
+	if indicatorLength < availableLongDim {
+		var indicatorRect geometry.RectFloat
+		if s.orientation == Horizontal {
+			indicatorRect = geometry.RectFloat{
+				Top:    0,
+				Bottom: shortDim,
+				Left:   indicatorStart,
+				Right:  indicatorStart + indicatorLength,
+			}
+		}
+		if s.orientation == Vertical {
+			indicatorRect = geometry.RectFloat{
+				Top:    indicatorStart,
+				Bottom: indicatorStart + indicatorLength,
+				Left:   0,
+				Right:  shortDim,
+			}
+		}
+		viewport.DrawCellsRect(indicatorRect, s.color)
 	}
-	viewport.DrawCellsRect(
-		geometry.RectFloat{
-			Top:    indicatorTop,
-			Bottom: indicatorTop + indicatorHeight,
-			Left:   0,
-			Right:  width,
-		},
-		s.color,
-	)
 
-	// up arrow
-	viewport.DrawCell(&dull.Cell{
-		Rune: upArrow,
-		Bg:   s.color,
-		Fg:   *s.Bg(),
-	}, 0, 0)
+	if s.orientation == Horizontal {
+		// left arrow
+		viewport.DrawCell(&dull.Cell{
+			Rune: leftArrow,
+			Bg:   s.color,
+			Fg:   *s.Bg(),
+		}, 0, 0)
 
-	// down arrow
-	viewport.DrawCell(&dull.Cell{
-		Rune: downArrow,
-		Bg:   s.color,
-		Fg:   *s.Bg(),
-	}, 0, int(height-1))
+		// right arrow
+		viewport.DrawCell(&dull.Cell{
+			Rune: rightArrow,
+			Bg:   s.color,
+			Fg:   *s.Bg(),
+		}, int(longDim-1), 0)
+	}
+
+	if s.orientation == Vertical {
+		// up arrow
+		viewport.DrawCell(&dull.Cell{
+			Rune: upArrow,
+			Bg:   s.color,
+			Fg:   *s.Bg(),
+		}, 0, 0)
+
+		// down arrow
+		viewport.DrawCell(&dull.Cell{
+			Rune: downArrow,
+			Bg:   s.color,
+			Fg:   *s.Bg(),
+		}, 0, int(longDim-1))
+	}
 }
