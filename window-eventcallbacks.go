@@ -2,6 +2,7 @@ package dull
 
 import (
 	"github.com/go-gl/glfw/v3.3/glfw"
+
 	"github.com/pekim/dull/geometry"
 )
 
@@ -213,5 +214,71 @@ func (w *Window) callCloseCallback(_ *glfw.Window) {
 		if !shouldClose {
 			w.glfwWindow.SetShouldClose(false)
 		}
+	}
+}
+
+// MousePosCallback is a function for use with SetMousePosCallback.
+type MousePosCallback func(event *MousePosEvent)
+
+// SetMousePosCallback sets or clears a function to call when the user
+// moves the mouse in a the window.
+//
+// To remove a previously set callback, pass nil for the callback.
+func (w *Window) SetMousePosCallback(fn MousePosCallback) {
+	w.mousePosCallback = fn
+}
+
+func (w *Window) callMousePosCallback(_ *glfw.Window, xpos float64, ypos float64) {
+	setMouseEvent(&w.lastMouseEvent, w, xpos, ypos)
+
+	if w.mousePosCallback != nil {
+		w.mousePosCallback(&MousePosEvent{
+			MouseEvent: w.lastMouseEvent,
+		})
+	}
+}
+
+// MouseClickCallback is a function for use with SetMouseClickCallback.
+type MouseClickCallback func(event *MouseClickEvent)
+
+// SetMouseClickCallback sets or clears a function to call when the user
+// clicks a mouse button in a the window.
+//
+// To remove a previously set callback, pass nil for the callback.
+func (w *Window) SetMouseClickCallback(fn MouseClickCallback) {
+	w.mouseClickCallback = fn
+}
+
+func (w *Window) callMouseButtonCallback(_ *glfw.Window,
+	button glfw.MouseButton,
+	action glfw.Action,
+	mods glfw.ModifierKey,
+) {
+	dullButton := MouseButton(button)
+	dullAction := Action(action)
+
+	if dullAction == Press {
+		w.lastMouseButtonDown = dullButton
+		return
+	}
+
+	if dullAction != Release {
+		// Not sure what the action would be in this case,
+		// as mouse buttons don't repeat.
+		return
+	}
+
+	if dullButton != w.lastMouseButtonDown {
+		return
+	}
+
+	if w.mouseClickCallback != nil {
+		event := MouseClickEvent{
+			MouseEvent: w.lastMouseEvent,
+			button:     MouseButton(button),
+			mods:       ModifierKey(mods),
+		}
+
+		w.mouseClickCallback(&event)
 	}
 }

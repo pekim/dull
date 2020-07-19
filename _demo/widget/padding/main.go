@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/pekim/dull"
 	"github.com/pekim/dull/color"
+	"github.com/pekim/dull/ui"
 	"github.com/pekim/dull/ui/widget"
 )
 
@@ -44,10 +45,11 @@ func initialise(app *dull.Application, err error) {
 	padding1.SetBg(color.Gray50)
 	padding1.SetPadding(widget.EdgeTop|widget.EdgeBottom, 1)
 
-	window.SetDrawCallback(func(d dull.Drawer, columns, rows int) {
-		vp := dull.ViewportForWindow(window, d)
-		padding1.Draw(vp)
-	})
+	ww := ui.WidgetWindow{
+		Window:     window,
+		RootWidget: padding1,
+	}
+	ww.Initialise()
 
 	window.Show()
 }

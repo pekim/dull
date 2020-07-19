@@ -35,6 +35,17 @@ func (w *BaseWidget) InsertWidget(widget Widget, index int) {
 	w.children = children
 }
 
+func (w *BaseWidget) VisitChildrenForViewport(
+	viewport *dull.Viewport,
+	cb VisitChildViewport,
+) {
+	for _, child := range w.children {
+		cb(child, viewport)
+	}
+}
+
+func (w *BaseWidget) OnClick(event *dull.MouseClickEvent, viewport *dull.Viewport) {}
+
 func (w *BaseWidget) Draw(viewport *dull.Viewport) {
 	w.DrawBackground(viewport)
 }

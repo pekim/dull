@@ -1,6 +1,8 @@
 package widget
 
 import (
+	"fmt"
+
 	"github.com/pekim/dull"
 	"github.com/pekim/dull/geometry"
 	"github.com/pekim/dull/ui"
@@ -61,11 +63,35 @@ func (p *Padding) Draw(viewport *dull.Viewport) {
 		return
 	}
 
-	paddedViewport := viewport.View(geometry.RectFloat{
+	p.child.Draw(p.paddedViewport(viewport))
+}
+
+func (p *Padding) VisitChildrenForViewport(
+	viewport *dull.Viewport,
+	cb ui.VisitChildViewport,
+) {
+	paddedVp := p.paddedViewport(viewport)
+
+	if p.child != nil {
+		p.child.VisitChildrenForViewport(paddedVp, cb)
+		cb(p.child, paddedVp)
+	}
+}
+
+func (p *Padding) paddedViewport(viewport *dull.Viewport) *dull.Viewport {
+	return viewport.View(geometry.RectFloat{
 		Top:    p.paddingTop,
 		Bottom: viewport.Height() - p.paddingBottom,
 		Left:   p.paddingLeft,
 		Right:  viewport.Width() - p.paddingRight,
 	})
-	p.child.Draw(paddedViewport)
+}
+
+func (p *Padding) OnClick(event *dull.MouseClickEvent, viewport *dull.Viewport) {
+	if event.IsPropagationStopped() {
+		return
+	}
+
+	fmt.Println("on click", p.Bg())
+	event.StopPropagation()
 }

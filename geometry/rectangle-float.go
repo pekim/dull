@@ -1,6 +1,8 @@
 package geometry
 
-import "math"
+import (
+	"math"
+)
 
 // RectFloat is a rectangle expressed with float64.
 type RectFloat struct {
@@ -59,6 +61,16 @@ func (r *RectFloat) Intersection(other RectFloat) *RectFloat {
 		Left:   math.Max(r.Left, other.Left),
 		Right:  math.Min(r.Right, other.Right),
 	}
+}
+
+// Contains returns true if the rectangle contains the
+// point x y.
+func (r *RectFloat) Contains(x, y float64) bool {
+	return true &&
+		x >= r.Left &&
+		x < r.Right &&
+		y >= r.Top &&
+		y < r.Bottom
 }
 
 type RectFloat32 struct {

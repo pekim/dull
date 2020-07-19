@@ -68,6 +68,12 @@ func (v *Viewport) Dim() (float64, float64) {
 	return v.Width(), v.Height()
 }
 
+// Contains returns true if the viewport contains the
+// point x y.
+func (v *Viewport) Contains(x, y float64) bool {
+	return v.rect.Contains(x, y)
+}
+
 // View gets a new Viewport that is a view on an
 // existing Viewport.
 func (v *Viewport) View(rect geometry.RectFloat) *Viewport {

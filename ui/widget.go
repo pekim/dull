@@ -13,4 +13,8 @@ const WidgetSizeUnlimited = math.MaxUint32
 type Widget interface {
 	// Draw draws the widget to a viewport.
 	Draw(viewport *dull.Viewport)
+
+	OnClick(event *dull.MouseClickEvent, viewport *dull.Viewport)
+
+	Container
 }

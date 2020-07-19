@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/pekim/dull"
 	"github.com/pekim/dull/color"
 	"github.com/pekim/dull/geometry"
@@ -45,6 +47,14 @@ func initialise(app *dull.Application, err error) {
 
 		sbH.Draw(vp.View(geometry.RectFloat{2, 3, 2, 60}))
 		sbV.Draw(vp.View(geometry.RectFloat{4, 30, 2, 3}))
+	})
+
+	window.SetMouseClickCallback(func(event *dull.MouseClickEvent) {
+		if event.Button() != dull.MouseButton1 {
+			return
+		}
+
+		fmt.Println(event.Pos())
 	})
 
 	window.Show()
