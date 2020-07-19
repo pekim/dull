@@ -60,6 +60,7 @@ func (s *Scrollbar) Draw(viewport *dull.Viewport) {
 	const downArrow = '\u25BC' // Black Down-Pointing Triangle
 
 	width, height := viewport.Dim()
+	height = math.Max(height, 2)
 	availableHeight := height - 2
 	totalSize := s.max - s.min
 
@@ -80,18 +81,6 @@ func (s *Scrollbar) Draw(viewport *dull.Viewport) {
 	// full bar
 	s.DrawBackground(viewport)
 
-	viewport.DrawCell(&dull.Cell{
-		Rune: upArrow,
-		Bg:   s.color,
-		Fg:   *s.Bg(),
-	}, 0, 0)
-
-	viewport.DrawCell(&dull.Cell{
-		Rune: downArrow,
-		Bg:   s.color,
-		Fg:   *s.Bg(),
-	}, 0, int(height-1))
-
 	// indicator
 	if indicatorHeight >= height {
 		return
@@ -105,4 +94,18 @@ func (s *Scrollbar) Draw(viewport *dull.Viewport) {
 		},
 		s.color,
 	)
+
+	// up arrow
+	viewport.DrawCell(&dull.Cell{
+		Rune: upArrow,
+		Bg:   s.color,
+		Fg:   *s.Bg(),
+	}, 0, 0)
+
+	// down arrow
+	viewport.DrawCell(&dull.Cell{
+		Rune: downArrow,
+		Bg:   s.color,
+		Fg:   *s.Bg(),
+	}, 0, int(height-1))
 }
