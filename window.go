@@ -28,7 +28,7 @@ type keybinding struct {
 //
 // Use Application.NewWindow to create a Window.
 type Window struct {
-	*Application
+	app                *Application
 	dpi                float32
 	scale              float64
 	fontSize           float64
@@ -116,10 +116,10 @@ func newWindow(application *Application, options *WindowOptions) (*Window, error
 	options.applyDefaults()
 
 	w := &Window{
-		Application: application,
-		fg:          *options.Fg,
-		bgDirty:     true,
-		fontSize:    defaultFontSize,
+		app:      application,
+		fg:       *options.Fg,
+		bgDirty:  true,
+		fontSize: defaultFontSize,
 	}
 
 	w.SetBg(*options.Bg)
@@ -195,7 +195,7 @@ func (w *Window) glInit() error {
 
 func (w *Window) SetFontSize(fontsize float64) {
 	w.fontSize = fontsize
-	w.fontFamily = font.NewFamily(w.Application.fontRenderer.new(), int(w.dpi), w.scale*w.fontSize)
+	w.fontFamily = font.NewFamily(w.app.fontRenderer.new(), int(w.dpi), w.scale*w.fontSize)
 	w.glContext.SetGlyphsTexture(w.fontFamily.TextureAtlas.Texture)
 	w.solidTextureItem = w.fontFamily.Regular.GetGlyph(textureatlas.Solid)
 	w.setResizeIncrement()
@@ -266,7 +266,7 @@ func (w *Window) SetFg(color color.Color) {
 // This function may only be called from the main thread.
 func (w *Window) Destroy() {
 	w.glTerminated = true
-	w.removeWindow(w)
+	w.app.removeWindow(w)
 	w.glfwWindow.Destroy()
 	glfw.PostEmptyEvent()
 }
