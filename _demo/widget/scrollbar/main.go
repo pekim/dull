@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/pekim/dull"
 	"github.com/pekim/dull/color"
 	"github.com/pekim/dull/geometry"
@@ -42,11 +40,18 @@ func initialise(app *dull.Application, err error) {
 	sbV.SetBg(color.Green1)
 	sbV.SetColor(color.Darkgreen)
 
+	sbHViewport := func(vp *dull.Viewport) *dull.Viewport {
+		return vp.View(geometry.RectFloat{2, 3, 2, 60})
+	}
+	sbVViewport := func(vp *dull.Viewport) *dull.Viewport {
+		return vp.View(geometry.RectFloat{4, 30, 2, 3})
+	}
+
 	window.SetDrawCallback(func(d dull.Drawer, columns, rows int) {
 		vp := dull.ViewportForWindow(window, d)
 
-		sbH.Draw(vp.View(geometry.RectFloat{2, 3, 2, 60}))
-		sbV.Draw(vp.View(geometry.RectFloat{4, 30, 2, 3}))
+		sbH.Draw(sbHViewport(vp))
+		sbV.Draw(sbVViewport(vp))
 	})
 
 	window.SetMouseClickCallback(func(event *dull.MouseClickEvent) {
@@ -54,7 +59,18 @@ func initialise(app *dull.Application, err error) {
 			return
 		}
 
-		fmt.Println(event.Pos())
+		x, y := event.PosFloat()
+		vp := dull.ViewportForWindow(window, nil)
+
+		vpH := sbHViewport(vp)
+		if vpH.Contains(x, y) {
+			sbH.OnClick(event, vpH)
+		}
+
+		vpV := sbVViewport(vp)
+		if vpV.Contains(x, y) {
+			sbV.OnClick(event, vpV)
+		}
 	})
 
 	window.Show()

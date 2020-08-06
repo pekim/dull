@@ -35,6 +35,17 @@ func (e *MouseEvent) PosFloat() (float64, float64) {
 	return e.xFloat, e.yFloat
 }
 
+//func (e *MouseEvent) Translate(x, y float64) *MouseEvent {
+//	e2 := &(*e)
+//
+//	e2.xFloat -= x
+//	e2.yFloat -= y
+//	e2.x = int(math.Floor(e2.xFloat))
+//	e2.y = int(math.Floor(e2.yFloat))
+//
+//	return e2
+//}
+
 func setMouseEvent(event *MouseEvent, window *Window, xpos float64, ypos float64) {
 	event.xFloat = xpos / float64(window.viewportCellWidthPixel)
 	event.yFloat = ypos / float64(window.viewportCellHeightPixel)
@@ -59,6 +70,26 @@ func (e *MouseClickEvent) Button() MouseButton {
 func (e *MouseClickEvent) ModifierKey() ModifierKey {
 	return e.mods
 }
+
+func (e *MouseClickEvent) Translate(x, y float64) {
+	e.xFloat -= x
+	e.yFloat -= y
+	e.x = int(math.Floor(e.xFloat))
+	e.y = int(math.Floor(e.yFloat))
+}
+
+//func (e *MouseClickEvent) Translate(x, y float64) *MouseClickEvent {
+//	e2 := &(*e)
+//
+//	fmt.Println("e2", 1, e2, x, y)
+//	e2.xFloat -= x
+//	e2.yFloat -= y
+//	e2.x = int(math.Floor(e2.xFloat))
+//	e2.y = int(math.Floor(e2.yFloat))
+//	fmt.Println("e2", 2, e2)
+//
+//	return e2
+//}
 
 // MouseButton corresponds to a mouse button.
 type MouseButton int

@@ -1,6 +1,8 @@
 package dull
 
 import (
+	"math"
+
 	"github.com/pekim/dull/color"
 	"github.com/pekim/dull/geometry"
 )
@@ -72,6 +74,14 @@ func (v *Viewport) Dim() (float64, float64) {
 // point x y.
 func (v *Viewport) Contains(x, y float64) bool {
 	return v.rect.Contains(x, y)
+}
+
+func (v *Viewport) PosWithin(x, y float64) (float64, float64) {
+	return x - v.rect.Left, y - v.rect.Top
+}
+
+func (v *Viewport) PosWithinInt(x, y int) (int, int) {
+	return x - int(math.Floor(v.rect.Left)), y - int(math.Floor(v.rect.Top))
 }
 
 // View gets a new Viewport that is a view on an
