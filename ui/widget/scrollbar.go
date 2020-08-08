@@ -1,7 +1,6 @@
 package widget
 
 import (
-	"fmt"
 	"math"
 
 	"github.com/pekim/dull"
@@ -160,8 +159,11 @@ func (s *Scrollbar) OnClick(event *dull.MouseClickEvent, viewport *dull.Viewport
 		return
 	}
 
-	x, y := event.Pos()
-	x2, y2 := viewport.PosWithinInt(x, y)
-	fmt.Println("on click --", x2, y2)
+	x, y := viewport.PosWithinInt(event.Pos())
 	event.StopPropagation()
+
+	if x == 0 && y == 0 {
+		s.value--
+		event.DrawRequired()
+	}
 }

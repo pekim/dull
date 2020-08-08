@@ -32,32 +32,9 @@ func (w *WidgetWindow) mouseClicked(event *dull.MouseClickEvent) {
 			return
 		}
 
-		//childX, childY := childViewport.PosWithin(x, y)
-		//childEvent := event.Translate(childX, childY)
-		//fmt.Println("xy cxy", x, y, childX, childY)
-		//childEvent := &(*event)
-		//childEvent.Translate(childX, childY)
-		//fmt.Println("ev", event)
-		//fmt.Println("ce", childEvent)
-
-		//childEvent := event.Translate(childViewport.PosWithin(x, y))
-		//fmt.Println(x, y)
-		//fmt.Println(event)
-		//fmt.Println(childEvent)
-		//fmt.Println()
-
-		//event.Translate(childViewport.PosWithin(x, y))
-		//fmt.Println(x, y, event, child)
-		//child.OnClick(event, childViewport)
-		//event.Translate(childViewport.PosWithin(-x, -y))
-
 		event.Translate(childViewport.PosWithin(x, y))
-		//fmt.Println(x, y, event, child)
 		child.OnClick(event, childViewport)
-		//fmt.Println("  ", x, y, event, child)
 		event.Translate(childViewport.PosWithin(-x, -y))
-
-		//child.OnClick(event, childViewport)
 	})
 	w.RootWidget.OnClick(event, vp)
 }

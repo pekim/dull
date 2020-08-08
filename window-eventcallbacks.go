@@ -280,5 +280,9 @@ func (w *Window) callMouseButtonCallback(_ *glfw.Window,
 		}
 
 		w.mouseClickCallback(&event)
+
+		if event.draw {
+			w.draw()
+		}
 	}
 }

@@ -8,7 +8,12 @@ import (
 )
 
 type Event struct {
+	draw            bool
 	stopPropagation bool
+}
+
+func (e *Event) DrawRequired() {
+	e.draw = true
 }
 
 func (e *Event) StopPropagation() {
