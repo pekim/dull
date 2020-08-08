@@ -257,18 +257,9 @@ func (w *Window) callMouseButtonCallback(_ *glfw.Window,
 	dullButton := MouseButton(button)
 	dullAction := Action(action)
 
-	if dullAction == Press {
-		w.lastMouseButtonDown = dullButton
-		return
-	}
+	w.lastMouseButtonDown = dullButton
 
-	if dullAction != Release {
-		// Not sure what the action would be in this case,
-		// as mouse buttons don't repeat.
-		return
-	}
-
-	if dullButton != w.lastMouseButtonDown {
+	if dullAction != Press {
 		return
 	}
 

@@ -62,6 +62,25 @@ func (s *Scrollbar) SetDisplaySize(displaySize float64) {
 	s.displaySize = displaySize
 }
 
+func (s *Scrollbar) dim(viewport *dull.Viewport) (float64, float64) {
+	width, height := viewport.Dim()
+
+	longDim, shortDim := width, height
+	if s.orientation == Vertical {
+		longDim, shortDim = shortDim, longDim
+	}
+
+	longDim = math.Max(longDim, 2)
+
+	return longDim, shortDim
+}
+
+func (s *Scrollbar) dimInt(viewport *dull.Viewport) (int, int) {
+	longDim, shortDim := s.dim(viewport)
+
+	return int(math.Floor(longDim)), int(math.Floor(shortDim))
+}
+
 /*
 	Draw implements the Widget interface's Draw method.
 */
@@ -71,14 +90,7 @@ func (s *Scrollbar) Draw(viewport *dull.Viewport) {
 	const leftArrow = '\u25C0'  // Black Left-Pointing Triangle
 	const rightArrow = '\u25B6' // Black Right-Pointing Triangle
 
-	width, height := viewport.Dim()
-
-	longDim, shortDim := width, height
-	if s.orientation == Vertical {
-		longDim, shortDim = shortDim, longDim
-	}
-
-	longDim = math.Max(longDim, 2)
+	longDim, shortDim := s.dim(viewport)
 	availableLongDim := longDim - 2
 	totalSize := s.max - s.min
 
@@ -162,8 +174,41 @@ func (s *Scrollbar) OnClick(event *dull.MouseClickEvent, viewport *dull.Viewport
 	x, y := viewport.PosWithinInt(event.Pos())
 	event.StopPropagation()
 
-	if x == 0 && y == 0 {
+	longDim, shortDim := s.dimInt(viewport)
+
+	var startClicked bool
+	if s.orientation == Horizontal {
+		if x == 0 && y < shortDim {
+			startClicked = true
+		}
+	} else {
+		if x < longDim && y == 0 {
+			startClicked = true
+		}
+	}
+
+	var endClicked bool
+	if s.orientation == Horizontal {
+		if x == longDim-1 && y < shortDim {
+			endClicked = true
+		}
+	} else {
+		if x < longDim && y == longDim-1 {
+			endClicked = true
+		}
+	}
+
+	if startClicked {
 		s.value--
+		s.value = math.Max(s.min, s.value)
+
+		event.DrawRequired()
+	}
+
+	if endClicked {
+		s.value++
+		s.value = math.Min(s.max, s.value)
+
 		event.DrawRequired()
 	}
 }
