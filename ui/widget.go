@@ -14,7 +14,15 @@ type Widget interface {
 	// Draw draws the widget to a viewport.
 	Draw(viewport *dull.Viewport)
 
-	OnClick(event *dull.MouseClickEvent, viewport *dull.Viewport)
+	OnClick(event *dull.MouseClickEvent, viewport *dull.Viewport, setFocus func(widget Widget))
+	OnKey(event *dull.KeyEvent, viewport *dull.Viewport, setFocus func(widget Widget))
 
 	Container
+	Focusable
+}
+
+type Focusable interface {
+	Focused() bool
+	RemoveFocus()
+	SetFocus()
 }

@@ -166,7 +166,7 @@ func (s *Scrollbar) Draw(viewport *dull.Viewport) {
 	}
 }
 
-func (s *Scrollbar) OnClick(event *dull.MouseClickEvent, viewport *dull.Viewport) {
+func (s *Scrollbar) OnClick(event *dull.MouseClickEvent, viewport *dull.Viewport, setFocus func(widget ui.Widget)) {
 	if event.IsPropagationStopped() {
 		return
 	}

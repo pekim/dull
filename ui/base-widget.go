@@ -13,6 +13,7 @@ import (
 // by embedding it in another type.
 type BaseWidget struct {
 	bg       *color.Color
+	focused  bool
 	children []Widget
 }
 
@@ -44,7 +45,11 @@ func (w *BaseWidget) VisitChildrenForViewport(
 	}
 }
 
-func (w *BaseWidget) OnClick(event *dull.MouseClickEvent, viewport *dull.Viewport) {}
+func (w *BaseWidget) OnKey(event *dull.KeyEvent, viewport *dull.Viewport, setFocus func(widget Widget)) {
+}
+
+func (w *BaseWidget) OnClick(event *dull.MouseClickEvent, viewport *dull.Viewport, setFocus func(widget Widget)) {
+}
 
 func (w *BaseWidget) Draw(viewport *dull.Viewport) {
 	w.DrawBackground(viewport)
@@ -64,4 +69,16 @@ func (w *BaseWidget) DrawBackground(viewport *dull.Viewport) {
 		},
 		*w.bg,
 	)
+}
+
+func (w *BaseWidget) Focused() bool {
+	return w.focused
+}
+
+func (w *BaseWidget) RemoveFocus() {
+	w.focused = false
+}
+
+func (w *BaseWidget) SetFocus() {
+	w.focused = true
 }

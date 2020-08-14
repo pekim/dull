@@ -1,8 +1,6 @@
 package widget
 
 import (
-	"fmt"
-
 	"github.com/pekim/dull"
 	"github.com/pekim/dull/geometry"
 	"github.com/pekim/dull/ui"
@@ -85,16 +83,4 @@ func (p *Padding) paddedViewport(viewport *dull.Viewport) *dull.Viewport {
 		Left:   p.paddingLeft,
 		Right:  viewport.Width() - p.paddingRight,
 	})
-}
-
-func (p *Padding) OnClick(event *dull.MouseClickEvent, viewport *dull.Viewport) {
-	if event.IsPropagationStopped() {
-		return
-	}
-
-	x, y := event.Pos()
-	x2, y2 := viewport.PosWithinInt(x, y)
-	fmt.Println("on click", p.Bg(), x2, y2)
-
-	event.StopPropagation()
 }

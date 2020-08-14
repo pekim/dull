@@ -7,23 +7,6 @@ import (
 	"github.com/go-gl/glfw/v3.3/glfw"
 )
 
-type Event struct {
-	draw            bool
-	stopPropagation bool
-}
-
-func (e *Event) DrawRequired() {
-	e.draw = true
-}
-
-func (e *Event) StopPropagation() {
-	e.stopPropagation = true
-}
-
-func (e *Event) IsPropagationStopped() bool {
-	return e.stopPropagation
-}
-
 type MouseEvent struct {
 	Event
 	x      int

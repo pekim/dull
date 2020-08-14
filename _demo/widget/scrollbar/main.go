@@ -64,12 +64,12 @@ func initialise(app *dull.Application, err error) {
 
 		vpH := sbHViewport(vp)
 		if vpH.Contains(x, y) {
-			sbH.OnClick(event, vpH)
+			sbH.OnClick(event, vpH, nil)
 		}
 
 		vpV := sbVViewport(vp)
 		if vpV.Contains(x, y) {
-			sbV.OnClick(event, vpV)
+			sbV.OnClick(event, vpV, nil)
 		}
 	})
 

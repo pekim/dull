@@ -44,7 +44,7 @@ func (w *Window) callGridSizeCallback() {
 }
 
 // KeyCallback is a function for use with SetKeyCallback.
-type KeyCallback func(key Key, action Action, mods ModifierKey) bool
+type KeyCallback func(event *KeyEvent)
 
 // SetKeyCallback sets or clears a function to call when a key is
 // pressed, repeated or released.
@@ -64,9 +64,15 @@ func (w *Window) callKeyCallback(_ *glfw.Window,
 	w.handleKeyEvent(Key(key), Action(action), ModifierKey(mods))
 
 	if w.keyCallback != nil {
-		drawRequired := w.keyCallback(Key(key), Action(action), ModifierKey(mods))
+		event := &KeyEvent{
+			key:    Key(key),
+			action: Action(action),
+			mods:   ModifierKey(mods),
+		}
 
-		if drawRequired {
+		w.keyCallback(event)
+
+		if event.draw {
 			w.draw()
 		}
 	}
@@ -232,9 +238,16 @@ func (w *Window) callMousePosCallback(_ *glfw.Window, xpos float64, ypos float64
 	setMouseEvent(&w.lastMouseEvent, w, xpos, ypos)
 
 	if w.mousePosCallback != nil {
+		event := w.lastMouseEvent
+		event.draw = false
+
 		w.mousePosCallback(&MousePosEvent{
-			MouseEvent: w.lastMouseEvent,
+			MouseEvent: event,
 		})
+
+		if event.draw {
+			w.draw()
+		}
 	}
 }
 
