@@ -22,25 +22,36 @@ func initialise(app *dull.Application, err error) {
 		panic(err)
 	}
 
-	child1 := widget.NewLabel("child 1")
-	child1.SetBg(color.Lightblue)
-	child1.SetHAlign(ui.HAlignCentre)
-	child1.SetVAlign(ui.VAlignCentre)
+	childRightTop := widget.NewLabel("right top")
+	childRightTop.SetBg(color.Lightblue)
+	childRightTop.SetHAlign(ui.HAlignCentre)
+	childRightTop.SetVAlign(ui.VAlignCentre)
 
-	child2 := widget.NewLabel("child 2")
-	child2.SetBg(color.Lightgray)
-	child2.SetHAlign(ui.HAlignCentre)
-	child2.SetVAlign(ui.VAlignCentre)
+	rightBottom := widget.NewLabel("right bottom")
+	rightBottom.SetBg(color.Lightgray)
+	rightBottom.SetHAlign(ui.HAlignCentre)
+	rightBottom.SetVAlign(ui.VAlignCentre)
 
-	splitPane := &widget.SplitPane{}
-	splitPane.SetOrientation(widget.Horizontal)
-	splitPane.SetPos(20)
-	splitPane.SetChild1(child1)
-	splitPane.SetChild2(child2)
+	splitPaneV := widget.NewSplitPane()
+	splitPaneV.SetOrientation(widget.Vertical)
+	splitPaneV.SetPos(10)
+	splitPaneV.SetChild1(childRightTop)
+	splitPaneV.SetChild2(rightBottom)
+
+	childLeft := widget.NewLabel("left")
+	childLeft.SetBg(color.Palegreen)
+	childLeft.SetHAlign(ui.HAlignCentre)
+	childLeft.SetVAlign(ui.VAlignCentre)
+
+	splitPaneH := widget.NewSplitPane()
+	splitPaneH.SetOrientation(widget.Horizontal)
+	splitPaneH.SetPos(20)
+	splitPaneH.SetChild1(childLeft)
+	splitPaneH.SetChild2(splitPaneV)
 
 	ww := ui.WidgetWindow{
 		Window:     window,
-		RootWidget: splitPane,
+		RootWidget: splitPaneH,
 	}
 	ww.Initialise()
 

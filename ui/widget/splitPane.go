@@ -2,6 +2,7 @@ package widget
 
 import (
 	"github.com/pekim/dull"
+	"github.com/pekim/dull/color"
 	"github.com/pekim/dull/geometry"
 	"github.com/pekim/dull/ui"
 )
@@ -14,15 +15,39 @@ type SplitPane struct {
 	ui.BaseWidget
 	orientation Orientation
 	pos         int
+	splitter    Border
 	child1      ui.Widget
 	child2      ui.Widget
 }
 
+func NewSplitPane() *SplitPane {
+	splitter := Border{}
+	splitter.SetEdges(EdgeLeft | EdgeRight)
+	splitter.SetPosition(BorderOuter)
+	splitter.SetThickness(0.2)
+	splitter.SetBg(color.White)
+	splitter.SetColor(color.Black)
+
+	return &SplitPane{
+		splitter: splitter,
+	}
+}
+
 /*
-	SetOrientation sets the orientation of the split.
+	SetOrientation sets the orientation of the children.
+
+	If the orientation is Horizontal, then the children will
+	be arranged horizontally (left and right), and the
+	splitter will run vertically.
 */
 func (sp *SplitPane) SetOrientation(orientation Orientation) {
 	sp.orientation = orientation
+
+	if orientation == Horizontal {
+		sp.splitter.SetEdges(EdgeLeft | EdgeRight)
+	} else {
+		sp.splitter.SetEdges(EdgeTop | EdgeBottom)
+	}
 }
 
 /*
@@ -30,6 +55,14 @@ func (sp *SplitPane) SetOrientation(orientation Orientation) {
 */
 func (sp *SplitPane) SetPos(pos int) {
 	sp.pos = pos
+}
+
+func (sp *SplitPane) SetSplitterColor(color color.Color) {
+	sp.splitter.SetBg(color)
+}
+
+func (sp *SplitPane) SetSplitterLineColor(color color.Color) {
+	sp.splitter.SetColor(color)
 }
 
 /*
@@ -46,6 +79,9 @@ func (sp *SplitPane) SetChild2(child ui.Widget) {
 	sp.child2 = child
 }
 
+func (sp *SplitPane) OnKey(event *dull.KeyEvent, viewport *dull.Viewport, setFocus func(widget ui.Widget)) {
+}
+
 /*
 	Draw implements the Widget interface's Draw method.
 */
@@ -59,7 +95,29 @@ func (sp *SplitPane) Draw(viewport *dull.Viewport) {
 		sp.child2.Draw(childVp)
 	}
 
-	// TODO Draw splitter.
+	sp.drawSplitter(viewport)
+}
+
+func (sp *SplitPane) drawSplitter(viewport *dull.Viewport) {
+	var splitterVp *dull.Viewport
+
+	if sp.orientation == Horizontal {
+		splitterVp = viewport.View(geometry.RectFloat{
+			Top:    0,
+			Bottom: viewport.Height(),
+			Left:   float64(sp.pos),
+			Right:  float64(sp.pos + 1),
+		})
+	} else {
+		splitterVp = viewport.View(geometry.RectFloat{
+			Top:    float64(sp.pos),
+			Bottom: float64(sp.pos + 1),
+			Left:   0,
+			Right:  viewport.Width(),
+		})
+	}
+
+	sp.splitter.Draw(splitterVp)
 }
 
 func (sp *SplitPane) VisitChildrenForViewport(
