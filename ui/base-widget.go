@@ -45,6 +45,9 @@ func (w *BaseWidget) VisitChildrenForViewport(
 	}
 }
 
+func (w *BaseWidget) OnChar(event *dull.CharEvent, viewport *dull.Viewport, setFocus func(widget Widget)) {
+}
+
 func (w *BaseWidget) OnKey(event *dull.KeyEvent, viewport *dull.Viewport, setFocus func(widget Widget)) {
 }
 

@@ -11,6 +11,7 @@ type WidgetWindow struct {
 
 func (w *WidgetWindow) Initialise() {
 	w.SetDrawCallback(w.draw)
+	w.SetCharCallback(w.char)
 	w.SetKeyCallback(w.key)
 	w.SetMouseClickCallback(w.mouseClicked)
 }
@@ -18,6 +19,15 @@ func (w *WidgetWindow) Initialise() {
 func (w *WidgetWindow) draw(d dull.Drawer, columns, rows int) {
 	vp := dull.ViewportForWindow(w.Window, d)
 	w.RootWidget.Draw(vp)
+}
+
+func (w *WidgetWindow) char(event *dull.CharEvent) {
+	vp := dull.ViewportForWindow(w.Window, nil)
+
+	w.RootWidget.VisitChildrenForViewport(vp, func(child Widget, childViewport *dull.Viewport) {
+		child.OnChar(event, childViewport, w.SetFocus)
+	})
+	w.RootWidget.OnChar(event, vp, w.SetFocus)
 }
 
 func (w *WidgetWindow) key(event *dull.KeyEvent) {

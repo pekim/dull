@@ -10,18 +10,23 @@ import (
 	"github.com/pekim/dull/ui/widget"
 )
 
-type TextWidget struct {
+type CharWidget struct {
+	widget.Label
+}
+
+func (w *CharWidget) OnChar(event *dull.CharEvent, viewport *dull.Viewport, setFocus func(widget ui.Widget)) {
+	w.SetText(fmt.Sprintf("Char : %s", string(event.Char())))
+	event.DrawRequired()
+}
+
+type KeyWidget struct {
 	widget.Label
 	n         int
-	prevFocus *TextWidget
-	nextFocus *TextWidget
+	prevFocus *KeyWidget
+	nextFocus *KeyWidget
 }
 
-func (w *TextWidget) OnClick(event *dull.MouseClickEvent, viewport *dull.Viewport, setFocus func(widget ui.Widget)) {
-	fmt.Println(event)
-}
-
-func (w *TextWidget) OnKey(event *dull.KeyEvent, viewport *dull.Viewport, setFocus func(widget ui.Widget)) {
+func (w *KeyWidget) OnKey(event *dull.KeyEvent, viewport *dull.Viewport, setFocus func(widget ui.Widget)) {
 	if w.Focused() && !event.IsPropagationStopped() {
 		if event.Key() == dull.KeyTab &&
 			(event.Action() == dull.Press || event.Action() == dull.Repeat) {
@@ -42,12 +47,12 @@ func (w *TextWidget) OnKey(event *dull.KeyEvent, viewport *dull.Viewport, setFoc
 	}
 }
 
-func (w *TextWidget) SetFocus() {
+func (w *KeyWidget) SetFocus() {
 	w.SetBg(color.Gray)
 	w.Label.SetFocus()
 }
 
-func (w *TextWidget) RemoveFocus() {
+func (w *KeyWidget) RemoveFocus() {
 	w.SetBg(color.Transparent)
 	w.Label.RemoveFocus()
 }
@@ -72,12 +77,16 @@ func initialise(app *dull.Application, err error) {
 
 	label := widget.NewLabel("Try <Tab>, <Tab>+<Shift>, and any other keys.")
 	label.SetCell(dull.Cell{Bold: true})
-	flexStyle := flex.AppendWidget(label)
-	flexStyle.SetHeight(2)
+	labelFlexStyle := flex.AppendWidget(label)
+	labelFlexStyle.SetHeight(2)
 
-	var widgets [10]*TextWidget
+	charWidget := &CharWidget{}
+	charFlexStyle := flex.AppendWidget(charWidget)
+	charFlexStyle.SetHeight(2)
+
+	var widgets [10]*KeyWidget
 	for i, _ := range widgets {
-		widget := &TextWidget{n: i}
+		widget := &KeyWidget{n: i}
 		widget.SetText(fmt.Sprintf("widget %d", i))
 		flexStyle := flex.AppendWidget(widget)
 		flexStyle.SetHeight(1)

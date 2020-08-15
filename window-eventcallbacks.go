@@ -154,7 +154,7 @@ func (w *Window) ToggleFullscreen() {
 }
 
 // CharCallback is a function for use with SetCharCallback.
-type CharCallback func(char rune) bool
+type CharCallback func(event *CharEvent)
 
 // SetCharCallback sets or clears a function to call when a character
 // is input.
@@ -170,9 +170,10 @@ func (w *Window) SetCharCallback(fn CharCallback) {
 
 func (w *Window) callCharCallback(_ *glfw.Window, char rune) {
 	if w.charCallback != nil && !w.blockCharEvents {
-		drawRequired := w.charCallback(char)
+		event := &CharEvent{char: char}
+		w.charCallback(event)
 
-		if drawRequired {
+		if event.draw {
 			w.draw()
 		}
 	}
