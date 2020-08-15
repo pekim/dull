@@ -12,10 +12,16 @@ import (
 
 type CharWidget struct {
 	widget.Label
+	chars string
 }
 
 func (w *CharWidget) OnChar(event *dull.CharEvent, viewport *dull.Viewport, setFocus func(widget ui.Widget)) {
-	w.SetText(fmt.Sprintf("Char : %s", string(event.Char())))
+	w.chars += string(event.Char())
+	if len(w.chars) > 10 {
+		w.chars = w.chars[len(w.chars)-10:]
+	}
+	w.SetText(fmt.Sprintf("Chars : %s", w.chars))
+
 	event.DrawRequired()
 }
 
