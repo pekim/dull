@@ -18,6 +18,11 @@ type SplitPane struct {
 	splitter    Border
 	child1      ui.Widget
 	child2      ui.Widget
+
+	adjust         bool
+	adjustKey      dull.Key
+	adjustMods     dull.ModifierKey
+	adjustStartPos int
 }
 
 func NewSplitPane() *SplitPane {
@@ -57,12 +62,21 @@ func (sp *SplitPane) SetPos(pos int) {
 	sp.pos = pos
 }
 
+func (sp *SplitPane) Pos() int {
+	return sp.pos
+}
+
 func (sp *SplitPane) SetSplitterColor(color color.Color) {
 	sp.splitter.SetBg(color)
 }
 
 func (sp *SplitPane) SetSplitterLineColor(color color.Color) {
 	sp.splitter.SetColor(color)
+}
+
+func (sp *SplitPane) SetAdjustKey(key dull.Key, mods dull.ModifierKey) {
+	sp.adjustKey = key
+	sp.adjustMods = mods
 }
 
 /*
@@ -80,6 +94,39 @@ func (sp *SplitPane) SetChild2(child ui.Widget) {
 }
 
 func (sp *SplitPane) OnKey(event *dull.KeyEvent, viewport *dull.Viewport, setFocus func(widget ui.Widget)) {
+	if event.Action() == dull.Release {
+		return
+	}
+
+	if event.Key() == sp.adjustKey && event.Mods() == sp.adjustMods {
+		sp.adjust = true
+		sp.adjustStartPos = sp.pos
+	}
+
+	if !sp.adjust {
+		return
+	}
+
+	if event.Mods() == dull.ModNone {
+		if event.Key() == dull.KeyEscape {
+			sp.adjust = false
+			sp.pos = sp.adjustStartPos
+			event.DrawRequired()
+		}
+		if event.Key() == dull.KeyEnter {
+			sp.adjust = false
+		}
+
+		if event.Key() == dull.KeyLeft || event.Key() == dull.KeyUp {
+			sp.pos--
+			event.DrawRequired()
+		}
+
+		if event.Key() == dull.KeyRight || event.Key() == dull.KeyDown {
+			sp.pos++
+			event.DrawRequired()
+		}
+	}
 }
 
 /*
@@ -126,10 +173,14 @@ func (sp *SplitPane) VisitChildrenForViewport(
 ) {
 	if sp.child1 != nil {
 		childVp := sp.child1Viewport(viewport)
+
+		cb(sp.child1, childVp)
 		sp.child1.VisitChildrenForViewport(childVp, cb)
 	}
 	if sp.child2 != nil {
 		childVp := sp.child2Viewport(viewport)
+
+		cb(sp.child2, childVp)
 		sp.child2.VisitChildrenForViewport(childVp, cb)
 	}
 }

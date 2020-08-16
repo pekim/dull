@@ -34,6 +34,7 @@ func initialise(app *dull.Application, err error) {
 
 	splitPaneV := widget.NewSplitPane()
 	splitPaneV.SetOrientation(widget.Vertical)
+	splitPaneV.SetAdjustKey(dull.KeyV, dull.ModControl)
 	splitPaneV.SetPos(10)
 	splitPaneV.SetChild1(childRightTop)
 	splitPaneV.SetChild2(rightBottom)
@@ -45,6 +46,7 @@ func initialise(app *dull.Application, err error) {
 
 	splitPaneH := widget.NewSplitPane()
 	splitPaneH.SetOrientation(widget.Horizontal)
+	splitPaneH.SetAdjustKey(dull.KeyH, dull.ModControl)
 	splitPaneH.SetPos(20)
 	splitPaneH.SetChild1(childLeft)
 	splitPaneH.SetChild2(splitPaneV)
