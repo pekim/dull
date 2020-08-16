@@ -98,6 +98,15 @@ func (sp *SplitPane) SetChild2(child ui.Widget) {
 	sp.child2 = child
 }
 
+/*
+	Adjust enters split position adjustment mode.
+	It is an alternative to setting a key combination
+	to trigger the adjustment.
+*/
+func (sp *SplitPane) Adjust() {
+	sp.adjust = true
+}
+
 func (sp *SplitPane) OnKey(event *dull.KeyEvent, viewport *dull.Viewport, setFocus func(widget ui.Widget)) {
 	// act only on key press and repeat
 	if event.Action() == dull.Release {
