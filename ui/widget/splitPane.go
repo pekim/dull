@@ -101,6 +101,7 @@ func (sp *SplitPane) OnKey(event *dull.KeyEvent, viewport *dull.Viewport, setFoc
 	if event.Key() == sp.adjustKey && event.Mods() == sp.adjustMods {
 		sp.adjust = true
 		sp.adjustStartPos = sp.pos
+		event.DrawRequired()
 	}
 
 	if !sp.adjust {
@@ -115,6 +116,7 @@ func (sp *SplitPane) OnKey(event *dull.KeyEvent, viewport *dull.Viewport, setFoc
 		}
 		if event.Key() == dull.KeyEnter {
 			sp.adjust = false
+			event.DrawRequired()
 		}
 
 		if event.Key() == dull.KeyLeft || event.Key() == dull.KeyUp {
@@ -138,13 +140,11 @@ func (sp *SplitPane) OnKey(event *dull.KeyEvent, viewport *dull.Viewport, setFoc
 	}
 }
 
-/*
-	Draw implements the Widget interface's Draw method.
-*/
-func (sp *SplitPane) Draw(viewport *dull.Viewport) {
+func (sp *SplitPane) constrainPos(viewport *dull.Viewport) {
 	// Constrain pos to available viewport.
 	// This handles the case where a window has been shrunk
 	// to a size smaller than the split pos.
+
 	length := sp.viewportLength(viewport)
 	if length > 0 {
 		if sp.pos >= length {
@@ -154,6 +154,13 @@ func (sp *SplitPane) Draw(viewport *dull.Viewport) {
 			sp.pos = 0
 		}
 	}
+}
+
+/*
+	Draw implements the Widget interface's Draw method.
+*/
+func (sp *SplitPane) Draw(viewport *dull.Viewport) {
+	sp.constrainPos(viewport)
 
 	if sp.child1 != nil {
 		childVp := sp.child1Viewport(viewport)
@@ -162,6 +169,10 @@ func (sp *SplitPane) Draw(viewport *dull.Viewport) {
 	if sp.child2 != nil {
 		childVp := sp.child2Viewport(viewport)
 		sp.child2.Draw(childVp)
+	}
+
+	if sp.adjust {
+		viewport.DrawCellsRect(viewport.Rect(), color.Color{0.2, 0.2, 0.2, 0.8})
 	}
 
 	sp.drawSplitter(viewport)

@@ -64,6 +64,21 @@ func (v *Viewport) DebugRect() geometry.RectFloat {
 	return v.rect
 }
 
+/*
+	Rect return a rectangle for the whole viewport.
+
+	Left and Top will be 0.
+	Right and Bottom will be Width and Height respectively.
+*/
+func (v *Viewport) Rect() geometry.RectFloat {
+	return geometry.RectFloat{
+		Top:    0,
+		Bottom: v.Height(),
+		Left:   0,
+		Right:  v.Width(),
+	}
+}
+
 //Dim returns the Viewport's dimensions, it's
 // width and height.
 func (v *Viewport) Dim() (float64, float64) {
