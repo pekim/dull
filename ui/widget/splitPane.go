@@ -13,11 +13,12 @@ import (
 */
 type SplitPane struct {
 	ui.BaseWidget
-	orientation Orientation
-	pos         int
-	splitter    Border
-	child1      ui.Widget
-	child2      ui.Widget
+	orientation   Orientation
+	pos           int
+	splitter      Border
+	splitterColor color.Color
+	child1        ui.Widget
+	child2        ui.Widget
 
 	adjust         bool
 	adjustKey      dull.Key
@@ -30,12 +31,15 @@ func NewSplitPane() *SplitPane {
 	splitter.SetEdges(EdgeLeft | EdgeRight)
 	splitter.SetPosition(BorderOuter)
 	splitter.SetThickness(0.2)
-	splitter.SetBg(color.White)
-	splitter.SetColor(color.Black)
 
-	return &SplitPane{
+	sp := &SplitPane{
 		splitter: splitter,
 	}
+
+	sp.SetSplitterBg(color.White)
+	sp.SetSplitterColor(color.Black)
+
+	return sp
 }
 
 /*
@@ -66,11 +70,12 @@ func (sp *SplitPane) Pos() int {
 	return sp.pos
 }
 
-func (sp *SplitPane) SetSplitterColor(color color.Color) {
+func (sp *SplitPane) SetSplitterBg(color color.Color) {
 	sp.splitter.SetBg(color)
 }
 
-func (sp *SplitPane) SetSplitterLineColor(color color.Color) {
+func (sp *SplitPane) SetSplitterColor(color color.Color) {
+	sp.splitterColor = color
 	sp.splitter.SetColor(color)
 }
 
@@ -186,6 +191,7 @@ func (sp *SplitPane) Draw(viewport *dull.Viewport) {
 		sp.child2.Draw(childVp)
 	}
 
+	// translucent overlay when adjusting
 	if sp.adjust {
 		viewport.DrawCellsRect(viewport.Rect(), color.Color{0.2, 0.2, 0.2, 0.8})
 	}
@@ -210,11 +216,11 @@ func (sp *SplitPane) drawSplitter(viewport *dull.Viewport) {
 
 		vp.DrawCell(&dull.Cell{
 			Rune: leftArrow,
-			Fg:   sp.splitter.color,
+			Fg:   sp.splitterColor,
 		}, 0, int(vp.Height()/2)-1)
 		vp.DrawCell(&dull.Cell{
 			Rune: rightArrow,
-			Fg:   sp.splitter.color,
+			Fg:   sp.splitterColor,
 		}, 0, int(vp.Height()/2))
 	} else {
 		vp := viewport.View(geometry.RectFloat{
@@ -227,11 +233,11 @@ func (sp *SplitPane) drawSplitter(viewport *dull.Viewport) {
 
 		vp.DrawCell(&dull.Cell{
 			Rune: upArrow,
-			Fg:   sp.splitter.color,
+			Fg:   sp.splitterColor,
 		}, int(vp.Width()/2)-1, 0)
 		vp.DrawCell(&dull.Cell{
 			Rune: downArrow,
-			Fg:   sp.splitter.color,
+			Fg:   sp.splitterColor,
 		}, int(vp.Width()/2)+1, 0)
 	}
 }
