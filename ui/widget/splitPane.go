@@ -94,49 +94,64 @@ func (sp *SplitPane) SetChild2(child ui.Widget) {
 }
 
 func (sp *SplitPane) OnKey(event *dull.KeyEvent, viewport *dull.Viewport, setFocus func(widget ui.Widget)) {
+	// act only on key press and repeat
 	if event.Action() == dull.Release {
 		return
 	}
 
+	// enter adjust mode
 	if event.Key() == sp.adjustKey && event.Mods() == sp.adjustMods {
 		sp.adjust = true
 		sp.adjustStartPos = sp.pos
 		event.DrawRequired()
-	}
 
-	if !sp.adjust {
 		return
 	}
 
-	if event.Mods() == dull.ModNone {
-		if event.Key() == dull.KeyEscape {
-			sp.adjust = false
-			sp.pos = sp.adjustStartPos
-			event.DrawRequired()
-		}
-		if event.Key() == dull.KeyEnter {
-			sp.adjust = false
-			event.DrawRequired()
+	if !sp.adjust {
+		// not in adjust mode
+		return
+	}
+
+	if event.Mods() != dull.ModNone {
+		// all adjust mode keys lack modifiers
+		return
+	}
+
+	// abandon adjustment, and restore position
+	if event.Key() == dull.KeyEscape {
+		sp.adjust = false
+		sp.pos = sp.adjustStartPos
+		event.DrawRequired()
+	}
+
+	// finish adjusting
+	if event.Key() == dull.KeyEnter {
+		sp.adjust = false
+		event.DrawRequired()
+	}
+
+	// decrement position
+	if event.Key() == dull.KeyLeft || event.Key() == dull.KeyUp {
+		// constrain minimum position
+		if sp.pos < 1 {
+			return
 		}
 
-		if event.Key() == dull.KeyLeft || event.Key() == dull.KeyUp {
-			if sp.pos < 1 {
-				return
-			}
-			sp.pos--
+		sp.pos--
+		event.DrawRequired()
+	}
 
-			event.DrawRequired()
+	// increment position
+	if event.Key() == dull.KeyRight || event.Key() == dull.KeyDown {
+		// constrain maximum position
+		length := sp.viewportLength(viewport)
+		if sp.pos >= int(length)-1 {
+			return
 		}
 
-		if event.Key() == dull.KeyRight || event.Key() == dull.KeyDown {
-			length := sp.viewportLength(viewport)
-			if sp.pos >= int(length)-1 {
-				return
-			}
-			sp.pos++
-
-			event.DrawRequired()
-		}
+		sp.pos++
+		event.DrawRequired()
 	}
 }
 
