@@ -118,12 +118,21 @@ func (sp *SplitPane) OnKey(event *dull.KeyEvent, viewport *dull.Viewport, setFoc
 		}
 
 		if event.Key() == dull.KeyLeft || event.Key() == dull.KeyUp {
+			if sp.pos < 1 {
+				return
+			}
 			sp.pos--
+
 			event.DrawRequired()
 		}
 
 		if event.Key() == dull.KeyRight || event.Key() == dull.KeyDown {
+			length := sp.viewportLength(viewport)
+			if sp.pos >= int(length)-1 {
+				return
+			}
 			sp.pos++
+
 			event.DrawRequired()
 		}
 	}
@@ -133,6 +142,14 @@ func (sp *SplitPane) OnKey(event *dull.KeyEvent, viewport *dull.Viewport, setFoc
 	Draw implements the Widget interface's Draw method.
 */
 func (sp *SplitPane) Draw(viewport *dull.Viewport) {
+	// Constrain pos to available viewport.
+	// This handles the case where a window has been shrunk
+	// to a size smaller than the split pos.
+	length := sp.viewportLength(viewport)
+	if sp.pos >= length {
+		sp.pos = length - 1
+	}
+
 	if sp.child1 != nil {
 		childVp := sp.child1Viewport(viewport)
 		sp.child1.Draw(childVp)
@@ -219,4 +236,13 @@ func (sp *SplitPane) child2Viewport(viewport *dull.Viewport) *dull.Viewport {
 			Right:  viewport.Width(),
 		})
 	}
+}
+
+func (sp *SplitPane) viewportLength(vp *dull.Viewport) int {
+	if sp.orientation == Horizontal {
+		return int(vp.Width())
+	} else {
+		return int(vp.Height())
+	}
+
 }
