@@ -73,6 +73,7 @@ func (p *Padding) VisitChildrenForViewport(
 	if p.child != nil {
 		p.child.VisitChildrenForViewport(paddedVp, cb)
 		cb(p.child, paddedVp)
+		p.child.VisitChildrenForViewport(viewport, cb)
 	}
 }
 

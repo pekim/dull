@@ -223,3 +223,11 @@ func (b *Border) drawBorder(viewport *dull.Viewport) {
 		viewport.DrawCellsRect(rect, b.color)
 	}
 }
+
+func (b *Border) VisitChildrenForViewport(
+	viewport *dull.Viewport,
+	cb ui.VisitChildViewport,
+) {
+	cb(b.child, viewport)
+	b.child.VisitChildrenForViewport(viewport, cb)
+}

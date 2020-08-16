@@ -137,6 +137,17 @@ func (f *Flex) AppendWidget(widget ui.Widget) *FlexChildStyle {
 	return f.InsertWidget(widget, index)
 }
 
+func (f *Flex) nodeViewport(node *flex.Node, viewport *dull.Viewport) *dull.Viewport {
+	rect := geometry.RectFloat{
+		Top:    float64(node.LayoutGetTop()),
+		Bottom: float64(node.LayoutGetTop() + node.LayoutGetHeight()),
+		Left:   float64(node.LayoutGetLeft()),
+		Right:  float64(node.LayoutGetLeft() + node.LayoutGetWidth()),
+	}
+
+	return viewport.View(rect)
+}
+
 /*
 	Draw implements the Widget interface's Draw method.
 */
@@ -150,13 +161,19 @@ func (f *Flex) Draw(viewport *dull.Viewport) {
 
 	for i, widget := range f.Children() {
 		node := f.root.Children[i]
-		rect := geometry.RectFloat{
-			Top:    float64(node.LayoutGetTop()),
-			Bottom: float64(node.LayoutGetTop() + node.LayoutGetHeight()),
-			Left:   float64(node.LayoutGetLeft()),
-			Right:  float64(node.LayoutGetLeft() + node.LayoutGetWidth()),
-		}
+		widget.Draw(f.nodeViewport(node, viewport))
+	}
+}
 
-		widget.Draw(viewport.View(rect))
+func (f *Flex) VisitChildrenForViewport(
+	viewport *dull.Viewport,
+	cb ui.VisitChildViewport,
+) {
+	for i, child := range f.Children() {
+		node := f.root.Children[i]
+		childVp := f.nodeViewport(node, viewport)
+
+		cb(child, childVp)
+		child.VisitChildrenForViewport(childVp, cb)
 	}
 }
