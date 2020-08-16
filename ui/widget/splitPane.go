@@ -194,25 +194,46 @@ func (sp *SplitPane) Draw(viewport *dull.Viewport) {
 }
 
 func (sp *SplitPane) drawSplitter(viewport *dull.Viewport) {
-	var splitterVp *dull.Viewport
+	const upArrow = '\u25B2'    // Black Up-Pointing Triangle
+	const downArrow = '\u25BC'  // Black Down-Pointing Triangle
+	const leftArrow = '\u25C0'  // Black Left-Pointing Triangle
+	const rightArrow = '\u25B6' // Black Right-Pointing Triangle
 
 	if sp.orientation == Horizontal {
-		splitterVp = viewport.View(geometry.RectFloat{
+		vp := viewport.View(geometry.RectFloat{
 			Top:    0,
 			Bottom: viewport.Height(),
 			Left:   float64(sp.pos),
 			Right:  float64(sp.pos + 1),
 		})
+		sp.splitter.Draw(vp)
+
+		vp.DrawCell(&dull.Cell{
+			Rune: leftArrow,
+			Fg:   sp.splitter.color,
+		}, 0, int(vp.Height()/2)-1)
+		vp.DrawCell(&dull.Cell{
+			Rune: rightArrow,
+			Fg:   sp.splitter.color,
+		}, 0, int(vp.Height()/2))
 	} else {
-		splitterVp = viewport.View(geometry.RectFloat{
+		vp := viewport.View(geometry.RectFloat{
 			Top:    float64(sp.pos),
 			Bottom: float64(sp.pos + 1),
 			Left:   0,
 			Right:  viewport.Width(),
 		})
-	}
+		sp.splitter.Draw(vp)
 
-	sp.splitter.Draw(splitterVp)
+		vp.DrawCell(&dull.Cell{
+			Rune: upArrow,
+			Fg:   sp.splitter.color,
+		}, int(vp.Width()/2)-1, 0)
+		vp.DrawCell(&dull.Cell{
+			Rune: downArrow,
+			Fg:   sp.splitter.color,
+		}, int(vp.Width()/2)+1, 0)
+	}
 }
 
 func (sp *SplitPane) VisitChildrenForViewport(
