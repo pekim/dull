@@ -146,8 +146,13 @@ func (sp *SplitPane) Draw(viewport *dull.Viewport) {
 	// This handles the case where a window has been shrunk
 	// to a size smaller than the split pos.
 	length := sp.viewportLength(viewport)
-	if sp.pos >= length {
-		sp.pos = length - 1
+	if length > 0 {
+		if sp.pos >= length {
+			sp.pos = length - 1
+		}
+		if sp.pos < 0 {
+			sp.pos = 0
+		}
 	}
 
 	if sp.child1 != nil {

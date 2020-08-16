@@ -4,6 +4,7 @@ import (
 	"github.com/pekim/dull"
 	"github.com/pekim/dull/color"
 	"github.com/pekim/dull/ui"
+	"github.com/pekim/dull/ui/layout"
 	"github.com/pekim/dull/ui/widget"
 )
 
@@ -51,9 +52,18 @@ func initialise(app *dull.Application, err error) {
 	splitPaneH.SetChild1(childLeft)
 	splitPaneH.SetChild2(splitPaneV)
 
+	instructions := widget.NewLabel("Ctrl+H or Ctrl+V, then arrow keys, then Enter or Escape")
+	instructions.SetHAlign(ui.HAlignCentre)
+
+	flex := layout.NewFlex(layout.FlexDirectionColumn)
+	instructionsFlexStyle := flex.AppendWidget(instructions)
+	instructionsFlexStyle.SetHeight(1)
+	splitPaneHFlexStyle := flex.AppendWidget(splitPaneH)
+	splitPaneHFlexStyle.SetGrow(1)
+
 	ww := ui.WidgetWindow{
 		Window:     window,
-		RootWidget: splitPaneH,
+		RootWidget: flex,
 	}
 	ww.Initialise()
 
