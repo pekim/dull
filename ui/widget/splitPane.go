@@ -1,6 +1,8 @@
 package widget
 
 import (
+	"fmt"
+
 	"github.com/pekim/dull"
 	"github.com/pekim/dull/color"
 	"github.com/pekim/dull/geometry"
@@ -105,6 +107,17 @@ func (sp *SplitPane) SetChild2(child ui.Widget) {
 */
 func (sp *SplitPane) Adjust() {
 	sp.adjust = true
+}
+
+func (sp *SplitPane) OnMousePos(event *dull.MousePosEvent, viewport *dull.Viewport, setFocus func(widget ui.Widget)) {
+	x, y := event.PosFloat()
+
+	if sp.orientation == Horizontal && int(x) == sp.pos {
+		fmt.Println("in h")
+	}
+	if sp.orientation == Vertical && int(y) == sp.pos {
+		fmt.Println("in v")
+	}
 }
 
 func (sp *SplitPane) OnKey(event *dull.KeyEvent, viewport *dull.Viewport, setFocus func(widget ui.Widget)) {
@@ -214,13 +227,9 @@ func (sp *SplitPane) drawSplitter(viewport *dull.Viewport) {
 	const leftArrow = '\u25C0'  // Black Left-Pointing Triangle
 	const rightArrow = '\u25B6' // Black Right-Pointing Triangle
 
+	vp := sp.splitterViewport(viewport)
+
 	if sp.orientation == Horizontal {
-		vp := viewport.View(geometry.RectFloat{
-			Top:    0,
-			Bottom: viewport.Height(),
-			Left:   float64(sp.pos),
-			Right:  float64(sp.pos + 1),
-		})
 		sp.splitter.Draw(vp)
 
 		vp.DrawCell(&dull.Cell{
@@ -232,12 +241,6 @@ func (sp *SplitPane) drawSplitter(viewport *dull.Viewport) {
 			Fg:   sp.splitterColor,
 		}, 0, int(vp.Height()/2))
 	} else {
-		vp := viewport.View(geometry.RectFloat{
-			Top:    float64(sp.pos),
-			Bottom: float64(sp.pos + 1),
-			Left:   0,
-			Right:  viewport.Width(),
-		})
 		sp.splitter.Draw(vp)
 
 		vp.DrawCell(&dull.Cell{
@@ -248,6 +251,24 @@ func (sp *SplitPane) drawSplitter(viewport *dull.Viewport) {
 			Rune: downArrow,
 			Fg:   sp.splitterColor,
 		}, int(vp.Width()/2)+1, 0)
+	}
+}
+
+func (sp *SplitPane) splitterViewport(viewport *dull.Viewport) *dull.Viewport {
+	if sp.orientation == Horizontal {
+		return viewport.View(geometry.RectFloat{
+			Top:    0,
+			Bottom: viewport.Height(),
+			Left:   float64(sp.pos),
+			Right:  float64(sp.pos + 1),
+		})
+	} else {
+		return viewport.View(geometry.RectFloat{
+			Top:    float64(sp.pos),
+			Bottom: float64(sp.pos + 1),
+			Left:   0,
+			Right:  viewport.Width(),
+		})
 	}
 }
 

@@ -91,6 +91,10 @@ func (v *Viewport) Contains(x, y float64) bool {
 	return v.rect.Contains(x, y)
 }
 
+func (v *Viewport) Pos() (float64, float64) {
+	return v.rect.Left, v.rect.Top
+}
+
 func (v *Viewport) PosWithin(x, y float64) (float64, float64) {
 	return x - v.rect.Left, y - v.rect.Top
 }

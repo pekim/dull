@@ -54,6 +54,9 @@ func (w *BaseWidget) OnKey(event *dull.KeyEvent, viewport *dull.Viewport, setFoc
 func (w *BaseWidget) OnClick(event *dull.MouseClickEvent, viewport *dull.Viewport, setFocus func(widget Widget)) {
 }
 
+func (w *BaseWidget) OnMousePos(event *dull.MousePosEvent, viewport *dull.Viewport, setFocus func(widget Widget)) {
+}
+
 func (w *BaseWidget) Draw(viewport *dull.Viewport) {
 	w.DrawBackground(viewport)
 }

@@ -15,6 +15,7 @@ type Widget interface {
 	Draw(viewport *dull.Viewport)
 
 	OnClick(event *dull.MouseClickEvent, viewport *dull.Viewport, setFocus func(widget Widget))
+	OnMousePos(event *dull.MousePosEvent, viewport *dull.Viewport, setFocus func(widget Widget))
 	OnChar(event *dull.CharEvent, viewport *dull.Viewport, setFocus func(widget Widget))
 	OnKey(event *dull.KeyEvent, viewport *dull.Viewport, setFocus func(widget Widget))
 
