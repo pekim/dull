@@ -96,7 +96,7 @@ func internalFontDataDejavusansmonoBoldTtf() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "internal/font/data/DejaVuSansMono-Bold.ttf", size: 331992, mode: os.FileMode(420), modTime: time.Unix(1586282290, 0)}
+	info := bindataFileInfo{name: "internal/font/data/DejaVuSansMono-Bold.ttf", size: 331992, mode: os.FileMode(436), modTime: time.Unix(1591638380, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -116,7 +116,7 @@ func internalFontDataDejavusansmonoBoldobliqueTtf() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "internal/font/data/DejaVuSansMono-BoldOblique.ttf", size: 253580, mode: os.FileMode(420), modTime: time.Unix(1586282290, 0)}
+	info := bindataFileInfo{name: "internal/font/data/DejaVuSansMono-BoldOblique.ttf", size: 253580, mode: os.FileMode(436), modTime: time.Unix(1591638380, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -136,7 +136,7 @@ func internalFontDataDejavusansmonoObliqueTtf() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "internal/font/data/DejaVuSansMono-Oblique.ttf", size: 251932, mode: os.FileMode(420), modTime: time.Unix(1586282290, 0)}
+	info := bindataFileInfo{name: "internal/font/data/DejaVuSansMono-Oblique.ttf", size: 251932, mode: os.FileMode(436), modTime: time.Unix(1591638380, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -156,7 +156,7 @@ func internalFontDataDejavusansmonoTtf() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "internal/font/data/DejaVuSansMono.ttf", size: 340712, mode: os.FileMode(420), modTime: time.Unix(1586282290, 0)}
+	info := bindataFileInfo{name: "internal/font/data/DejaVuSansMono.ttf", size: 340712, mode: os.FileMode(436), modTime: time.Unix(1591638380, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -176,7 +176,7 @@ func internalFontDataLicence() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "internal/font/data/LICENCE", size: 4808, mode: os.FileMode(420), modTime: time.Unix(1586282290, 0)}
+	info := bindataFileInfo{name: "internal/font/data/LICENCE", size: 4808, mode: os.FileMode(436), modTime: time.Unix(1591638380, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }

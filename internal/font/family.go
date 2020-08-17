@@ -2,8 +2,9 @@ package font
 
 import (
 	"fmt"
+	"io/ioutil"
 
-	"github.com/pekim/dull/internal"
+	"github.com/pekim/dull/internal/font/asset"
 	"github.com/pekim/dull/internal/textureatlas"
 )
 
@@ -24,8 +25,17 @@ func NewFamily(newRenderer NewRenderer, dpi int, height float64) *Family {
 	var textureAtlas *textureatlas.TextureAtlas
 
 	new := func(nameSuffix string, id int) *FontTextureAtlas {
-		path := fmt.Sprintf("internal/font/data/DejaVuSansMono%s.ttf", nameSuffix)
-		fontData := internal.MustAsset(path)
+		filename := fmt.Sprintf("DejaVuSansMono%s.ttf", nameSuffix)
+		file, err := asset.FS.Open(filename)
+		if err != nil {
+			panic(err)
+		}
+
+		fontData, err := ioutil.ReadAll(file)
+		if err != nil {
+			panic(err)
+		}
+
 		renderer, err := newRenderer(nameSuffix, id<<30, fontData, dpi, height)
 		if err != nil {
 			panic(err)
