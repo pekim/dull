@@ -45,16 +45,16 @@ func (w *BaseWidget) VisitChildrenForViewport(
 	}
 }
 
-func (w *BaseWidget) OnChar(event *dull.CharEvent, viewport *dull.Viewport, setFocus func(widget Widget)) {
+func (w *BaseWidget) OnChar(event *dull.CharEvent, viewport *dull.Viewport, manager WidgetManager) {
 }
 
-func (w *BaseWidget) OnKey(event *dull.KeyEvent, viewport *dull.Viewport, setFocus func(widget Widget)) {
+func (w *BaseWidget) OnKey(event *dull.KeyEvent, viewport *dull.Viewport, manager WidgetManager) {
 }
 
-func (w *BaseWidget) OnClick(event *dull.MouseClickEvent, viewport *dull.Viewport, setFocus func(widget Widget)) {
+func (w *BaseWidget) OnClick(event *dull.MouseClickEvent, viewport *dull.Viewport, manager WidgetManager) {
 }
 
-func (w *BaseWidget) OnMousePos(event *dull.MousePosEvent, viewport *dull.Viewport, setFocus func(widget Widget)) {
+func (w *BaseWidget) OnMousePos(event *dull.MousePosEvent, viewport *dull.Viewport, manager WidgetManager) {
 }
 
 func (w *BaseWidget) Draw(viewport *dull.Viewport) {

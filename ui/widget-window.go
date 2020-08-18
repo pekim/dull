@@ -27,18 +27,18 @@ func (w *WidgetWindow) char(event *dull.CharEvent) {
 	vp := dull.ViewportForWindow(w.Window, nil)
 
 	w.RootWidget.VisitChildrenForViewport(vp, func(child Widget, childViewport *dull.Viewport) {
-		child.OnChar(event, childViewport, w.SetFocus)
+		child.OnChar(event, childViewport, w)
 	})
-	w.RootWidget.OnChar(event, vp, w.SetFocus)
+	w.RootWidget.OnChar(event, vp, w)
 }
 
 func (w *WidgetWindow) key(event *dull.KeyEvent) {
 	vp := dull.ViewportForWindow(w.Window, nil)
 
 	w.RootWidget.VisitChildrenForViewport(vp, func(child Widget, childViewport *dull.Viewport) {
-		child.OnKey(event, childViewport, w.SetFocus)
+		child.OnKey(event, childViewport, w)
 	})
-	w.RootWidget.OnKey(event, vp, w.SetFocus)
+	w.RootWidget.OnKey(event, vp, w)
 }
 
 func (w *WidgetWindow) mouseMove(event *dull.MousePosEvent) {
@@ -63,10 +63,10 @@ func (w *WidgetWindow) mouseMove(event *dull.MousePosEvent) {
 		}
 
 		event.Translate(childViewport.Pos())
-		child.OnMousePos(event, childViewport, w.SetFocus)
+		child.OnMousePos(event, childViewport, w)
 		event.TranslateInverse(childViewport.Pos())
 	})
-	w.RootWidget.OnMousePos(event, vp, w.SetFocus)
+	w.RootWidget.OnMousePos(event, vp, w)
 }
 
 func (w *WidgetWindow) mouseClicked(event *dull.MouseClickEvent) {
@@ -83,10 +83,14 @@ func (w *WidgetWindow) mouseClicked(event *dull.MouseClickEvent) {
 		}
 
 		event.Translate(childViewport.Pos())
-		child.OnClick(event, childViewport, w.SetFocus)
+		child.OnClick(event, childViewport, w)
 		event.TranslateInverse(childViewport.Pos())
 	})
-	w.RootWidget.OnClick(event, vp, w.SetFocus)
+	w.RootWidget.OnClick(event, vp, w)
+}
+
+func (w *WidgetWindow) SetCursor(cursor dull.Cursor) {
+	w.Window.SetCursor(cursor)
 }
 
 func (w *WidgetWindow) SetFocus(widget Widget) {

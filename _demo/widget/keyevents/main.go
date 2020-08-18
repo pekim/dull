@@ -15,7 +15,7 @@ type CharWidget struct {
 	chars string
 }
 
-func (w *CharWidget) OnChar(event *dull.CharEvent, viewport *dull.Viewport, setFocus func(widget ui.Widget)) {
+func (w *CharWidget) OnChar(event *dull.CharEvent, viewport *dull.Viewport, manager ui.WidgetManager) {
 	w.chars += string(event.Char())
 	if len(w.chars) > 10 {
 		w.chars = w.chars[len(w.chars)-10:]
@@ -32,17 +32,17 @@ type KeyWidget struct {
 	nextFocus *KeyWidget
 }
 
-func (w *KeyWidget) OnKey(event *dull.KeyEvent, viewport *dull.Viewport, setFocus func(widget ui.Widget)) {
+func (w *KeyWidget) OnKey(event *dull.KeyEvent, viewport *dull.Viewport, manager ui.WidgetManager) {
 	if w.Focused() && !event.IsPropagationStopped() {
 		if event.Key() == dull.KeyTab &&
 			(event.Action() == dull.Press || event.Action() == dull.Repeat) {
 			event.StopPropagation()
 
 			if event.Mods() == dull.ModNone {
-				setFocus(w.nextFocus)
+				manager.SetFocus(w.nextFocus)
 			}
 			if event.Mods() == dull.ModShift {
-				setFocus(w.prevFocus)
+				manager.SetFocus(w.prevFocus)
 			}
 		} else {
 			w.SetText(fmt.Sprintf("widget %d   action:%d key:%d event:%d",

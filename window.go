@@ -40,6 +40,7 @@ type Window struct {
 	lastRenderDuration time.Duration
 	windowedBounds     geometry.Rect
 	keybindings        []keybinding
+	cursors            cursors
 
 	// When true char event callbacks will not be called.
 	// Used to prevent char events associated with window key binding from
