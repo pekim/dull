@@ -115,21 +115,18 @@ func initialise(app *dull.Application, err error) {
 	//columns, rows := window.Grid().Size()
 	//renderAll(columns, rows)
 
-	window.SetKeyCallback(func(key dull.Key, action dull.Action, mods dull.ModifierKey) bool {
-		if action != dull.Press && action != dull.Repeat {
-			return false
+	window.SetKeyCallback(func(event *dull.KeyEvent) {
+		if event.Action() != dull.Press && event.Action() != dull.Repeat {
+			return
 		}
 
-		if key == dull.KeyD {
-			// force draw
-			return true
+		if event.Key() == dull.KeyD {
+			event.DrawRequired()
 		}
-		if key == dull.KeyR {
+		if event.Key() == dull.KeyR {
 			showLastRenderDuration = !showLastRenderDuration
-			return true
+			event.DrawRequired()
 		}
-
-		return false
 	})
 
 	// window.SetKeyCallback(func(key dull.Key, action dull.Action, mods dull.ModifierKey) {
