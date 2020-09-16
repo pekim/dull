@@ -13,12 +13,13 @@ import (
 */
 type SplitPane struct {
 	ui.BaseWidget
-	orientation   Orientation
-	pos           int
-	splitter      Border
-	splitterColor color.Color
-	child1        ui.Widget
-	child2        ui.Widget
+	orientation     Orientation
+	pos             int
+	splitterVisible bool
+	splitter        Border
+	splitterColor   color.Color
+	child1          ui.Widget
+	child2          ui.Widget
 
 	adjust         bool
 	adjustKey      dull.Key
@@ -28,7 +29,6 @@ type SplitPane struct {
 
 func NewSplitPane() *SplitPane {
 	splitter := Border{}
-	splitter.SetEdges(EdgeLeft | EdgeRight)
 	splitter.SetPosition(BorderOuter)
 	splitter.SetThickness(0.2)
 
@@ -36,6 +36,7 @@ func NewSplitPane() *SplitPane {
 		splitter: splitter,
 	}
 
+	sp.SetOrientation(Horizontal)
 	sp.SetSplitterBg(color.White)
 	sp.SetSplitterColor(color.Black)
 
@@ -82,6 +83,10 @@ func (sp *SplitPane) SetSplitterColor(color color.Color) {
 func (sp *SplitPane) SetAdjustKey(key dull.Key, mods dull.ModifierKey) {
 	sp.adjustKey = key
 	sp.adjustMods = mods
+}
+
+func (sp *SplitPane) SetSplitterVisible(visible bool) {
+	sp.splitterVisible = visible
 }
 
 /*
@@ -215,9 +220,35 @@ func (sp *SplitPane) Draw(viewport *dull.Viewport) {
 	// translucent overlay when adjusting
 	if sp.adjust {
 		viewport.DrawCellsRect(viewport.Rect(), color.Color{0.2, 0.2, 0.2, 0.8})
+
+		if !sp.splitterVisible {
+			sp.drawNotVisibleAdjustSplitter(viewport)
+		}
 	}
 
-	sp.drawSplitter(viewport)
+	if sp.splitterVisible {
+		sp.drawSplitter(viewport)
+	}
+}
+
+func (sp *SplitPane) drawNotVisibleAdjustSplitter(viewport *dull.Viewport) {
+	if sp.orientation == Horizontal {
+		rect := geometry.RectFloat{
+			Top:    0,
+			Bottom: viewport.Height(),
+			Left:   float64(sp.pos),
+			Right:  float64(sp.pos) + 0.2,
+		}
+		viewport.DrawCellsRect(rect, sp.splitterColor)
+	} else {
+		rect := geometry.RectFloat{
+			Top:    float64(sp.pos),
+			Bottom: float64(sp.pos) + (0.2 * viewport.CellWidthHeightRatio()),
+			Left:   0,
+			Right:  viewport.Width(),
+		}
+		viewport.DrawCellsRect(rect, sp.splitterColor)
+	}
 }
 
 func (sp *SplitPane) drawSplitter(viewport *dull.Viewport) {
@@ -227,6 +258,13 @@ func (sp *SplitPane) drawSplitter(viewport *dull.Viewport) {
 	const rightArrow = '\u25B6' // Black Right-Pointing Triangle
 
 	vp := sp.splitterViewport(viewport)
+
+	if !sp.splitterVisible {
+		if sp.adjust {
+			sp.splitter.Draw(vp)
+		}
+		return
+	}
 
 	if sp.orientation == Horizontal {
 		sp.splitter.Draw(vp)
@@ -309,15 +347,25 @@ func (sp *SplitPane) child1Viewport(viewport *dull.Viewport) *dull.Viewport {
 
 func (sp *SplitPane) child2Viewport(viewport *dull.Viewport) *dull.Viewport {
 	if sp.orientation == Horizontal {
+		left := float64(sp.pos)
+		if sp.splitterVisible {
+			left++
+		}
+
 		return viewport.View(geometry.RectFloat{
 			Top:    0,
 			Bottom: viewport.Height(),
-			Left:   float64(sp.pos + 1),
+			Left:   left,
 			Right:  viewport.Width(),
 		})
 	} else {
+		top := float64(sp.pos)
+		if sp.splitterVisible {
+			top++
+		}
+
 		return viewport.View(geometry.RectFloat{
-			Top:    float64(sp.pos + 1),
+			Top:    top,
 			Bottom: viewport.Height(),
 			Left:   0,
 			Right:  viewport.Width(),

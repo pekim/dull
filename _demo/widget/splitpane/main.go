@@ -8,6 +8,27 @@ import (
 	"github.com/pekim/dull/ui/widget"
 )
 
+type root struct {
+	*layout.Flex
+	splitterVisible bool
+	splitH          *widget.SplitPane
+	splitV          *widget.SplitPane
+}
+
+func (r *root) OnKey(event *dull.KeyEvent, viewport *dull.Viewport, manager ui.WidgetManager) {
+	if event.Action() == dull.Release {
+		return
+	}
+
+	if event.Key() == dull.KeyS && event.Mods() == dull.ModControl {
+		r.splitterVisible = !r.splitterVisible
+		r.splitH.SetSplitterVisible(r.splitterVisible)
+		r.splitV.SetSplitterVisible(r.splitterVisible)
+
+		event.DrawRequired()
+	}
+}
+
 func initialise(app *dull.Application, err error) {
 	if err != nil {
 		panic(err)
@@ -55,15 +76,19 @@ func initialise(app *dull.Application, err error) {
 	instructions := widget.NewLabel("Ctrl+H or Ctrl+V, then arrow keys, then Enter or Escape")
 	instructions.SetHAlign(ui.HAlignCentre)
 
-	flex := layout.NewFlex(layout.FlexDirectionColumn)
-	instructionsFlexStyle := flex.AppendWidget(instructions)
+	root := &root{
+		Flex:   layout.NewFlex(layout.FlexDirectionColumn),
+		splitH: splitPaneH,
+		splitV: splitPaneV,
+	}
+	instructionsFlexStyle := root.AppendWidget(instructions)
 	instructionsFlexStyle.SetHeight(1)
-	splitPaneHFlexStyle := flex.AppendWidget(splitPaneH)
+	splitPaneHFlexStyle := root.AppendWidget(splitPaneH)
 	splitPaneHFlexStyle.SetGrow(1)
 
 	ww := ui.WidgetWindow{
 		Window:     window,
-		RootWidget: flex,
+		RootWidget: root,
 	}
 	ww.Initialise()
 
