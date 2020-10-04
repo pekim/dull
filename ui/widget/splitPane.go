@@ -110,6 +110,7 @@ func (sp *SplitPane) SetChild2(child ui.Widget) {
 */
 func (sp *SplitPane) Adjust() {
 	sp.adjust = true
+	sp.adjustStartPos = sp.pos
 }
 
 func (sp *SplitPane) OnMousePos(event *dull.MousePosEvent, viewport *dull.Viewport, manager ui.WidgetManager) {
@@ -132,10 +133,8 @@ func (sp *SplitPane) OnKey(event *dull.KeyEvent, viewport *dull.Viewport, manage
 
 	// enter adjust mode
 	if event.Key() == sp.adjustKey && event.Mods() == sp.adjustMods {
-		sp.adjust = true
-		sp.adjustStartPos = sp.pos
+		sp.Adjust()
 		event.DrawRequired()
-
 		return
 	}
 
