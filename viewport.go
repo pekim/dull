@@ -144,9 +144,11 @@ func (v *Viewport) DrawText(cell *Cell, column, row int, text string) {
 		column = 0
 	}
 	if column+utf8.RuneCountInString(text) > int(v.Width()) {
-		// Clip right.
-		runes := []rune(text)
-		text = string(runes[:int(v.Width())-column])
+		if int(v.Width())-column >= len(text) {
+			// Clip right.
+			runes := []rune(text)
+			text = string(runes[:int(v.Width())-column])
+		}
 	}
 
 	column += int(v.rect.Left)
