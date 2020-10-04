@@ -111,9 +111,13 @@ func (w *Window) drawRune(
 }
 
 func (w *Window) DrawText(cell *Cell, column, row int, text string) {
-	for i, c := range text {
+	// Count runes (not bytes).
+	i := 0
+
+	for _, c := range text {
 		cell.Rune = c
 		w.DrawCell(cell, column+i, row)
+		i++
 	}
 }
 
