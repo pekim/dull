@@ -2,6 +2,7 @@ package dull
 
 import (
 	"math"
+	"unicode/utf8"
 
 	"github.com/pekim/dull/color"
 	"github.com/pekim/dull/geometry"
@@ -138,12 +139,14 @@ func (v *Viewport) DrawText(cell *Cell, column, row int, text string) {
 	}
 	if column < 0 {
 		// Clip left.
-		text = text[-column:]
+		runes := []rune(text)
+		text = string(runes[-column:])
 		column = 0
 	}
-	if column+len(text) > int(v.Width()) {
+	if column+utf8.RuneCountInString(text) > int(v.Width()) {
 		// Clip right.
-		text = text[:int(v.Width())-column]
+		runes := []rune(text)
+		text = string(runes[:int(v.Width())-column])
 	}
 
 	column += int(v.rect.Left)
