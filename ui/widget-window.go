@@ -24,7 +24,7 @@ func (w *WidgetWindow) draw(d dull.Drawer, columns, rows int) {
 }
 
 func (w *WidgetWindow) char(event *dull.CharEvent) {
-	vp := dull.ViewportForWindow(w.Window, nil)
+	vp := dull.ViewportForWindow(w.Window, w.Window)
 
 	w.RootWidget.VisitChildrenForViewport(vp, func(child Widget, childViewport *dull.Viewport) {
 		child.OnChar(event, childViewport, w)
@@ -33,7 +33,7 @@ func (w *WidgetWindow) char(event *dull.CharEvent) {
 }
 
 func (w *WidgetWindow) key(event *dull.KeyEvent) {
-	vp := dull.ViewportForWindow(w.Window, nil)
+	vp := dull.ViewportForWindow(w.Window, w.Window)
 
 	w.RootWidget.VisitChildrenForViewport(vp, func(child Widget, childViewport *dull.Viewport) {
 		child.OnKey(event, childViewport, w)
