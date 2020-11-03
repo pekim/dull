@@ -113,18 +113,6 @@ func (sp *SplitPane) Adjust() {
 	sp.adjustStartPos = sp.pos
 }
 
-func (sp *SplitPane) OnMousePos(event *dull.MousePosEvent, viewport *dull.Viewport, manager ui.WidgetManager) {
-	x, y := event.PosFloat()
-
-	if sp.orientation == Horizontal && int(x) == sp.pos {
-		manager.SetCursor(dull.CursorHResize)
-	} else if sp.orientation == Vertical && int(y) == sp.pos {
-		manager.SetCursor(dull.CursorVResize)
-	} else {
-		manager.SetCursor(dull.CursorArrow)
-	}
-}
-
 func (sp *SplitPane) OnKey(event *dull.KeyEvent, viewport *dull.Viewport, manager ui.WidgetManager) {
 	// act only on key press and repeat
 	if event.Action() == dull.Release {

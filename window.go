@@ -40,7 +40,6 @@ type Window struct {
 	lastRenderDuration time.Duration
 	windowedBounds     geometry.Rect
 	keybindings        []keybinding
-	cursors            cursors
 
 	// When true char event callbacks will not be called.
 	// Used to prevent char events associated with window key binding from
@@ -71,18 +70,13 @@ type Window struct {
 
 	vertices []float32
 
-	drawCallback       DrawCallback
-	gridSizeCallback   GridSizeCallback
-	keyCallback        KeyCallback
-	charCallback       CharCallback
-	focusCallback      FocusCallback
-	closeCallback      CloseCallback
-	fontsizeCallback   FontsizeCallback
-	mousePosCallback   MousePosCallback
-	mouseClickCallback MouseClickCallback
-
-	lastMouseButtonDown MouseButton
-	lastMouseEvent      MouseEvent
+	drawCallback     DrawCallback
+	gridSizeCallback GridSizeCallback
+	keyCallback      KeyCallback
+	charCallback     CharCallback
+	focusCallback    FocusCallback
+	closeCallback    CloseCallback
+	fontsizeCallback FontsizeCallback
 }
 
 // WindowOptions is used when creating new windows to provide
@@ -150,13 +144,6 @@ func newWindow(application *Application, options *WindowOptions) (*Window, error
 	w.glfwWindow.SetCharCallback(w.callCharCallback)
 	w.glfwWindow.SetFocusCallback(w.callFocusCallback)
 	w.glfwWindow.SetCloseCallback(w.callCloseCallback)
-	w.glfwWindow.SetMouseButtonCallback(w.callMouseButtonCallback)
-	w.glfwWindow.SetCursorPosCallback(w.callMousePosCallback)
-	w.glfwWindow.SetCursorEnterCallback(func(_ *glfw.Window, entered bool) {
-		if !entered {
-			w.lastMouseButtonDown = mouseButtonNone
-		}
-	})
 	//w.glfwWindow.SetScrollCallback(func(w *glfw.Window, xoff float64, yoff float64) {
 	//	fmt.Println(xoff, yoff)
 	//})

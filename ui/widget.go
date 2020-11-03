@@ -14,8 +14,6 @@ type Widget interface {
 	// Draw draws the widget to a viewport.
 	Draw(viewport *dull.Viewport)
 
-	OnClick(event *dull.MouseClickEvent, viewport *dull.Viewport, manager WidgetManager)
-	OnMousePos(event *dull.MousePosEvent, viewport *dull.Viewport, manager WidgetManager)
 	OnChar(event *dull.CharEvent, viewport *dull.Viewport, manager WidgetManager)
 	OnKey(event *dull.KeyEvent, viewport *dull.Viewport, manager WidgetManager)
 

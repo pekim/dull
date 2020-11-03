@@ -54,25 +54,6 @@ func initialise(app *dull.Application, err error) {
 		sbV.Draw(sbVViewport(vp))
 	})
 
-	window.SetMouseClickCallback(func(event *dull.MouseClickEvent) {
-		if event.Button() != dull.MouseButton1 {
-			return
-		}
-
-		x, y := event.PosFloat()
-		vp := dull.ViewportForWindow(window, nil)
-
-		vpH := sbHViewport(vp)
-		if vpH.Contains(x, y) {
-			sbH.OnClick(event, vpH, nil)
-		}
-
-		vpV := sbVViewport(vp)
-		if vpV.Contains(x, y) {
-			sbV.OnClick(event, vpV, nil)
-		}
-	})
-
 	window.Show()
 }
 
