@@ -70,49 +70,34 @@ func (s *Scrollbar) dim(viewport *dull.Viewport) (float64, float64) {
 		longDim, shortDim = shortDim, longDim
 	}
 
-	longDim = math.Max(longDim, 2)
-
 	return longDim, shortDim
-}
-
-func (s *Scrollbar) dimInt(viewport *dull.Viewport) (int, int) {
-	longDim, shortDim := s.dim(viewport)
-
-	return int(math.Floor(longDim)), int(math.Floor(shortDim))
 }
 
 /*
 	Draw implements the Widget interface's Draw method.
 */
 func (s *Scrollbar) Draw(viewport *dull.Viewport) {
-	const upArrow = '\u25B2'    // Black Up-Pointing Triangle
-	const downArrow = '\u25BC'  // Black Down-Pointing Triangle
-	const leftArrow = '\u25C0'  // Black Left-Pointing Triangle
-	const rightArrow = '\u25B6' // Black Right-Pointing Triangle
-
 	longDim, shortDim := s.dim(viewport)
-	availableLongDim := longDim - 2
 	totalSize := s.max - s.min
 
 	// length of the indicator
-	indicatorLength := s.displaySize / totalSize * availableLongDim
+	indicatorLength := s.displaySize / (totalSize + s.displaySize) * longDim
 	if indicatorLength < 1 {
 		indicatorLength = 1
 	}
 
 	// position of the top of the indicator
 	scrollFraction := s.value / totalSize
-	indicatorStart := scrollFraction * (availableLongDim - indicatorLength)
-	maxIndicatorTop := availableLongDim - indicatorLength
+	indicatorStart := scrollFraction * (longDim - indicatorLength)
+	maxIndicatorTop := longDim - indicatorLength
 	indicatorStart = math.Min(indicatorStart, maxIndicatorTop)
 	indicatorStart = math.Max(indicatorStart, 0)
-	indicatorStart++
 
 	// full bar
 	s.DrawBackground(viewport)
 
 	// indicator
-	if indicatorLength < availableLongDim {
+	if indicatorLength < longDim {
 		var indicatorRect geometry.RectFloat
 		if s.orientation == Horizontal {
 			indicatorRect = geometry.RectFloat{
@@ -131,37 +116,5 @@ func (s *Scrollbar) Draw(viewport *dull.Viewport) {
 			}
 		}
 		viewport.DrawCellsRect(indicatorRect, s.color)
-	}
-
-	if s.orientation == Horizontal {
-		// left arrow
-		viewport.DrawCell(&dull.Cell{
-			Rune: leftArrow,
-			Bg:   s.color,
-			Fg:   *s.Bg(),
-		}, 0, 0)
-
-		// right arrow
-		viewport.DrawCell(&dull.Cell{
-			Rune: rightArrow,
-			Bg:   s.color,
-			Fg:   *s.Bg(),
-		}, int(longDim-1), 0)
-	}
-
-	if s.orientation == Vertical {
-		// up arrow
-		viewport.DrawCell(&dull.Cell{
-			Rune: upArrow,
-			Bg:   s.color,
-			Fg:   *s.Bg(),
-		}, 0, 0)
-
-		// down arrow
-		viewport.DrawCell(&dull.Cell{
-			Rune: downArrow,
-			Bg:   s.color,
-			Fg:   *s.Bg(),
-		}, 0, int(longDim-1))
 	}
 }
