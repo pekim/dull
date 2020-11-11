@@ -29,7 +29,11 @@ var gammaFragmentShaderSource = `
 		 if (linear <= 0.0031308)
 			return linear * 12.92;
 		 else
-			return 1.055 * pow(linear, 1.0 / 2.4) - 0.055;
+			// Theoretically should be 2.4, but 2.2 results in
+			// subjectively nicer text.
+			// Reducing any further makes nearby dark colours
+			// too similar.
+			return 1.055 * pow(linear, 1.0 / 2.2) - 0.055;
 	}
 
 	void main()
