@@ -122,6 +122,7 @@ func (sp *SplitPane) OnKey(event *dull.KeyEvent, viewport *dull.Viewport, manage
 	// enter adjust mode
 	if event.Key() == sp.adjustKey && event.Mods() == sp.adjustMods {
 		sp.Adjust()
+		event.StopPropagation()
 		event.DrawRequired()
 		return
 	}
@@ -140,12 +141,14 @@ func (sp *SplitPane) OnKey(event *dull.KeyEvent, viewport *dull.Viewport, manage
 	if event.Key() == dull.KeyEscape {
 		sp.adjust = false
 		sp.pos = sp.adjustStartPos
+		event.StopPropagation()
 		event.DrawRequired()
 	}
 
 	// finish adjusting
 	if event.Key() == dull.KeyEnter {
 		sp.adjust = false
+		event.StopPropagation()
 		event.DrawRequired()
 	}
 
@@ -157,6 +160,7 @@ func (sp *SplitPane) OnKey(event *dull.KeyEvent, viewport *dull.Viewport, manage
 		}
 
 		sp.pos--
+		event.StopPropagation()
 		event.DrawRequired()
 	}
 
@@ -169,6 +173,7 @@ func (sp *SplitPane) OnKey(event *dull.KeyEvent, viewport *dull.Viewport, manage
 		}
 
 		sp.pos++
+		event.StopPropagation()
 		event.DrawRequired()
 	}
 }
