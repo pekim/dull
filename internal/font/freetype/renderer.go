@@ -96,12 +96,12 @@ func (ft *FreeType) NewRenderer(name string, id int, fontData []byte, pixelHeigh
 
 	// Enable stem darkening for the face.
 	// Necessary because the gamma correction in the shader lightens the pixels.
-	parameter := (*C.FT_Parameter)(C.malloc(C.sizeof_FT_Parameter))
-	defer C.free(unsafe.Pointer(parameter))
-	cTrue := C.FT_Bool(1)
-	parameter.tag = ('d' << 24) | ('a' << 16) | ('r' << 8) | ('k' << 0) // C.FT_PARAM_TAG_STEM_DARKENING
-	parameter.data = (C.FT_Pointer)(&cTrue)
-	C.FT_Face_Properties(renderer.face, 1, parameter)
+	//parameter := (*C.FT_Parameter)(C.malloc(C.sizeof_FT_Parameter))
+	//defer C.free(unsafe.Pointer(parameter))
+	//cTrue := C.FT_Bool(1)
+	//parameter.tag = ('d' << 24) | ('a' << 16) | ('r' << 8) | ('k' << 0) // C.FT_PARAM_TAG_STEM_DARKENING
+	//parameter.data = (C.FT_Pointer)(&cTrue)
+	//C.FT_Face_Properties(renderer.face, 1, parameter)
 
 	ftError = C.FT_Set_Char_Size(
 		renderer.face,

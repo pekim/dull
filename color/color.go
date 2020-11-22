@@ -2,8 +2,17 @@ package color
 
 import (
 	"fmt"
+	"math"
 	"strconv"
 )
+
+func floatToSrgb(linear float32) float32 {
+	if linear <= 0.0031308 {
+		return linear * 12.92
+	} else {
+		return float32(1.055*math.Pow(float64(linear), 1.0/2.4) - 0.055)
+	}
+}
 
 // Color represents a straight RGBA color.
 //
@@ -14,11 +23,15 @@ type Color struct {
 
 // RGB creates a Color.
 func RGB(r, g, b float32) Color {
-	return Color{R: r, G: g, B: b, A: 1.0}
+	return RGBA(r, g, b, 1.0)
 }
 
 // RGBA creates a Color.
 func RGBA(r, g, b, a float32) Color {
+	r = floatToSrgb(r)
+	g = floatToSrgb(g)
+	b = floatToSrgb(b)
+
 	return Color{R: r, G: g, B: b, A: a}
 }
 
@@ -43,7 +56,7 @@ func FromHexRGB(rgb string) (Color, error) {
 		return Color{}, err
 	}
 
-	return Color{R: r, G: g, B: b, A: 1.0}, nil
+	return RGBA(r, g, b, 1.0), nil
 }
 
 // FromHexRGBA creates a Color from an 8 hex character RGBA string.
@@ -72,7 +85,7 @@ func FromHexRGBA(rgba string) (Color, error) {
 		return Color{}, err
 	}
 
-	return Color{R: r, G: g, B: b, A: a}, nil
+	return RGBA(r, g, b, a), nil
 }
 
 func parseHexPair(input string, start int, end int) (float32, error) {
