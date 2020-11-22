@@ -82,7 +82,7 @@ func initialise(app *dull.Application, err error) {
 				Top:    1,
 				Bottom: 3,
 				Left:   20,
-				Right:  22,
+				Right:  24,
 			},
 			darkGrey,
 		)
@@ -95,6 +95,21 @@ func initialise(app *dull.Application, err error) {
 			},
 			darkGrey,
 		)
+
+		for c := float32(0.0); c <= 1.0; c += 0.05 {
+			x := 4 + (c * 2 * 40)
+
+			d.DrawCellsRect(
+				geometry.RectFloat{
+					Top:    20,
+					Bottom: 22,
+					Left:   float64(x),
+					Right:  float64(x + 4),
+				},
+				color.RGB(c, c, c),
+			)
+		}
+
 	})
 
 	//ticker := time.NewTicker(1 * time.Second)
