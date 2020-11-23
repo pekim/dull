@@ -29,17 +29,21 @@ func (w *Window) draw() {
 		w.bg,
 	)
 
+	time1 := time.Now()
+
 	if w.drawCallback != nil {
 		w.drawCallback(w, w.columns, w.rows)
 	}
 
-	startTime := time.Now()
+	time2 := time.Now()
 
 	w.glContext.Draw(w.vertices)
 	w.glfwWindow.SwapBuffers()
 
-	w.lastRenderDuration = time.Now().Sub(startTime)
-	//fmt.Printf("%.1fms\n", w.lastRenderDuration.Seconds()*1000)
+	time3 := time.Now()
+
+	w.lastRenderPrepareDuration = time2.Sub(time1)
+	w.lastRenderDrawDuration = time3.Sub(time2)
 }
 
 func (w *Window) clear() {

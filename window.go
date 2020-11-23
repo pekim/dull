@@ -28,18 +28,19 @@ type keybinding struct {
 //
 // Use Application.NewWindow to create a Window.
 type Window struct {
-	app                *Application
-	dpi                float32
-	scale              float64
-	fontSize           float64
-	fontFamily         *font.Family
-	solidTextureItem   *textureatlas.TextureItem
-	glfwWindow         *glfw.Window
-	glTerminated       bool
-	glContext          gl.Context
-	lastRenderDuration time.Duration
-	windowedBounds     geometry.Rect
-	keybindings        []keybinding
+	app                       *Application
+	dpi                       float32
+	scale                     float64
+	fontSize                  float64
+	fontFamily                *font.Family
+	solidTextureItem          *textureatlas.TextureItem
+	glfwWindow                *glfw.Window
+	glTerminated              bool
+	glContext                 gl.Context
+	lastRenderPrepareDuration time.Duration
+	lastRenderDrawDuration    time.Duration
+	windowedBounds            geometry.Rect
+	keybindings               []keybinding
 
 	// When true char event callbacks will not be called.
 	// Used to prevent char events associated with window key binding from
@@ -320,8 +321,13 @@ func (w *Window) Do(fn func()) {
 
 // LastRenderDuration returns the duration of the last render of cells.
 // It is provided for informational purpose only.
-func (w *Window) LastRenderDuration() time.Duration {
-	return w.lastRenderDuration
+//
+// The first value returned is the duration to prepare the
+// vertexes to render (calling the Window's draw callback).
+// The second value returned is the time taken to draw the
+// vertices with GL.
+func (w *Window) LastRenderDurations() (time.Duration, time.Duration) {
+	return w.lastRenderPrepareDuration, w.lastRenderDrawDuration
 }
 
 func (w *Window) setKeybindings() {
