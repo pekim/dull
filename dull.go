@@ -1,7 +1,5 @@
 package dull
 
-//go:generate go-bindata -pkg internal -o internal/asset.go internal/font/data/...
-
 import (
 	"sync"
 

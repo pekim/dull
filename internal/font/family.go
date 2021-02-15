@@ -1,12 +1,22 @@
 package font
 
 import (
-	"fmt"
-	"io/ioutil"
+	_ "embed"
 
-	"github.com/pekim/dull/internal/font/asset"
 	"github.com/pekim/dull/internal/textureatlas"
 )
+
+//go:embed "data/DejaVuSansMono.ttf"
+var dejaVuSansMonoRegular []byte
+
+//go:embed "data/DejaVuSansMono-Bold.ttf"
+var dejaVuSansMonoBold []byte
+
+//go:embed "data/DejaVuSansMono-Oblique.ttf"
+var dejaVuSansMonoOblique []byte
+
+//go:embed "data/DejaVuSansMono-BoldOblique.ttf"
+var dejaVuSansMonoBoldOblique []byte
 
 type Family struct {
 	Name       string
@@ -24,18 +34,7 @@ func NewFamily(newRenderer NewRenderer, dpi int, height float64) *Family {
 	// a single texture atlas, to be shared by the font renderers
 	var textureAtlas *textureatlas.TextureAtlas
 
-	new := func(nameSuffix string, id int) *FontTextureAtlas {
-		filename := fmt.Sprintf("DejaVuSansMono%s.ttf", nameSuffix)
-		file, err := asset.FS.Open(filename)
-		if err != nil {
-			panic(err)
-		}
-
-		fontData, err := ioutil.ReadAll(file)
-		if err != nil {
-			panic(err)
-		}
-
+	new := func(nameSuffix string, fontData []byte, id int) *FontTextureAtlas {
 		renderer, err := newRenderer(nameSuffix, id<<30, fontData, dpi, height)
 		if err != nil {
 			panic(err)
@@ -53,10 +52,10 @@ func NewFamily(newRenderer NewRenderer, dpi int, height float64) *Family {
 
 	family := &Family{
 		Name:       "DejaVuSansMono",
-		Regular:    new("", 0b00),
-		Bold:       new("-Bold", 0b01),
-		BoldItalic: new("-BoldOblique", 0b10),
-		Italic:     new("-Oblique", 0b11),
+		Regular:    new("", dejaVuSansMonoRegular, 0b00),
+		Bold:       new("-Bold", dejaVuSansMonoBold, 0b01),
+		BoldItalic: new("-BoldOblique", dejaVuSansMonoBoldOblique, 0b10),
+		Italic:     new("-Oblique", dejaVuSansMonoOblique, 0b11),
 	}
 
 	family.TextureAtlas = textureAtlas
