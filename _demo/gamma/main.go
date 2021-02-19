@@ -94,8 +94,8 @@ func initialise(app *dull.Application, err error) {
 			darkGrey,
 		)
 
-		for c := float32(0.0); c <= 1.0; c += 0.05 {
-			x := 4 + (c * 2 * 40)
+		for c := float32(0.0); c <= 1.01; c += 0.10 {
+			x := 4 + (c * 2 * 20)
 
 			d.DrawCellsRect(
 				geometry.RectFloat{
