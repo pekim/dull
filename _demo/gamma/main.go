@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/pekim/dull"
 	"github.com/pekim/dull/color"
 	"github.com/pekim/dull/geometry"
@@ -31,9 +29,9 @@ func initialise(app *dull.Application, err error) {
 	showLastRenderDuration := false
 
 	window.SetDrawCallback(func(d dull.Drawer, columns, rows int) {
-		if showLastRenderDuration {
-			fmt.Printf("%.1fms\n", window.LastRenderDuration().Seconds()*1000)
-		}
+		// if showLastRenderDuration {
+		// 	fmt.Printf("%.1fms\n", window.LastRenderDuration().Seconds()*1000)
+		// }
 
 		// draw := func(columns, rows int) {
 		d.DrawCell(&dull.Cell{
