@@ -26,10 +26,12 @@ var renderVertexShaderSource = `
 		TexCoords = texCoords;
 
 		// Convert from sRGB to linear.
-		Color.r = to_linear(color.r);
-		Color.g = to_linear(color.g);
-		Color.b = to_linear(color.b);
-		Color.a = color.a;
+		//Color.r = to_linear(color.r);
+		//Color.g = to_linear(color.g);
+		//Color.b = to_linear(color.b);
+		//Color.a = color.a;
+
+		Color = color;
 	}
 `
 
