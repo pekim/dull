@@ -2,17 +2,8 @@ package color
 
 import (
 	"fmt"
-	"math"
 	"strconv"
 )
-
-func floatToSrgb(linear float32) float32 {
-	if linear <= 0.0031308 {
-		return linear * 12.92
-	} else {
-		return float32(1.055*math.Pow(float64(linear), 1.0/2.4) - 0.055)
-	}
-}
 
 // Color represents a straight RGBA color.
 //
@@ -28,10 +19,6 @@ func RGB(r, g, b float32) Color {
 
 // RGBA creates a Color.
 func RGBA(r, g, b, a float32) Color {
-	// r = floatToSrgb(r)
-	// g = floatToSrgb(g)
-	// b = floatToSrgb(b)
-
 	return Color{R: r, G: g, B: b, A: a}
 }
 

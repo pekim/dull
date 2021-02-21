@@ -34,11 +34,9 @@ var gammaFragmentShaderSource = `
 
 	void main()
 	{
-		// color = texture(textur, TexCoords);
-
 		vec4 colorLinear = texture(textur, TexCoords);
 
-		// Convert back to sRGB.
+		// Convert to sRGB.
 		color.r = to_srgb(colorLinear.r);
 		color.g = to_srgb(colorLinear.g);
 		color.b = to_srgb(colorLinear.b);
