@@ -14,7 +14,7 @@ func floatToSrgb(linear float32) float32 {
 	}
 }
 
-// Color represents an RGBA color in the sRGB color space.
+// Color represents a straight RGBA color.
 //
 // For each value of R, G, B, and A the valid range is from 0.0 to 1.0 .
 type Color struct {
@@ -28,9 +28,9 @@ func RGB(r, g, b float32) Color {
 
 // RGBA creates a Color.
 func RGBA(r, g, b, a float32) Color {
-	r = floatToSrgb(r)
-	g = floatToSrgb(g)
-	b = floatToSrgb(b)
+	// r = floatToSrgb(r)
+	// g = floatToSrgb(g)
+	// b = floatToSrgb(b)
 
 	return Color{R: r, G: g, B: b, A: a}
 }
